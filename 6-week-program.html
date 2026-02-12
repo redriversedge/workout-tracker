@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6-Week Progressive Training Program</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        min-height: 100vh;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .header {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    
+    .header h1 {
+        font-size: 36px;
+        color: #667eea;
+        margin-bottom: 10px;
+    }
+    
+    .header-subtitle {
+        font-size: 18px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .program-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 25px;
+    }
+    
+    .overview-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .overview-value {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .overview-label {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    
+    .navigation {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    
+    .week-selector {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .week-btn {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 8px;
+        background: #f3f4f6;
+        color: #555;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .week-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .week-btn:hover {
+        background: #e5e7eb;
+    }
+    
+    .week-btn.active:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .week-content {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    
+    .week-header {
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .week-title {
+        font-size: 32px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    .week-focus {
+        font-size: 16px;
+        color: #666;
+        font-style: italic;
+    }
+    
+    .week-goals {
+        background: #f0fdf4;
+        border-left: 4px solid #10b981;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+    }
+    
+    .week-goals h3 {
+        color: #10b981;
+        margin-bottom: 12px;
+    }
+    
+    .week-goals ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .week-goals li {
+        padding: 8px 0;
+        padding-left: 25px;
+        position: relative;
+    }
+    
+    .week-goals li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #10b981;
+        font-weight: bold;
+    }
+    
+    .week-schedule {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .day-card {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+    
+    .day-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    
+    .day-header {
+        padding: 15px;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .day-header.push {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .day-header.pull {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .day-header.lower {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    
+    .day-header.full {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+    
+    .day-header.rest {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    }
+    
+    .day-body {
+        background: #f8f9fa;
+        padding: 20px;
+    }
+    
+    .exercise-list {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .exercise-item {
+        background: white;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .exercise-name {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    
+    .exercise-specs {
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .intensity-note {
+        background: #fff9e6;
+        border-left: 4px solid #fbbf24;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 30px;
+    }
+    
+    .intensity-note h3 {
+        color: #92400e;
+        margin-bottom: 12px;
+    }
+    
+    .progression-chart {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 8px;
+        margin-top: 30px;
+    }
+    
+    .progression-chart h3 {
+        color: #667eea;
+        margin-bottom: 20px;
+    }
+    
+    .progression-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .progression-table th {
+        background: #667eea;
+        color: white;
+        padding: 12px;
+        text-align: left;
+    }
+    
+    .progression-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .progression-table tr:hover {
+        background: #f3f4f6;
+    }
+    
+    @media print {
+        body {
+            background: white;
+            padding: 0;
+        }
+        
+        .navigation {
+            display: none;
+        }
+        
+        .week-content {
+            page-break-after: always;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .week-schedule {
+            grid-template-columns: 1fr;
+        }
+        
+        .week-selector {
+            flex-direction: column;
+        }
+        
+        .week-btn {
+            width: 100%;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏋️ 6-Week Progressive Training Program</h1>
+            <p class="header-subtitle">Intermediate Strength & Hypertrophy | 6 Days per Week</p>
+
+```
+        <div class="program-overview">
+            <div class="overview-card">
+                <div class="overview-value">6</div>
+                <div class="overview-label">Weeks</div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-value">36</div>
+                <div class="overview-label">Total Workouts</div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-value">45-60</div>
+                <div class="overview-label">Minutes/Session</div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-value">Progressive</div>
+                <div class="overview-label">Overload</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="navigation">
+        <div class="week-selector">
+            <button class="week-btn active" onclick="showWeek(1)">Week 1: Foundation</button>
+            <button class="week-btn" onclick="showWeek(2)">Week 2: Build</button>
+            <button class="week-btn" onclick="showWeek(3)">Week 3: Intensity</button>
+            <button class="week-btn" onclick="showWeek(4)">Week 4: Deload</button>
+            <button class="week-btn" onclick="showWeek(5)">Week 5: Peak</button>
+            <button class="week-btn" onclick="showWeek(6)">Week 6: Max Effort</button>
+        </div>
+    </div>
+    
+    <!-- WEEK 1 -->
+    <div class="week-content" id="week1">
+        <div class="week-header">
+            <h2 class="week-title">Week 1: Foundation Phase</h2>
+            <p class="week-focus">Focus: Technique refinement, building base volume, moderate intensity</p>
+        </div>
+        
+        <div class="week-goals">
+            <h3>Week 1 Goals</h3>
+            <ul>
+                <li>Master form on all major compound movements</li>
+                <li>Establish baseline strength levels for tracking progress</li>
+                <li>Complete all prescribed sets and reps with good technique</li>
+                <li>Build work capacity with moderate intensity (70-75% effort)</li>
+            </ul>
+        </div>
+        
+        <div class="week-schedule">
+            <div class="day-card">
+                <div class="day-header push">Day 1: Upper Push</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Bench Press</div>
+                            <div class="exercise-specs">4 sets × 8 reps | 2.5-3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Overhead Press</div>
+                            <div class="exercise-specs">3 sets × 10 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Incline Dumbbell Press</div>
+                            <div class="exercise-specs">3 sets × 12 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Lateral Raises</div>
+                            <div class="exercise-specs">3 sets × 15 reps | 60 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Overhead Tricep Extension</div>
+                            <div class="exercise-specs">3 sets × 12 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 2: Lower Body</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Back Squat</div>
+                            <div class="exercise-specs">4 sets × 8 reps | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Romanian Deadlift</div>
+                            <div class="exercise-specs">3 sets × 10 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Goblet Squat</div>
+                            <div class="exercise-specs">3 sets × 15 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Bulgarian Split Squats</div>
+                            <div class="exercise-specs">3 sets × 10/leg | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Kettlebell Swings</div>
+                            <div class="exercise-specs">3 sets × 20 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header pull">Day 3: Upper Pull</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Bent-Over Row</div>
+                            <div class="exercise-specs">4 sets × 8 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Single-Arm Dumbbell Row</div>
+                            <div class="exercise-specs">3 sets × 12/arm | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Pullover</div>
+                            <div class="exercise-specs">3 sets × 15 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Bicep Curls</div>
+                            <div class="exercise-specs">3 sets × 12 reps | 60 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Rear Delt Flyes</div>
+                            <div class="exercise-specs">3 sets × 15 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header full">Day 4: Full Body Circuit</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Circuit (3 rounds)</div>
+                            <div class="exercise-specs">2-3 min rest between rounds</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Thrusters</div>
+                            <div class="exercise-specs">12 reps</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Renegade Rows</div>
+                            <div class="exercise-specs">10/arm</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Goblet Reverse Lunges</div>
+                            <div class="exercise-specs">10/leg</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Medicine Ball Slams</div>
+                            <div class="exercise-specs">15 reps</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Kettlebell Swings</div>
+                            <div class="exercise-specs">20 reps</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 5: Lower Power</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Box Jumps</div>
+                            <div class="exercise-specs">4 sets × 6 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Front Squat</div>
+                            <div class="exercise-specs">4 sets × 8 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Step-Ups</div>
+                            <div class="exercise-specs">3 sets × 12/leg | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Jump Squats</div>
+                            <div class="exercise-specs">3 sets × 10 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Walking Lunges</div>
+                            <div class="exercise-specs">2 sets × 12/leg | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header rest">Day 6: Active Recovery</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Light Activity</div>
+                            <div class="exercise-specs">20-30 min walk, yoga, or swimming</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Mobility Work</div>
+                            <div class="exercise-specs">15-20 min full body stretching</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Foam Rolling</div>
+                            <div class="exercise-specs">Focus on sore muscle groups</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="intensity-note">
+            <h3>Week 1 Intensity Guide</h3>
+            <p><strong>RPE Target:</strong> 7/10 - You should feel challenged but able to complete 1-2 more reps per set</p>
+            <p><strong>Weight Selection:</strong> Use 70-75% of your estimated 1 rep max for main lifts</p>
+            <p><strong>Rest:</strong> Take full rest periods to ensure quality reps and form</p>
+        </div>
+    </div>
+    
+    <!-- WEEK 2 -->
+    <div class="week-content" id="week2" style="display: none;">
+        <div class="week-header">
+            <h2 class="week-title">Week 2: Volume Build</h2>
+            <p class="week-focus">Focus: Increased volume, maintain good form, progressive overload begins</p>
+        </div>
+        
+        <div class="week-goals">
+            <h3>Week 2 Goals</h3>
+            <ul>
+                <li>Increase total working sets by adding 1 set to main lifts</li>
+                <li>Add 2.5-5% more weight to compound movements from Week 1</li>
+                <li>Maintain excellent form while increasing volume</li>
+                <li>Work at 75-80% intensity</li>
+            </ul>
+        </div>
+        
+        <div class="week-schedule">
+            <div class="day-card">
+                <div class="day-header push">Day 1: Upper Push</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Bench Press</div>
+                            <div class="exercise-specs">5 sets × 6-8 reps | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Overhead Press</div>
+                            <div class="exercise-specs">4 sets × 8-10 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Incline Dumbbell Press</div>
+                            <div class="exercise-specs">3 sets × 10-12 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Cable Lateral Raises (or DB)</div>
+                            <div class="exercise-specs">3 sets × 12-15 reps | 60 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dips or Close-Grip Press</div>
+                            <div class="exercise-specs">3 sets × 10-12 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Tricep Rope Pushdowns</div>
+                            <div class="exercise-specs">3 sets × 15 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 2: Lower Body</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Back Squat</div>
+                            <div class="exercise-specs">5 sets × 6-8 reps | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Romanian Deadlift</div>
+                            <div class="exercise-specs">4 sets × 8-10 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Goblet Squat</div>
+                            <div class="exercise-specs">3 sets × 12-15 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Bulgarian Split Squats</div>
+                            <div class="exercise-specs">3 sets × 12/leg | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Leg Curls (Hamstring)</div>
+                            <div class="exercise-specs">3 sets × 15 reps | 60 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Kettlebell Swings</div>
+                            <div class="exercise-specs">3 sets × 20 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header pull">Day 3: Upper Pull</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Bent-Over Row</div>
+                            <div class="exercise-specs">5 sets × 6-8 reps | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Single-Arm Dumbbell Row</div>
+                            <div class="exercise-specs">4 sets × 10-12/arm | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Lat Pulldowns (or Pull-Ups)</div>
+                            <div class="exercise-specs">3 sets × 10-12 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Pullover</div>
+                            <div class="exercise-specs">3 sets × 12-15 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Bicep Curls</div>
+                            <div class="exercise-specs">3 sets × 10-12 reps | 60 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Face Pulls</div>
+                            <div class="exercise-specs">3 sets × 15-20 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header full">Day 4: Full Body Strength</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Power Cleans (or KB Swings)</div>
+                            <div class="exercise-specs">4 sets × 5 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Front Squats</div>
+                            <div class="exercise-specs">3 sets × 8 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Push Press</div>
+                            <div class="exercise-specs">3 sets × 8 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Romanian Deadlift</div>
+                            <div class="exercise-specs">3 sets × 10 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Plank to Push-Up</div>
+                            <div class="exercise-specs">3 sets × 10 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 5: Lower Hypertrophy</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Deadlift</div>
+                            <div class="exercise-specs">4 sets × 6 reps | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Lunges</div>
+                            <div class="exercise-specs">3 sets × 10/leg | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Leg Press (or Goblet Squat)</div>
+                            <div class="exercise-specs">3 sets × 15 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Single-Leg RDL</div>
+                            <div class="exercise-specs">3 sets × 12/leg | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Calf Raises</div>
+                            <div class="exercise-specs">4 sets × 20 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header rest">Day 6: Active Recovery</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Yoga or Pilates</div>
+                            <div class="exercise-specs">30-45 minutes</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Light Cardio</div>
+                            <div class="exercise-specs">20-30 min swimming or cycling</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Deep Stretching</div>
+                            <div class="exercise-specs">15-20 min focusing on tight areas</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="intensity-note">
+            <h3>Week 2 Intensity Guide</h3>
+            <p><strong>RPE Target:</strong> 7.5-8/10 - Should feel significantly challenging</p>
+            <p><strong>Weight Selection:</strong> 75-80% of 1RM, add 2.5-5% from Week 1</p>
+            <p><strong>Volume Increase:</strong> Extra set on compound movements increases total work</p>
+        </div>
+    </div>
+    
+    <!-- WEEK 3 -->
+    <div class="week-content" id="week3" style="display: none;">
+        <div class="week-header">
+            <h2 class="week-title">Week 3: Peak Intensity</h2>
+            <p class="week-focus">Focus: Maximum intensity week, heavy loads, lower reps, full recovery</p>
+        </div>
+        
+        <div class="week-goals">
+            <h3>Week 3 Goals</h3>
+            <ul>
+                <li>Test your strength gains with heavier loads (80-85% 1RM)</li>
+                <li>Reduce reps, increase weight on all major lifts</li>
+                <li>Prioritize recovery between sets - take full rest periods</li>
+                <li>Work at 85-90% intensity - this is your hardest week</li>
+            </ul>
+        </div>
+        
+        <div class="week-schedule">
+            <div class="day-card">
+                <div class="day-header push">Day 1: Upper Push Heavy</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Bench Press</div>
+                            <div class="exercise-specs">5 sets × 5 reps | 3-4 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Overhead Press</div>
+                            <div class="exercise-specs">4 sets × 6 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Weighted Dips</div>
+                            <div class="exercise-specs">4 sets × 8 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Incline Barbell Press</div>
+                            <div class="exercise-specs">3 sets × 8 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Lateral Raises</div>
+                            <div class="exercise-specs">4 sets × 12 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 2: Lower Heavy</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Back Squat</div>
+                            <div class="exercise-specs">5 sets × 5 reps | 3-4 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Deadlift</div>
+                            <div class="exercise-specs">4 sets × 5 reps | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Front Squat</div>
+                            <div class="exercise-specs">3 sets × 8 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Bulgarian Split Squats</div>
+                            <div class="exercise-specs">3 sets × 10/leg | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Glute Ham Raises (or Nordic Curls)</div>
+                            <div class="exercise-specs">3 sets × 8 reps | 90 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header pull">Day 3: Upper Pull Heavy</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Bent-Over Row</div>
+                            <div class="exercise-specs">5 sets × 5 reps | 3-4 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Weighted Pull-Ups</div>
+                            <div class="exercise-specs">4 sets × 6 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">T-Bar Rows (or DB Rows)</div>
+                            <div class="exercise-specs">4 sets × 8 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Shrugs</div>
+                            <div class="exercise-specs">3 sets × 12 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Curls</div>
+                            <div class="exercise-specs">4 sets × 8 reps | 90 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header full">Day 4: Full Body Power</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Power Cleans</div>
+                            <div class="exercise-specs">5 sets × 3 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Front Squats</div>
+                            <div class="exercise-specs">4 sets × 6 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Push Press</div>
+                            <div class="exercise-specs">4 sets × 6 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Box Jumps</div>
+                            <div class="exercise-specs">4 sets × 5 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Medicine Ball Slams</div>
+                            <div class="exercise-specs">3 sets × 10 reps | 90 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 5: Lower Explosive</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Broad Jumps</div>
+                            <div class="exercise-specs">5 sets × 5 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Back Squat (Speed)</div>
+                            <div class="exercise-specs">5 sets × 3 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Romanian Deadlift</div>
+                            <div class="exercise-specs">4 sets × 6 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Jump Squats</div>
+                            <div class="exercise-specs">4 sets × 8 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Sled Push/Pull (or KB Swings)</div>
+                            <div class="exercise-specs">3 sets × 30 sec | 2 min rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header rest">Day 6: Active Recovery</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Very Light Activity Only</div>
+                            <div class="exercise-specs">Gentle walk, stretching, sauna</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Sleep Priority</div>
+                            <div class="exercise-specs">Aim for 8-9 hours tonight</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Nutrition Focus</div>
+                            <div class="exercise-specs">High protein, adequate carbs for recovery</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="intensity-note">
+            <h3>Week 3 Intensity Guide</h3>
+            <p><strong>RPE Target:</strong> 8.5-9/10 - This is HARD. You should be close to failure on final reps</p>
+            <p><strong>Weight Selection:</strong> 80-85% of 1RM - go heavy!</p>
+            <p><strong>Recovery:</strong> Extra sleep this week. Take full rest periods. Quality over speed.</p>
+            <p><strong>Warning:</strong> This is your peak intensity week. Form must stay perfect even with heavy loads.</p>
+        </div>
+    </div>
+    
+    <!-- WEEK 4 -->
+    <div class="week-content" id="week4" style="display: none;">
+        <div class="week-header">
+            <h2 class="week-title">Week 4: Strategic Deload</h2>
+            <p class="week-focus">Focus: Active recovery, reduced volume and intensity, prepare for final push</p>
+        </div>
+        
+        <div class="week-goals">
+            <h3>Week 4 Goals</h3>
+            <ul>
+                <li>Allow full recovery from 3 weeks of progressive overload</li>
+                <li>Reduce weight to 60-65% of 1RM - this should feel EASY</li>
+                <li>Cut volume by ~40% - fewer sets and reps</li>
+                <li>Focus on movement quality, mind-muscle connection, mobility</li>
+                <li>Come back fresh and ready for Weeks 5-6</li>
+            </ul>
+        </div>
+        
+        <div class="week-schedule">
+            <div class="day-card">
+                <div class="day-header push">Day 1: Upper Push Light</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Bench Press</div>
+                            <div class="exercise-specs">3 sets × 8 reps @ 60% | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Overhead Press</div>
+                            <div class="exercise-specs">3 sets × 10 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Incline Dumbbell Press</div>
+                            <div class="exercise-specs">2 sets × 12 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Cable Flyes</div>
+                            <div class="exercise-specs">2 sets × 15 reps | 60 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Lateral Raises</div>
+                            <div class="exercise-specs">2 sets × 15 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 2: Lower Light</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Back Squat</div>
+                            <div class="exercise-specs">3 sets × 8 reps @ 60% | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Romanian Deadlift</div>
+                            <div class="exercise-specs">3 sets × 10 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Goblet Squat</div>
+                            <div class="exercise-specs">2 sets × 12 reps | 60 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Walking Lunges</div>
+                            <div class="exercise-specs">2 sets × 10/leg | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header pull">Day 3: Upper Pull Light</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Row</div>
+                            <div class="exercise-specs">3 sets × 8 reps @ 60% | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dumbbell Rows</div>
+                            <div class="exercise-specs">3 sets × 10/arm | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Lat Pulldowns</div>
+                            <div class="exercise-specs">2 sets × 12 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Face Pulls</div>
+                            <div class="exercise-specs">2 sets × 15 reps | 60 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Bicep Curls</div>
+                            <div class="exercise-specs">2 sets × 12 reps | 60 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header full">Day 4: Mobility & Movement</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Dynamic Movement Flow</div>
+                            <div class="exercise-specs">20 minutes - bodyweight movements</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Kettlebell Turkish Get-Ups</div>
+                            <div class="exercise-specs">3 sets × 3/side | Light weight</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Farmer's Carries</div>
+                            <div class="exercise-specs">3 sets × 30 sec | Light-moderate</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Core Circuit</div>
+                            <div class="exercise-specs">Planks, bird dogs, dead bugs - 2 rounds</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header rest">Day 5: Optional Light Session</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Technique Work</div>
+                            <div class="exercise-specs">Practice form with light weights</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">OR Complete Rest</div>
+                            <div class="exercise-specs">Take the day completely off</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header rest">Day 6: Active Recovery</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Yoga or Stretching</div>
+                            <div class="exercise-specs">45-60 minutes - restorative focus</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Light Walk or Swim</div>
+                            <div class="exercise-specs">20-30 min very easy pace</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="intensity-note">
+            <h3>Week 4 Deload Guide</h3>
+            <p><strong>RPE Target:</strong> 5-6/10 - This should feel EASY. If it doesn't, reduce weight more.</p>
+            <p><strong>Weight Selection:</strong> 60-65% of 1RM - significantly lighter than previous weeks</p>
+            <p><strong>Purpose:</strong> Allow full CNS and muscular recovery. You'll come back stronger in Week 5.</p>
+            <p><strong>Don't Skip This:</strong> Deload weeks are where adaptation happens. Trust the process.</p>
+        </div>
+    </div>
+    
+    <!-- WEEK 5 -->
+    <div class="week-content" id="week5" style="display: none;">
+        <div class="week-header">
+            <h2 class="week-title">Week 5: Peak Performance</h2>
+            <p class="week-focus">Focus: Return strong from deload, high intensity with moderate volume, chase PRs</p>
+        </div>
+        
+        <div class="week-goals">
+            <h3>Week 5 Goals</h3>
+            <ul>
+                <li>Beat your Week 3 numbers - you should be stronger after the deload</li>
+                <li>Work at 85-90% intensity, feeling fresh and powerful</li>
+                <li>Focus on explosive reps and quality movement</li>
+                <li>Set up for max effort testing in Week 6</li>
+            </ul>
+        </div>
+        
+        <div class="week-schedule">
+            <div class="day-card">
+                <div class="day-header push">Day 1: Upper Push Peak</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Bench Press</div>
+                            <div class="exercise-specs">6 sets × 4 reps | 3-4 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Overhead Press</div>
+                            <div class="exercise-specs">4 sets × 5 reps | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Weighted Dips</div>
+                            <div class="exercise-specs">4 sets × 6 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Incline Bench Press</div>
+                            <div class="exercise-specs">3 sets × 6 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Lateral Raise Superset</div>
+                            <div class="exercise-specs">3 sets × 10+10 (heavy+light) | 90 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 2: Lower Peak</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Back Squat</div>
+                            <div class="exercise-specs">6 sets × 4 reps | 3-4 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Deadlift</div>
+                            <div class="exercise-specs">5 sets × 3 reps | 3-4 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Pause Front Squats</div>
+                            <div class="exercise-specs">3 sets × 6 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Walking Barbell Lunges</div>
+                            <div class="exercise-specs">3 sets × 8/leg | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Nordic Hamstring Curls</div>
+                            <div class="exercise-specs">3 sets × 6 reps | 2 min rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header pull">Day 3: Upper Pull Peak</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Row</div>
+                            <div class="exercise-specs">6 sets × 4 reps | 3-4 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Weighted Pull-Ups</div>
+                            <div class="exercise-specs">5 sets × 5 reps | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Chest-Supported Rows</div>
+                            <div class="exercise-specs">4 sets × 8 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Shrugs (Heavy)</div>
+                            <div class="exercise-specs">4 sets × 10 reps | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Weighted Chin-Ups</div>
+                            <div class="exercise-specs">3 sets × 6 reps | 2 min rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header full">Day 4: Olympic Movements</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Power Cleans</div>
+                            <div class="exercise-specs">6 sets × 2 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Clean and Press</div>
+                            <div class="exercise-specs">4 sets × 4 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Front Squats</div>
+                            <div class="exercise-specs">4 sets × 5 reps | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Hang Cleans</div>
+                            <div class="exercise-specs">3 sets × 5 reps | 2 min rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 5: Lower Strength-Speed</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Speed Squats</div>
+                            <div class="exercise-specs">8 sets × 3 reps @ 70% | 90 sec rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Deficit Deadlifts</div>
+                            <div class="exercise-specs">4 sets × 5 reps | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Box Jumps (Heavy)</div>
+                            <div class="exercise-specs">4 sets × 4 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Bulgarian Split Squats</div>
+                            <div class="exercise-specs">3 sets × 8/leg | 90 sec rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header rest">Day 6: Recovery & Prep</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Light Movement</div>
+                            <div class="exercise-specs">20-30 min easy activity</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Mental Preparation</div>
+                            <div class="exercise-specs">Visualize Week 6 max attempts</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Nutrition Dialed In</div>
+                            <div class="exercise-specs">Fuel for final week performance</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="intensity-note">
+            <h3>Week 5 Intensity Guide</h3>
+            <p><strong>RPE Target:</strong> 8.5-9/10 - Heavy but you should feel strong</p>
+            <p><strong>Weight Selection:</strong> 85-90% of 1RM - near maximal loads</p>
+            <p><strong>Mindset:</strong> You're stronger than Week 3. Prove it. Chase PRs on main lifts.</p>
+            <p><strong>Rest:</strong> Take FULL rest between heavy sets. Quality over speed.</p>
+        </div>
+    </div>
+    
+    <!-- WEEK 6 -->
+    <div class="week-content" id="week6" style="display: none;">
+        <div class="week-header">
+            <h2 class="week-title">Week 6: Max Effort Testing</h2>
+            <p class="week-focus">Focus: Test your new maxes, demonstrate your gains, finish strong</p>
+        </div>
+        
+        <div class="week-goals">
+            <h3>Week 6 Goals</h3>
+            <ul>
+                <li>Test new 1-rep maxes or heavy doubles/triples on main lifts</li>
+                <li>Demonstrate 6 weeks of strength and muscle gains</li>
+                <li>Compare to Week 1 baseline - celebrate your progress</li>
+                <li>Finish program with confidence and momentum</li>
+            </ul>
+        </div>
+        
+        <div class="week-schedule">
+            <div class="day-card">
+                <div class="day-header push">Day 1: Bench Press Max</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Bench Press (MAX)</div>
+                            <div class="exercise-specs">Work up to 1RM or heavy double | 4-5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Overhead Press</div>
+                            <div class="exercise-specs">3 sets × 3 reps @ 85% | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Incline Press (Moderate)</div>
+                            <div class="exercise-specs">3 sets × 6 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Accessory Pump Work</div>
+                            <div class="exercise-specs">Light lateral raises, tricep work - 2-3 sets each</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 2: Squat Max</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Back Squat (MAX)</div>
+                            <div class="exercise-specs">Work up to 1RM or heavy double | 4-5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Front Squat</div>
+                            <div class="exercise-specs">3 sets × 5 reps @ 75% | 2.5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Romanian Deadlift</div>
+                            <div class="exercise-specs">3 sets × 8 reps | 2 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Walking Lunges (Light)</div>
+                            <div class="exercise-specs">2 sets × 10/leg | Pump work</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header rest">Day 3: Active Recovery</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Complete Rest or Very Light Activity</div>
+                            <div class="exercise-specs">Prep for deadlift max on Day 4</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Mobility & Stretching</div>
+                            <div class="exercise-specs">30 min focusing on hips and back</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Mental Prep</div>
+                            <div class="exercise-specs">Visualize your deadlift PR</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header lower">Day 4: Deadlift Max</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Deadlift (MAX)</div>
+                            <div class="exercise-specs">Work up to 1RM or heavy double | 4-5 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Deficit Deadlifts</div>
+                            <div class="exercise-specs">3 sets × 3 reps @ 70% | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Glute Bridges (Heavy)</div>
+                            <div class="exercise-specs">3 sets × 8 reps | 2 min rest</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header pull">Day 5: Upper Pull Test</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Weighted Pull-Ups (MAX)</div>
+                            <div class="exercise-specs">Work up to max weight for 1-3 reps</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Barbell Row</div>
+                            <div class="exercise-specs">4 sets × 3 reps @ 85% | 3 min rest</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Accessory Back Work</div>
+                            <div class="exercise-specs">Lat pulldowns, face pulls - 3 sets each</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Arm Work (Celebration)</div>
+                            <div class="exercise-specs">Biceps & triceps pump - you earned it!</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="day-card">
+                <div class="day-header full">Day 6: Victory Lap</div>
+                <div class="day-body">
+                    <ul class="exercise-list">
+                        <li class="exercise-item">
+                            <div class="exercise-name">Fun Movement Session</div>
+                            <div class="exercise-specs">Play, enjoy, celebrate your gains</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Record Your Progress</div>
+                            <div class="exercise-specs">Take measurements, photos, write down all PRs</div>
+                        </li>
+                        <li class="exercise-item">
+                            <div class="exercise-name">Plan Next Steps</div>
+                            <div class="exercise-specs">New program? Continue building? Set new goals.</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="intensity-note">
+            <h3>Week 6 Max Testing Guide</h3>
+            <p><strong>Warm-Up Protocol:</strong> Do extensive warm-up sets. Don't rush.</p>
+            <p><strong>Example:</strong> Bar × 10, 40% × 5, 60% × 3, 75% × 2, 85% × 1, 92% × 1, attempt max</p>
+            <p><strong>Safety First:</strong> Use spotters for bench. Perfect form on squats/deads. No ego lifting.</p>
+            <p><strong>Celebrate:</strong> Whether you hit PRs or not, you completed 6 weeks of hard work!</p>
+        </div>
+        
+        <div class="progression-chart">
+            <h3>📊 Track Your 6-Week Progress</h3>
+            <table class="progression-table">
+                <thead>
+                    <tr>
+                        <th>Lift</th>
+                        <th>Week 1 Baseline</th>
+                        <th>Week 3 Heavy</th>
+                        <th>Week 5 Peak</th>
+                        <th>Week 6 Max</th>
+                        <th>Total Gain</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bench Press</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                    </tr>
+                    <tr>
+                        <td>Squat</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                    </tr>
+                    <tr>
+                        <td>Deadlift</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                    </tr>
+                    <tr>
+                        <td>Overhead Press</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                    </tr>
+                    <tr>
+                        <td>Barbell Row</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                        <td>_______</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+    function showWeek(weekNum) {
+        // Hide all weeks
+        for (let i = 1; i <= 6; i++) {
+            document.getElementById('week' + i).style.display = 'none';
+        }
+        
+        // Show selected week
+        document.getElementById('week' + weekNum).style.display = 'block';
+        
+        // Update button states
+        const buttons = document.querySelectorAll('.week-btn');
+        buttons.forEach((btn, index) => {
+            btn.classList.toggle('active', index + 1 === weekNum);
+        });
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+```
+
+</body>
+</html>
