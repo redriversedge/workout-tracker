@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>RedRiversEdge Fitness</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#c8102e">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐕</text></svg>">
+<style>
+:root{--bg:#f5f5f5;--card:#fff;--card2:#f0f0f0;--border:#d4d4d4;--text:#111;--text2:#666;--accent:#c8102e;--accent-light:rgba(200,16,46,0.08);--accent-glow:rgba(200,16,46,0.18);--success:#10b981;--warn:#f59e0b;--danger:#ef4444;--input:#fafafa;--shadow:0 2px 12px rgba(0,0,0,0.06)}
+.dark{--bg:#0a0a0a;--card:#1a1a1a;--card2:#242424;--border:#333;--text:#f0f0f0;--text2:#999;--accent:#e8233a;--accent-light:rgba(232,35,58,0.15);--accent-glow:rgba(232,35,58,0.3);--input:#111;--shadow:0 2px 12px rgba(0,0,0,0.4)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;transition:background .3s,color .3s}
+input,textarea,select,button{font-family:inherit}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]{-moz-appearance:textfield}
+.top-bar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.top-bar h1{font-size:16px;font-weight:800;letter-spacing:-.3px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:5px 0 max(5px,env(safe-area-inset-bottom));z-index:100}
+.nav-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 8px;color:var(--text2);font-size:9px;font-weight:600}
+.nav-btn.active{color:var(--accent)}
+.page{padding:0 14px 90px;display:none;animation:fadeIn .2s}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.btn{border:none;border-radius:10px;padding:10px 20px;font-weight:700;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;gap:6px;transition:opacity .2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--border)}
+.btn-danger{background:var(--card);color:var(--danger);border:1px solid var(--border)}
+.btn-sm{padding:7px 12px;font-size:11px;border-radius:8px}
+.btn-block{width:100%;justify-content:center}
+.pill{padding:8px 14px;border-radius:10px;border:2px solid var(--border);background:var(--card);color:var(--text2);font-weight:600;cursor:pointer;font-size:12px;flex-shrink:0}
+.pill.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
+.pill-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.pill-row::-webkit-scrollbar{display:none}
+.pill-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.input{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--border);background:var(--input);color:var(--text);font-size:15px;outline:none}
+.input:focus{border-color:var(--accent)}
+.input-sm{padding:8px 4px;border-radius:8px;font-size:12px;text-align:center;font-weight:600;border:2px solid var(--border);background:var(--input);color:var(--text);outline:none;width:100%}
+.input-sm:focus{border-color:var(--accent)}
+.progress-bar{background:var(--border);border-radius:6px;height:6px;overflow:hidden}
+.progress-fill{background:var(--accent);border-radius:6px;height:100%;transition:width .4s}
+.label{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.hero{background:linear-gradient(135deg,var(--accent),#8b0000);border-radius:18px;padding:22px;color:#fff;margin-bottom:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat-card{background:var(--card);border-radius:12px;padding:14px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.stat-val{font-size:18px;font-weight:800;margin:0 0 1px}
+.stat-label{font-size:10px;color:var(--text2);font-weight:600}
+.ex-block{background:var(--card);border-radius:14px;margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)}
+.ex-head{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.ex-body{padding:8px 14px}
+.set-grid{display:grid;grid-template-columns:32px 1fr 1fr 36px;gap:5px;align-items:center;margin-bottom:3px}
+.set-hdr{font-size:9px;color:var(--text2);font-weight:700;text-transform:uppercase}
+.set-num{color:var(--accent);font-weight:800;font-size:12px}
+.chk{width:26px;height:26px;border-radius:7px;border:2px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;padding:0}
+.chk.done{border-color:var(--success);background:var(--success)}
+.timer-ov{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:1000}
+.timer-box{background:var(--card);border-radius:20px;padding:28px;text-align:center;width:280px;border:1px solid var(--border)}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--success);color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;font-size:13px;z-index:1100;animation:slideD .3s}
+.toast.pr-toast{background:linear-gradient(135deg,#f59e0b,#ef4444);font-size:14px;padding:12px 24px}
+@keyframes slideD{from{opacity:0;transform:translateX(-50%) translateY(-16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.ob-wrap{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}
+.ob-card{width:100%;max-width:440px}
+.ob-dots{display:flex;gap:5px;margin-bottom:28px}
+.ob-dot{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s}
+.ob-dot.filled{background:var(--accent)}
+.toggle{width:46px;height:26px;border-radius:13px;background:var(--border);border:none;cursor:pointer;position:relative;transition:background .3s}
+.toggle.on{background:var(--accent)}
+.toggle-knob{width:20px;height:20px;border-radius:10px;background:#fff;position:absolute;top:3px;left:3px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.toggle.on .toggle-knob{left:23px}
+.feel-row{display:flex;gap:2px;align-items:center}
+.feel-btn{width:24px;height:24px;border-radius:6px;border:2px solid var(--border);background:transparent;color:var(--text2);font-weight:700;font-size:10px;cursor:pointer;flex-shrink:0;padding:0;display:flex;align-items:center;justify-content:center}
+.feel-btn.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
+.chat-wrap{display:flex;flex-direction:column;height:calc(100dvh - 110px);position:relative}
+.chat-msgs{flex:1;overflow-y:auto;padding:10px 0;-webkit-overflow-scrolling:touch}
+.chat-msg{margin-bottom:10px;display:flex}
+.chat-msg.user{justify-content:flex-end}
+.chat-msg .bubble{max-width:82%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.5}
+.chat-msg.bot .bubble{background:var(--card);border:1px solid var(--border);border-bottom-left-radius:3px}
+.chat-msg.user .bubble{background:var(--accent);color:#fff;border-bottom-right-radius:3px}
+.chat-ir{display:flex;gap:6px;padding:8px 0;border-top:1px solid var(--border);background:var(--bg);position:sticky;bottom:0}
+.chat-in{flex:1;padding:10px 14px;border-radius:20px;border:2px solid var(--border);background:var(--input);color:var(--text);font-size:14px;outline:none}
+.chat-in:focus{border-color:var(--accent)}
+.chat-sb{width:38px;height:38px;border-radius:19px;background:var(--accent);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.desc-text{color:var(--text2);font-size:11px;line-height:1.4;padding:6px 0;border-top:1px dashed var(--border);margin-top:4px}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--card);border-radius:18px;padding:20px;width:100%;max-width:440px;max-height:80vh;overflow-y:auto;border:1px solid var(--border)}
+.body-row{display:grid;grid-template-columns:60px repeat(5,1fr) 24px;gap:3px;align-items:center;margin-bottom:5px;font-size:10px}
+.streak-badge{display:inline-flex;align-items:center;gap:4px;background:var(--accent-light);color:var(--accent);padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700}
+.section-toggle{background:none;border:none;color:var(--accent);font-size:11px;font-weight:600;cursor:pointer;padding:3px 0;margin-bottom:4px}
+
+.drill-card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow);transition:border-color .2s}
+.drill-card:active{border-color:var(--accent)}
+.drill-hdr{display:flex;justify-content:space-between;align-items:center}
+.drill-val{font-size:22px;font-weight:800}
+.drill-sub{font-size:10px;color:var(--text2);font-weight:600}
+.back-btn{background:none;border:none;display:flex;align-items:center;gap:4px;color:var(--accent);font-weight:700;font-size:13px;cursor:pointer;padding:4px 0;margin-bottom:10px}
+.edit-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.edit-label{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.edit-val{font-size:13px}
+.timer-ctrl{display:flex;gap:8px;justify-content:center;margin:8px 0}
+.timer-ctrl button{padding:6px 16px;border-radius:8px;font-weight:700;font-size:12px;border:none;cursor:pointer}
+.tc-start{background:var(--accent);color:#fff}
+.tc-pause{background:var(--warn);color:#fff}
+.tc-finish{background:var(--success);color:#fff}
+.tc-reset{background:var(--card2);color:var(--text);border:1px solid var(--border)!important}
+.ex-db-card{background:var(--card);border-radius:12px;padding:12px;margin-bottom:8px;border:1px solid var(--border)}
+.mini-chart{display:flex;align-items:flex-end;gap:2px;height:40px;margin-top:6px}
+.mini-bar{flex:1;background:var(--accent);border-radius:2px 2px 0 0;min-height:2px;transition:height .3s}
+.ss-badge{display:inline-flex;align-items:center;gap:3px;background:rgba(168,85,247,0.15);color:#a855f7;padding:2px 8px;border-radius:6px;font-size:9px;font-weight:700;text-transform:uppercase}
+.ss-group{border-left:3px solid #a855f7;padding-left:0;margin-bottom:4px;border-radius:0 12px 12px 0;overflow:hidden}
+.ss-label{background:rgba(168,85,247,0.08);padding:6px 12px;font-size:10px;font-weight:700;color:#a855f7;display:flex;justify-content:space-between;align-items:center;border-radius:8px;margin:8px 0 4px}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--border);border:none;cursor:pointer;position:relative;transition:background .2s;padding:0;flex-shrink:0}
+.toggle.on{background:var(--accent)}
+.toggle-knob{width:20px;height:20px;border-radius:10px;background:#fff;position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on .toggle-knob{transform:translateX(20px)}
+.cw-card{background:var(--card);border:2px dashed var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;margin-top:10px}
+.cw-card:active{border-color:var(--accent)}
+.cw-tag{display:inline-block;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid var(--border);margin:2px;background:transparent;color:var(--text)}
+.cw-tag.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cw-log{padding:12px;border-left:3px solid #10b981;background:var(--card);border-radius:0 12px 12px 0;margin-top:6px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+
+// === ICONS ===
+function svg(n,s,c){s=s||18;c=c||'currentColor';var p={
+home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="'+c+'" stroke-width="2"/><polyline points="9,22 9,12 15,12 15,22" fill="none" stroke="'+c+'" stroke-width="2"/>',
+book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" fill="none" stroke="'+c+'" stroke-width="2"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" fill="none" stroke="'+c+'" stroke-width="2"/>',
+dumbbell:'<rect x="3" y="6" width="4" height="12" rx="1" fill="none" stroke="'+c+'" stroke-width="2"/><rect x="17" y="6" width="4" height="12" rx="1" fill="none" stroke="'+c+'" stroke-width="2"/><line x1="7" y1="12" x2="17" y2="12" stroke="'+c+'" stroke-width="2"/>',
+chart:'<line x1="12" y1="20" x2="12" y2="10" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="20" x2="18" y2="4" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="20" x2="6" y2="16" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="'+c+'" stroke-width="2"/><circle cx="12" cy="7" r="4" fill="none" stroke="'+c+'" stroke-width="2"/>',
+clock:'<circle cx="12" cy="12" r="10" fill="none" stroke="'+c+'" stroke-width="2"/><polyline points="12,6 12,12 16,14" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+check:'<polyline points="20,6 9,17 4,12" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+plus:'<line x1="12" y1="5" x2="12" y2="19" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+x:'<line x1="18" y1="6" x2="6" y2="18" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+trash:'<polyline points="3,6 5,6 21,6" fill="none" stroke="'+c+'" stroke-width="2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" fill="none" stroke="'+c+'" stroke-width="2"/>',
+play:'<polygon points="5,3 19,12 5,21" fill="'+c+'"/>',
+pause:'<rect x="6" y="4" width="4" height="16" fill="'+c+'"/><rect x="14" y="4" width="4" height="16" fill="'+c+'"/>',
+reset:'<polyline points="1,4 1,10 7,10" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+left:'<polyline points="15,18 9,12 15,6" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+right:'<polyline points="9,18 15,12 9,6" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="none" stroke="'+c+'" stroke-width="2"/>',
+sun:'<circle cx="12" cy="12" r="5" fill="none" stroke="'+c+'" stroke-width="2"/><line x1="12" y1="1" x2="12" y2="3" stroke="'+c+'" stroke-width="2"/>',
+moon:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="'+c+'" stroke-width="2"/>',
+chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="none" stroke="'+c+'" stroke-width="2"/>',
+send:'<line x1="22" y1="2" x2="11" y2="13" stroke="'+c+'" stroke-width="2"/><polygon points="22,2 15,22 11,13 2,9" fill="none" stroke="'+c+'" stroke-width="2"/>',
+settings:'<circle cx="12" cy="12" r="3" fill="none" stroke="'+c+'" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.18V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1.08H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1.08H21a2 2 0 0 1 0 4h-.09" fill="none" stroke="'+c+'" stroke-width="2"/>',
+trophy:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z" fill="none" stroke="'+c+'" stroke-width="2"/>',
+fire:'<path d="M12 12c2-2.96 0-7-1-8 0 3.038-1.773 4.741-3 6-1.226 1.26-2 3.24-2 5a6 6 0 1 0 12 0c0-1.532-1.056-3.94-2-5-1.786 3-2 4-4 2z" fill="none" stroke="'+c+'" stroke-width="2"/>'
+};return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24">'+(p[n]||'')+'</svg>';}
+
+// === EXERCISE DESCRIPTIONS ===
+var DESC={
+"Barbell Bench Press":"Lie flat, grip wider than shoulders. Lower to mid-chest, press up. Feet flat, back slightly arched.",
+"Dumbbell Overhead Press":"Dumbbells at shoulders, palms forward. Press straight up. Brace core.",
+"Incline Dumbbell Press":"Bench 30-45°. Press from chest up, control the negative.",
+"Dumbbell Lateral Raises":"Arms at sides, raise to parallel. Lead with elbows.",
+"Overhead Tricep Extension":"Dumbbell overhead, lower behind head. Elbows close.",
+"Barbell Back Squat":"Bar on traps, sit back and down. Drive through heels. Hit parallel.",
+"Romanian Deadlift":"Bar at hips, hinge back. Lower along legs. Squeeze glutes up.",
+"Goblet Squat":"Weight at chest, squat deep. Elbows between knees.",
+"Bulgarian Split Squats":"Rear foot on bench. Lower to parallel. Stay upright.",
+"Kettlebell Swings":"Hinge hips, snap forward. Hip hinge, not a squat.",
+"Barbell Bent-Over Row":"Hinge 45°, pull to lower chest. Squeeze shoulder blades.",
+"Single-Arm Dumbbell Row":"Hand/knee on bench. Pull to hip, squeeze lat.",
+"Dumbbell Pullover":"Lie across bench, lower behind head. Feel lat stretch.",
+"Dumbbell Bicep Curls":"Stand tall, curl with control. No swinging.",
+"Rear Delt Flyes":"Bent over, raise to sides. Light weight, high control.",
+"Dumbbell Thrusters":"Squat with DBs at shoulders, press overhead in one motion.",
+"Renegade Rows":"Push-up position, row one arm. Keep hips square.",
+"Goblet Reverse Lunges":"Weight at chest, step back. Drive through front heel.",
+"Medicine Ball Slams":"Lift overhead, slam hard. Great for power.",
+"Box Jumps":"Jump, land softly on top. Step down between reps.",
+"Barbell Front Squat":"Front rack, elbows high, upright torso. Go deep.",
+"Jump Squats":"Bodyweight squat, explode up. Land softly.",
+"Walking Lunges":"Step forward into lunge. Stay upright, controlled.",
+"Power Cleans":"Floor to front rack explosively. Start light.",
+"Push Press":"Slight dip, drive bar overhead with leg power.",
+"Barbell Deadlift":"Bar over mid-foot, drive through floor. Keep bar close.",
+"Weighted Dips":"Lower to 90°+, press up. Lean forward for chest.",
+"Speed Squats":"Light weight, explode out of the hole.",
+"Weighted Pull-Ups":"Full dead hang to chin over bar.",
+"Barbell Shrugs":"Hold heavy, shrug up to ears. Hold at top.",
+"Dumbbell Step-Ups":"Step onto box, drive up. Stay tall.",
+"Broad Jumps":"Standing long jump. Triple extend, stick landing.",
+"Calf Raises":"Full range, pause at top. Don't rush.",
+"Barbell Lunges":"Bar on back, step into lunge. Controlled.",
+"Leg Press":"Feet shoulder-width. Don't lock out knees.",
+"Single-Leg RDL":"One leg, hinge forward. Great for balance.",
+"Face Pulls":"Cable to face, externally rotating. Key for shoulder health.",
+"Lat Pulldowns":"Wide grip to upper chest. Squeeze lats.",
+"Barbell Bicep Curls":"Straight bar, controlled curl. No swinging.",
+"Tricep Rope Pushdowns":"Push down, spread rope at bottom. Squeeze.",
+"Plank to Push-Up":"Plank on elbows, push to hands. Alternate lead arm.",
+"T-Bar Rows":"Straddle bar, row to chest. Controlled.",
+"Glute Ham Raises":"On GHD, curl back up with hamstrings.",
+"Deficit Deadlifts":"Stand on plates, deadlift. More range of motion.",
+"Hang Cleans":"Hip to front rack. Less technical than full clean.",
+"Clean and Press":"Full clean then press overhead. Full body.",
+"Heavy Box Jumps":"Higher box, full hip extension. Step down.",
+"Turkish Get-Ups":"KB overhead, lying to standing. Go slow.",
+"Farmer's Carries":"Heavy in each hand, walk tall. Builds grip and core.",
+"Cable Flyes":"Hands together in arc. Constant tension.",
+"Glute Bridges":"Back on bench, bar on hips. Squeeze at top.",
+"Nordic Hamstring Curls":"Kneel, lower forward with hamstrings. Use assist if needed.",
+"Pause Front Squats":"2-3 sec pause at bottom. Builds hole strength.",
+"Walking Barbell Lunges":"Bar on back, walking. Demanding on balance.",
+"Chest-Supported Rows":"Face down on incline. Pure back, no momentum.",
+"Weighted Chin-Ups":"Underhand grip with weight. Great for biceps+lats.",
+"Incline Barbell Press":"Bench 30-45°. Targets upper pecs.",
+"Cable Lateral Raises":"Single arm cable. Constant tension throughout.",
+"Dips or Close-Grip Press":"Both target triceps. Choose based on equipment.",
+"Dumbbell RDL":"Same as barbell RDL but with dumbbells.",
+"Leg Curls":"Machine hamstring isolation. Control both phases."
+};
+
+// === WARMUP & COOLDOWN ===
+var WU={
+push:[{n:"Arm Circles",r:"20 each dir",d:"Big circles forward then backward."},{n:"Band Pull-Aparts",r:"15",d:"Resistance band, squeeze rear delts."},{n:"Push-Up to Down Dog",r:"8",d:"Push-up then hips up to down dog."},{n:"Light Bench",r:"2x10 bar",d:"Empty bar to groove pattern."}],
+pull:[{n:"Cat-Cow",r:"10",d:"Alternate arching and rounding spine."},{n:"Band Pull-Aparts",r:"15",d:"Warm up upper back."},{n:"Scap Push-Ups",r:"12",d:"Shoulder blades apart then squeeze."},{n:"Light Rows",r:"2x10 light",d:"Warm up lats."}],
+lower:[{n:"Leg Swings",r:"15 each",d:"Front-to-back and side-to-side."},{n:"Air Squats",r:"15",d:"Full depth, controlled."},{n:"Hip Circles",r:"10 each dir",d:"Opens hip joint."},{n:"Light Squats",r:"2x8 bar",d:"Warm up joints."}],
+full:[{n:"Jumping Jacks",r:"30",d:"Full-body warmup."},{n:"Inchworms",r:"8",d:"Walk hands to plank, feet to hands."},{n:"World's Greatest Stretch",r:"5 each",d:"Lunge, rotate, reach."},{n:"Light Movement",r:"2-3 min",d:"Light version of main movements."}],
+run:[{n:"Brisk Walk",r:"5 min",d:"Get blood flowing."},{n:"Leg Swings",r:"10 each",d:"Loosen hips."},{n:"High Knees",r:"20",d:"Activate hip flexors."},{n:"Butt Kicks",r:"20",d:"Wake up hamstrings."}],
+yoga:[{n:"Deep Breathing",r:"1 min",d:"Center yourself. 4 counts in, 4 out."},{n:"Neck Rolls",r:"5 each way",d:"Release neck tension."},{n:"Shoulder Rolls",r:"10",d:"Open up shoulders."},{n:"Cat-Cow",r:"5",d:"Wake up the spine."}]
+};
+var CD=[
+{n:"Quad Stretch",d:"30s each. Pull heel to glute."},
+{n:"Hamstring Stretch",d:"30s each. Foot on bench, lean forward."},
+{n:"Chest Stretch",d:"30s each arm on doorframe."},
+{n:"Child's Pose",d:"45s. Knees wide, arms out."},
+{n:"Figure-4 Stretch",d:"30s each. Ankle on knee, pull in."},
+{n:"Deep Breathing",d:"1 min. 5 in nose, 5 out mouth."}
+];
+
+// === REST DAY ACTIVITIES ===
+var REST=[
+{name:"Yoga Flow",icon:"\u{1F9D8}",dur:"20-30 min",desc:"Sun salutations, warriors, pigeon. Breathe.",
+steps:["Mountain Pose. Arms up, fold forward.","Half lift, step to plank, chaturanga.","Up Dog then Down Dog. 5 breaths.","Step forward, rise. Repeat 3-5 rounds.","Warrior I, II, Triangle each side.","Pigeon 2 min each side. Savasana 5 min."]},
+{name:"Easy Run/Walk",icon:"\u{1F3C3}",dur:"20-40 min",desc:"Zone 2 — conversational pace.",
+steps:["5 min brisk walk warmup.","Easy jog — you should talk comfortably.","Heavy breathing? Slow down. Walk intervals OK.","Short stride, soft landing.","Last 5 min walk. Stretch after."]},
+{name:"Foam Rolling",icon:"\u{1F504}",dur:"15-20 min",desc:"Roll slowly, pause on tight spots.",
+steps:["Quads: face down, 2 min each.","IT Band: side-lying, 2 min each.","Glutes: cross ankle over knee, 2 min each.","Upper Back: perpendicular to spine, 3 min.","Lats: side-lying, 2 min each.","Calves: 2 min each."]},
+{name:"Stretching",icon:"\u{1F938}",dur:"15 min",desc:"Hold 30-60 sec each. Breathe deep.",
+steps:["Neck rolls 30s each way.","Shoulder cross-body 30s each.","Quad stretch 30s each.","Hamstring reach 45s.","Hip flexor lunge 45s each.","Child's pose 60s."]},
+{name:"Nature Walk",icon:"\u{1F332}",dur:"30-60 min",desc:"Outside. Reduces cortisol, aids recovery.",
+steps:["Leave headphones for part of it.","Deep rhythmic breathing.","Comfortable pace.","Notice surroundings. Moving meditation.","Gentle hills = great recovery."]}
+];
+
+// === PROGRAM DATA ===
+var PROGRAMS = {
+strength_6wk: {id:'strength_6wk',name:"6-Week Strength",type:'strength',weeks:6,desc:"Progressive overload from foundation to max effort.",daysPerWeek:6,data:{
+1:{name:"Foundation",focus:"Technique & base volume",rpe:"7/10",int:"70-75%",days:{
+1:{name:"Upper Push",type:"push",ex:[{n:"Barbell Bench Press",s:4,r:"8",rest:"2.5-3 min"},{n:"Dumbbell Overhead Press",s:3,r:"10",rest:"2 min"},{n:"Incline Dumbbell Press",s:3,r:"12",rest:"90 sec"},{n:"Dumbbell Lateral Raises",s:3,r:"15",rest:"60 sec"},{n:"Overhead Tricep Extension",s:3,r:"12",rest:"60 sec"}]},
+2:{name:"Lower Body",type:"lower",ex:[{n:"Barbell Back Squat",s:4,r:"8",rest:"3 min"},{n:"Romanian Deadlift",s:3,r:"10",rest:"2 min"},{n:"Goblet Squat",s:3,r:"15",rest:"90 sec"},{n:"Bulgarian Split Squats",s:3,r:"10/leg",rest:"90 sec"},{n:"Kettlebell Swings",s:3,r:"20",rest:"60 sec"}]},
+3:{name:"Upper Pull",type:"pull",ex:[{n:"Barbell Bent-Over Row",s:4,r:"8",rest:"2.5 min"},{n:"Single-Arm Dumbbell Row",s:3,r:"12/arm",rest:"90 sec"},{n:"Dumbbell Pullover",s:3,r:"15",rest:"90 sec"},{n:"Dumbbell Bicep Curls",s:3,r:"12",rest:"60 sec"},{n:"Rear Delt Flyes",s:3,r:"15",rest:"60 sec"}]},
+4:{name:"Full Body Circuit",type:"full",ex:[{n:"Dumbbell Thrusters",s:3,r:"12",rest:"Circuit"},{n:"Renegade Rows",s:3,r:"10/arm",rest:"Circuit"},{n:"Goblet Reverse Lunges",s:3,r:"10/leg",rest:"Circuit"},{n:"Medicine Ball Slams",s:3,r:"15",rest:"Circuit"},{n:"Kettlebell Swings",s:3,r:"20",rest:"2-3 min"}]},
+5:{name:"Lower Power",type:"lower",ex:[{n:"Box Jumps",s:4,r:"6",rest:"2 min"},{n:"Barbell Front Squat",s:4,r:"8",rest:"2.5 min"},{n:"Dumbbell Step-Ups",s:3,r:"12/leg",rest:"90 sec"},{n:"Jump Squats",s:3,r:"10",rest:"90 sec"},{n:"Walking Lunges",s:2,r:"12/leg",rest:"60 sec"}]},
+6:{name:"Active Recovery",type:"rest",isRest:true}}},
+2:{name:"Volume Build",focus:"Progressive overload begins",rpe:"7.5-8/10",int:"75-80%",days:{
+1:{name:"Upper Push",type:"push",ex:[{n:"Barbell Bench Press",s:5,r:"6-8",rest:"3 min"},{n:"Dumbbell Overhead Press",s:4,r:"8-10",rest:"2 min"},{n:"Incline Dumbbell Press",s:3,r:"10-12",rest:"90 sec"},{n:"Cable Lateral Raises",s:3,r:"12-15",rest:"60 sec"},{n:"Dips or Close-Grip Press",s:3,r:"10-12",rest:"90 sec"},{n:"Tricep Rope Pushdowns",s:3,r:"15",rest:"60 sec"}]},
+2:{name:"Lower Body",type:"lower",ex:[{n:"Barbell Back Squat",s:5,r:"6-8",rest:"3 min"},{n:"Romanian Deadlift",s:4,r:"8-10",rest:"2 min"},{n:"Goblet Squat",s:3,r:"12-15",rest:"90 sec"},{n:"Bulgarian Split Squats",s:3,r:"12/leg",rest:"90 sec"},{n:"Leg Curls",s:3,r:"15",rest:"60 sec"},{n:"Kettlebell Swings",s:3,r:"20",rest:"60 sec"}]},
+3:{name:"Upper Pull",type:"pull",ex:[{n:"Barbell Bent-Over Row",s:5,r:"6-8",rest:"3 min"},{n:"Single-Arm Dumbbell Row",s:4,r:"10-12/arm",rest:"90 sec"},{n:"Lat Pulldowns",s:3,r:"10-12",rest:"90 sec"},{n:"Dumbbell Pullover",s:3,r:"12-15",rest:"90 sec"},{n:"Barbell Bicep Curls",s:3,r:"10-12",rest:"60 sec"},{n:"Face Pulls",s:3,r:"15-20",rest:"60 sec"}]},
+4:{name:"Full Body Strength",type:"full",ex:[{n:"Power Cleans",s:4,r:"5",rest:"2 min"},{n:"Barbell Front Squat",s:3,r:"8",rest:"2.5 min"},{n:"Push Press",s:3,r:"8",rest:"2 min"},{n:"Dumbbell RDL",s:3,r:"10",rest:"90 sec"},{n:"Plank to Push-Up",s:3,r:"10",rest:"60 sec"}]},
+5:{name:"Lower Hypertrophy",type:"lower",ex:[{n:"Barbell Deadlift",s:4,r:"6",rest:"3 min"},{n:"Barbell Lunges",s:3,r:"10/leg",rest:"2 min"},{n:"Leg Press",s:3,r:"15",rest:"90 sec"},{n:"Single-Leg RDL",s:3,r:"12/leg",rest:"90 sec"},{n:"Calf Raises",s:4,r:"20",rest:"60 sec"}]},
+6:{name:"Active Recovery",type:"rest",isRest:true}}},
+3:{name:"Peak Intensity",focus:"Heavy loads, lower reps",rpe:"8.5-9/10",int:"80-85%",days:{
+1:{name:"Upper Push Heavy",type:"push",ex:[{n:"Barbell Bench Press",s:5,r:"5",rest:"3-4 min"},{n:"Dumbbell Overhead Press",s:4,r:"6",rest:"2.5 min"},{n:"Weighted Dips",s:4,r:"8",rest:"2 min"},{n:"Incline Barbell Press",s:3,r:"8",rest:"2 min"},{n:"Dumbbell Lateral Raises",s:4,r:"12",rest:"60 sec"}]},
+2:{name:"Lower Heavy",type:"lower",ex:[{n:"Barbell Back Squat",s:5,r:"5",rest:"3-4 min"},{n:"Barbell Deadlift",s:4,r:"5",rest:"3 min"},{n:"Barbell Front Squat",s:3,r:"8",rest:"2.5 min"},{n:"Bulgarian Split Squats",s:3,r:"10/leg",rest:"2 min"},{n:"Glute Ham Raises",s:3,r:"8",rest:"90 sec"}]},
+3:{name:"Upper Pull Heavy",type:"pull",ex:[{n:"Barbell Bent-Over Row",s:5,r:"5",rest:"3-4 min"},{n:"Weighted Pull-Ups",s:4,r:"6",rest:"2.5 min"},{n:"T-Bar Rows",s:4,r:"8",rest:"2 min"},{n:"Barbell Shrugs",s:3,r:"12",rest:"90 sec"},{n:"Barbell Bicep Curls",s:4,r:"8",rest:"90 sec"}]},
+4:{name:"Full Body Power",type:"full",ex:[{n:"Power Cleans",s:5,r:"3",rest:"2.5 min"},{n:"Barbell Front Squat",s:4,r:"6",rest:"2.5 min"},{n:"Push Press",s:4,r:"6",rest:"2 min"},{n:"Box Jumps",s:4,r:"5",rest:"2 min"},{n:"Medicine Ball Slams",s:3,r:"10",rest:"90 sec"}]},
+5:{name:"Lower Explosive",type:"lower",ex:[{n:"Broad Jumps",s:5,r:"5",rest:"2 min"},{n:"Speed Squats",s:5,r:"3",rest:"2 min"},{n:"Romanian Deadlift",s:4,r:"6",rest:"2.5 min"},{n:"Jump Squats",s:4,r:"8",rest:"90 sec"}]},
+6:{name:"Active Recovery",type:"rest",isRest:true}}},
+4:{name:"Strategic Deload",focus:"Recovery, reduced volume",rpe:"5-6/10",int:"60-65%",days:{
+1:{name:"Upper Push Light",type:"push",ex:[{n:"Barbell Bench Press",s:3,r:"8 @ 60%",rest:"2 min"},{n:"Dumbbell Overhead Press",s:3,r:"10",rest:"90 sec"},{n:"Incline Dumbbell Press",s:2,r:"12",rest:"90 sec"},{n:"Dumbbell Lateral Raises",s:2,r:"15",rest:"60 sec"}]},
+2:{name:"Lower Light",type:"lower",ex:[{n:"Barbell Back Squat",s:3,r:"8 @ 60%",rest:"2 min"},{n:"Romanian Deadlift",s:3,r:"10",rest:"90 sec"},{n:"Goblet Squat",s:2,r:"12",rest:"60 sec"},{n:"Walking Lunges",s:2,r:"10/leg",rest:"60 sec"}]},
+3:{name:"Upper Pull Light",type:"pull",ex:[{n:"Barbell Bent-Over Row",s:3,r:"8 @ 60%",rest:"2 min"},{n:"Single-Arm Dumbbell Row",s:3,r:"10/arm",rest:"90 sec"},{n:"Face Pulls",s:2,r:"15",rest:"60 sec"},{n:"Dumbbell Bicep Curls",s:2,r:"12",rest:"60 sec"}]},
+4:{name:"Mobility",type:"full",ex:[{n:"Turkish Get-Ups",s:3,r:"3/side",rest:"Light"},{n:"Farmer's Carries",s:3,r:"30 sec",rest:"Light"}]},
+5:{name:"Optional Light",type:"rest",isRest:true},
+6:{name:"Active Recovery",type:"rest",isRest:true}}},
+5:{name:"Peak Performance",focus:"Chase PRs",rpe:"8.5-9/10",int:"85-90%",days:{
+1:{name:"Upper Push Peak",type:"push",ex:[{n:"Barbell Bench Press",s:6,r:"4",rest:"3-4 min"},{n:"Dumbbell Overhead Press",s:4,r:"5",rest:"3 min"},{n:"Weighted Dips",s:4,r:"6",rest:"2 min"},{n:"Incline Barbell Press",s:3,r:"6",rest:"2 min"}]},
+2:{name:"Lower Peak",type:"lower",ex:[{n:"Barbell Back Squat",s:6,r:"4",rest:"3-4 min"},{n:"Barbell Deadlift",s:5,r:"3",rest:"3-4 min"},{n:"Pause Front Squats",s:3,r:"6",rest:"2.5 min"},{n:"Walking Barbell Lunges",s:3,r:"8/leg",rest:"2 min"},{n:"Nordic Hamstring Curls",s:3,r:"6",rest:"2 min"}]},
+3:{name:"Upper Pull Peak",type:"pull",ex:[{n:"Barbell Bent-Over Row",s:6,r:"4",rest:"3-4 min"},{n:"Weighted Pull-Ups",s:5,r:"5",rest:"3 min"},{n:"Chest-Supported Rows",s:4,r:"8",rest:"2 min"},{n:"Barbell Shrugs",s:4,r:"10",rest:"90 sec"},{n:"Weighted Chin-Ups",s:3,r:"6",rest:"2 min"}]},
+4:{name:"Olympic Movements",type:"full",ex:[{n:"Power Cleans",s:6,r:"2",rest:"2.5 min"},{n:"Clean and Press",s:4,r:"4",rest:"2.5 min"},{n:"Barbell Front Squat",s:4,r:"5",rest:"2.5 min"},{n:"Hang Cleans",s:3,r:"5",rest:"2 min"}]},
+5:{name:"Lower Strength-Speed",type:"lower",ex:[{n:"Speed Squats",s:8,r:"3 @ 70%",rest:"90 sec"},{n:"Deficit Deadlifts",s:4,r:"5",rest:"3 min"},{n:"Heavy Box Jumps",s:4,r:"4",rest:"2 min"},{n:"Bulgarian Split Squats",s:3,r:"8/leg",rest:"90 sec"}]},
+6:{name:"Recovery",type:"rest",isRest:true}}},
+6:{name:"Max Effort",focus:"Test maxes",rpe:"10/10",int:"90-100%",days:{
+1:{name:"Bench Max",type:"push",ex:[{n:"Barbell Bench Press",s:1,r:"1RM",rest:"4-5 min"},{n:"Dumbbell Overhead Press",s:3,r:"3 @ 85%",rest:"3 min"},{n:"Incline Dumbbell Press",s:3,r:"6",rest:"2 min"}]},
+2:{name:"Squat Max",type:"lower",ex:[{n:"Barbell Back Squat",s:1,r:"1RM",rest:"4-5 min"},{n:"Barbell Front Squat",s:3,r:"5 @ 75%",rest:"2.5 min"},{n:"Romanian Deadlift",s:3,r:"8",rest:"2 min"}]},
+3:{name:"Recovery",type:"rest",isRest:true},
+4:{name:"Deadlift Max",type:"lower",ex:[{n:"Barbell Deadlift",s:1,r:"1RM",rest:"4-5 min"},{n:"Deficit Deadlifts",s:3,r:"3 @ 70%",rest:"3 min"},{n:"Glute Bridges",s:3,r:"8",rest:"2 min"}]},
+5:{name:"Pull Test",type:"pull",ex:[{n:"Weighted Pull-Ups",s:1,r:"Max",rest:"3-4 min"},{n:"Barbell Bent-Over Row",s:4,r:"3 @ 85%",rest:"3 min"},{n:"Dumbbell Bicep Curls",s:3,r:"12",rest:"60 sec"}]},
+6:{name:"Victory Lap",type:"rest",isRest:true}}}}},
+
+running_c25k: {id:'running_c25k',name:"Couch to 5K",type:'running',weeks:6,desc:"Walk/run intervals to continuous 5K.",daysPerWeek:6,data:{
+1:{name:"Walk/Run Intro",days:{
+1:{name:"Walk/Run Intervals",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Run 1 min / Walk 2 min",s:6,r:"3 min rounds",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+2:{name:"Rest / Cross-Train",type:"rest",isRest:true},
+3:{name:"Walk/Run Intervals",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Run 1 min / Walk 2 min",s:7,r:"3 min rounds",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+4:{name:"Rest / Yoga",type:"rest",isRest:true},
+5:{name:"Equal Intervals",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Run 1.5 min / Walk 1.5 min",s:6,r:"3 min rounds",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+6:{name:"Rest",type:"rest",isRest:true}}},
+2:{name:"Building Base",days:{
+1:{name:"Run/Walk 2:1",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Run 2 min / Walk 1 min",s:7,r:"3 min rounds",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+2:{name:"Rest",type:"rest",isRest:true},
+3:{name:"Run/Walk 3:1",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Run 3 min / Walk 1 min",s:6,r:"4 min rounds",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+4:{name:"Rest / Yoga",type:"rest",isRest:true},
+5:{name:"First 10 Min Run",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Continuous Run",s:1,r:"10 min",rest:"-"},{n:"Walk + Run",s:1,r:"3+5 min",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+6:{name:"Rest",type:"rest",isRest:true}}},
+3:{name:"Endurance Build",days:{
+1:{name:"12 Min Run",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Continuous Run",s:1,r:"12 min",rest:"-"},{n:"Walk + Run",s:1,r:"2+5 min",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+2:{name:"Rest",type:"rest",isRest:true},
+3:{name:"Intervals",type:"run",ex:[{n:"Warm-up Jog",s:1,r:"5 min",rest:"-"},{n:"Fast 1 min / Easy 2 min",s:5,r:"3 min rounds",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+4:{name:"Rest",type:"rest",isRest:true},
+5:{name:"18 Min Long Run",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Continuous Run",s:1,r:"18 min",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+6:{name:"Rest",type:"rest",isRest:true}}},
+4:{name:"Deload",days:{
+1:{name:"Easy 12 Min",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Easy Run",s:1,r:"12 min",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+2:{name:"Rest",type:"rest",isRest:true},
+3:{name:"Easy 10 Min",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Easy Run",s:1,r:"10 min",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+4:{name:"Rest",type:"rest",isRest:true},
+5:{name:"Rest / Yoga",type:"rest",isRest:true},
+6:{name:"Rest",type:"rest",isRest:true}}},
+5:{name:"Race Prep",days:{
+1:{name:"Tempo 15 Min",type:"run",ex:[{n:"Warm-up Jog",s:1,r:"5 min",rest:"-"},{n:"Tempo Run",s:1,r:"15 min",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+2:{name:"Rest",type:"rest",isRest:true},
+3:{name:"Intervals",type:"run",ex:[{n:"Warm-up Jog",s:1,r:"5 min",rest:"-"},{n:"Fast 2 min / Easy 1 min",s:6,r:"3 min rounds",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+4:{name:"Rest",type:"rest",isRest:true},
+5:{name:"25 Min Long Run",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"3 min",rest:"-"},{n:"Continuous Run",s:1,r:"25 min",rest:"-"},{n:"Cool-down Walk",s:1,r:"5 min",rest:"-"}]},
+6:{name:"Rest",type:"rest",isRest:true}}},
+6:{name:"5K Week!",days:{
+1:{name:"Shakeout",type:"run",ex:[{n:"Warm-up Walk",s:1,r:"5 min",rest:"-"},{n:"Easy Run",s:1,r:"10 min",rest:"-"},{n:"Strides",s:4,r:"20 sec fast",rest:"Walk back"},{n:"Cool-down",s:1,r:"5 min",rest:"-"}]},
+2:{name:"Rest",type:"rest",isRest:true},
+3:{name:"Easy Jog",type:"run",ex:[{n:"Walk",s:1,r:"3 min",rest:"-"},{n:"Easy Jog",s:1,r:"8 min",rest:"-"},{n:"Walk",s:1,r:"3 min",rest:"-"}]},
+4:{name:"Rest",type:"rest",isRest:true},
+5:{name:"5K Race Day!",type:"run",ex:[{n:"Warm-up Walk/Jog",s:1,r:"5 min",rest:"-"},{n:"Run 5K (3.1 mi)",s:1,r:"~30 min",rest:"-"},{n:"Cool-down + Celebrate!",s:1,r:"10 min",rest:"-"}]},
+6:{name:"Victory Rest",type:"rest",isRest:true}}}}},
+
+yoga_flex: {id:'yoga_flex',name:"Flexibility Yoga",type:'yoga',weeks:4,desc:"Flexibility & recovery. Perfect alongside strength.",daysPerWeek:6,data:{
+1:{name:"Foundations",days:{
+1:{name:"Sun Salutation Flow",type:"yoga",ex:[{n:"Mountain Pose",s:1,r:"1 min",rest:"-"},{n:"Sun Salutation A",s:5,r:"Full flow",rest:"-"},{n:"Warrior I + II",s:1,r:"5 breaths each side",rest:"-"},{n:"Triangle Pose",s:1,r:"5 breaths each",rest:"-"},{n:"Pigeon Pose",s:1,r:"2 min each side",rest:"-"},{n:"Savasana",s:1,r:"5 min",rest:"-"}]},
+2:{name:"Rest",type:"rest",isRest:true},
+3:{name:"Hip & Hamstring",type:"yoga",ex:[{n:"Cat-Cow",s:1,r:"10 rounds",rest:"-"},{n:"Low Lunge",s:1,r:"1 min each",rest:"-"},{n:"Half Split",s:1,r:"1 min each",rest:"-"},{n:"Happy Baby",s:1,r:"2 min",rest:"-"},{n:"Supine Twist",s:1,r:"1 min each",rest:"-"},{n:"Legs Up Wall",s:1,r:"5 min",rest:"-"}]},
+4:{name:"Rest",type:"rest",isRest:true},
+5:{name:"Full Body Flow",type:"yoga",ex:[{n:"Sun Salutation B",s:3,r:"Full flow",rest:"-"},{n:"Crescent Lunge",s:1,r:"5 breaths each",rest:"-"},{n:"Standing Forward Fold",s:1,r:"1 min",rest:"-"},{n:"Bridge Pose",s:3,r:"30 sec holds",rest:"-"},{n:"Reclined Figure-4",s:1,r:"2 min each",rest:"-"},{n:"Savasana",s:1,r:"5 min",rest:"-"}]},
+6:{name:"Rest",type:"rest",isRest:true}}},
+2:{name:"Deeper Practice",days:{
+1:{name:"Strength & Balance",type:"yoga",ex:[{n:"Sun Salutation A",s:3,r:"Flow",rest:"-"},{n:"Tree Pose",s:1,r:"1 min each",rest:"-"},{n:"Chair Pose",s:3,r:"30 sec holds",rest:"-"},{n:"Boat Pose",s:3,r:"20 sec holds",rest:"-"},{n:"Pigeon Pose",s:1,r:"2 min each",rest:"-"},{n:"Savasana",s:1,r:"5 min",rest:"-"}]},
+2:{name:"Rest",type:"rest",isRest:true},
+3:{name:"Backbend Focus",type:"yoga",ex:[{n:"Cat-Cow",s:1,r:"10 rounds",rest:"-"},{n:"Cobra Pose",s:3,r:"30 sec",rest:"-"},{n:"Camel Pose",s:2,r:"30 sec",rest:"-"},{n:"Thread the Needle",s:1,r:"1 min each",rest:"-"},{n:"Supine Twist",s:1,r:"1 min each",rest:"-"},{n:"Savasana",s:1,r:"5 min",rest:"-"}]},
+4:{name:"Rest",type:"rest",isRest:true},
+5:{name:"Active Recovery",type:"yoga",ex:[{n:"Gentle Sun Sal",s:3,r:"Slow flow",rest:"-"},{n:"Standing Side Bend",s:1,r:"30 sec each",rest:"-"},{n:"Wide-Leg Fold",s:1,r:"1 min",rest:"-"},{n:"Reclined Butterfly",s:1,r:"3 min",rest:"-"},{n:"Legs Up Wall",s:1,r:"5 min",rest:"-"}]},
+6:{name:"Rest",type:"rest",isRest:true}}},
+3:{name:"Challenge",days:{
+1:{name:"Power Flow",type:"yoga",ex:[{n:"Sun Salutation B",s:5,r:"Flow",rest:"-"},{n:"Side Plank",s:1,r:"30 sec each",rest:"-"},{n:"Warrior Sequence",s:2,r:"Each side",rest:"-"},{n:"Pigeon → Sleeping Pigeon",s:1,r:"2 min each",rest:"-"},{n:"Savasana",s:1,r:"5 min",rest:"-"}]},
+2:{name:"Rest",type:"rest",isRest:true},
+3:{name:"Deep Stretch",type:"yoga",ex:[{n:"Cat-Cow",s:1,r:"10",rest:"-"},{n:"Pigeon",s:1,r:"3 min each",rest:"-"},{n:"Seated Forward Fold",s:1,r:"2 min",rest:"-"},{n:"Spinal Twist",s:1,r:"2 min each",rest:"-"},{n:"Legs Up Wall",s:1,r:"5 min",rest:"-"}]},
+4:{name:"Rest",type:"rest",isRest:true},
+5:{name:"Full Practice",type:"yoga",ex:[{n:"Sun Sal A+B",s:2,r:"Each",rest:"-"},{n:"Full Standing Sequence",s:1,r:"Both sides",rest:"-"},{n:"Hip Sequence",s:1,r:"Both sides",rest:"-"},{n:"Bridge Pose",s:3,r:"30 sec",rest:"-"},{n:"Savasana",s:1,r:"7 min",rest:"-"}]},
+6:{name:"Rest",type:"rest",isRest:true}}},
+4:{name:"Integration",days:{
+1:{name:"Vinyasa Flow",type:"yoga",ex:[{n:"Sun Sal A+B",s:2,r:"Each",rest:"-"},{n:"Creative Flow",s:1,r:"15 min",rest:"-"},{n:"Cool Down Stretches",s:1,r:"10 min",rest:"-"},{n:"Savasana",s:1,r:"5 min",rest:"-"}]},
+2:{name:"Rest",type:"rest",isRest:true},
+3:{name:"Yin Yoga",type:"yoga",ex:[{n:"Butterfly",s:1,r:"5 min",rest:"-"},{n:"Dragon Pose",s:1,r:"4 min each",rest:"-"},{n:"Sleeping Swan",s:1,r:"4 min each",rest:"-"},{n:"Sphinx",s:1,r:"5 min",rest:"-"},{n:"Savasana",s:1,r:"5 min",rest:"-"}]},
+4:{name:"Rest",type:"rest",isRest:true},
+5:{name:"Celebration Flow",type:"yoga",ex:[{n:"Sun Salutations",s:5,r:"Your choice",rest:"-"},{n:"Your Favorite Poses",s:1,r:"15 min",rest:"-"},{n:"Seated Meditation",s:1,r:"5 min",rest:"-"},{n:"Savasana",s:1,r:"5 min",rest:"-"}]},
+6:{name:"Rest",type:"rest",isRest:true}}}}}
+};
+
+
+// === CSCS ENHANCEMENTS ===
+// 1RM Estimation Coefficients (Epley formula: weight * (1 + reps/30))
+function est1RM(w,r){if(r<=0||w<=0)return 0;if(r===1)return w;return Math.round(w*(1+r/30));}
+
+// RPE to % 1RM mapping
+var RPE_PCT={6:73,6.5:75,7:77,7.5:80,8:83,8.5:85,9:88,9.5:92,10:100};
+
+// Deload detection thresholds
+var DELOAD_CFG={weeksBeforeDeload:3,volumeDropPct:40,triggerFeelingAvg:4.5,consecutiveLowSessions:3};
+
+// Red's coaching commentary templates
+var RED_COMMENTARY={
+  strength_6wk:{
+    overview:"Your 6-Week Strength program uses linear periodization \u2014 building from a solid foundation at 70% intensity up to max effort at 95-100%. It's designed around a push/pull/legs split that hits every movement pattern twice per week.",
+    week_intros:{
+      1:"We're building your foundation this week. Focus on technique and getting comfortable with the weights. RPE should feel like 7/10 \u2014 challenging but controlled. If it feels easy, that's the point. We're laying groundwork.",
+      2:"Volume is increasing and we're pushing the intensity to 75-80%. You should start feeling the work now. This is where your body begins adapting. Stay disciplined with form \u2014 it pays dividends later.",
+      3:"This is peak training week. RPE hits 8.5-9/10 and weights are at 80-85%. You'll feel fatigue accumulating \u2014 that's normal and expected. Push through but listen to your body.",
+      4:"Deload week! This is NOT a lazy week \u2014 it's a strategic recovery tool used by every serious athlete. We drop to 60-65% so your muscles, joints, and nervous system can fully recover. You'll come back stronger.",
+      5:"Fresh off the deload, you're primed for serious work. We're back to 85-90% with your body recovered and adapted. This week often feels like a breakthrough \u2014 weights that were hard in Week 3 might move easier now.",
+      6:"Championship week. Everything we've built is for this. We're testing true maxes and peak performance. RPE is 10/10 on the big lifts. Trust your training, trust the process."
+    }
+  },
+  running_c25k:{
+    overview:"Your running program progressively builds aerobic capacity through a mix of easy runs, tempo efforts, and distance building. We alternate hard and easy days to let your cardiovascular system adapt without overtraining.",
+    week_intros:{1:"Easy start \u2014 we're building the habit and letting your joints adapt.",2:"Adding some tempo work. Your body is learning to run more efficiently.",3:"Distance is increasing. Focus on conversational pace for long runs.",4:"Recovery week for running too. Your tendons and ligaments need this.",5:"Back to building. You should notice improved endurance from the deload.",6:"Peak running week. Test your progress with your longest run yet."}
+  },
+  yoga_flex:{
+    overview:"Your yoga program alternates between dynamic power flows that build functional strength and yin/restorative sessions that improve flexibility and recovery. This pattern supports any other training you're doing.",
+    week_intros:{1:"Starting with foundational flows. Focus on breath-movement connection.",2:"Deepening poses and adding holds. Your flexibility will start opening up.",3:"Power flow week \u2014 these sessions build real functional strength.",4:"Restorative focus. Deep stretches and long holds for recovery.",5:"Combining power and flexibility. Notice how much more range you have.",6:"Full integration. Your body should feel more mobile and connected."}
+  }
+};
+
+// Smart adjustment rules based on feeling data
+var ADJUST_RULES=[
+  {condition:'low_feeling',trigger:function(logs){var recent=[];Object.keys(logs).forEach(function(k){var l=logs[k];if(l&&l.feeling&&l.date){recent.push({date:l.date,f:l.feeling});}});recent.sort(function(a,b){return new Date(b.date)-new Date(a.date);});var last3=recent.slice(0,3);if(last3.length<3)return null;var avg=last3.reduce(function(s,x){return s+x.f;},0)/3;if(avg<DELOAD_CFG.triggerFeelingAvg)return{type:'deload_suggest',avg:avg.toFixed(1)};return null;},
+    redMsg:"I noticed your last few sessions have been tough (avg feeling: {avg}/10). Your body might be asking for a lighter week. Want me to reduce your weights by 40% for the next 3 sessions? You'll come back stronger \u2014 I promise.",
+    action:'reduce_volume'},
+  {condition:'high_feeling',trigger:function(logs){var recent=[];Object.keys(logs).forEach(function(k){var l=logs[k];if(l&&l.feeling&&l.date){recent.push({date:l.date,f:l.feeling});}});recent.sort(function(a,b){return new Date(b.date)-new Date(a.date);});var last3=recent.slice(0,3);if(last3.length<3)return null;var avg=last3.reduce(function(s,x){return s+x.f;},0)/3;if(avg>=8.5)return{type:'intensity_up',avg:avg.toFixed(1)};return null;},
+    redMsg:"You've been crushing it! Avg feeling {avg}/10 over your last 3 sessions. Ready to bump up the intensity? I can add 5-10% to your working weights.",
+    action:'increase_intensity'},
+  {condition:'missed_sessions',trigger:function(logs){var dates=[];Object.keys(logs).forEach(function(k){var l=logs[k];if(l&&l.date)dates.push(new Date(l.date));});if(dates.length<2)return null;dates.sort(function(a,b){return b-a;});var gap=(dates[0]-dates[1])/(1000*60*60*24);if(gap>10)return{type:'comeback',days:Math.round(gap)};return null;},
+    redMsg:"Welcome back! It's been {days} days since your last workout. No judgment \u2014 life happens. Let's ease back in with reduced weights (80% of your last logged) for a session or two.",
+    action:'reduce_comeback'}
+];
+
+function checkAdjustments(){
+  var results=[];
+  ADJUST_RULES.forEach(function(rule){
+    var trigger=rule.trigger(S.logs);
+    if(trigger){
+      var msg=rule.redMsg;
+      Object.keys(trigger).forEach(function(k){msg=msg.replace('{'+k+'}',trigger[k]);});
+      results.push({type:trigger.type,msg:msg,action:rule.action,data:trigger});
+    }
+  });
+  return results;
+}
+
+// Apply program adjustments and save
+function applyAdjustment(adj){
+  if(adj.action==='reduce_volume'){
+    // Create adjusted log entries with reduced weights
+    S.profile.activeAdj={type:'deload',startDate:new Date().toISOString(),sessionsLeft:3,factor:0.6};
+    sv();toast('Red adjusted your next 3 sessions \u2014 lighter weights for recovery');
+  }else if(adj.action==='increase_intensity'){
+    S.profile.activeAdj={type:'intensity_up',startDate:new Date().toISOString(),sessionsLeft:3,factor:1.1};
+    sv();toast('Red bumped your weights up 10%! Let\'s go \u{1F4AA}');
+  }else if(adj.action==='reduce_comeback'){
+    S.profile.activeAdj={type:'comeback',startDate:new Date().toISOString(),sessionsLeft:2,factor:0.8};
+    sv();toast('Welcome back! Easing you in at 80%');
+  }
+  return true;
+}
+
+// Get adjustment factor for current session
+function getAdjFactor(){
+  var adj=S.profile.activeAdj;
+  if(!adj||adj.sessionsLeft<=0){if(adj)delete S.profile.activeAdj;return 1;}
+  return adj.factor||1;
+}
+function useAdjSession(){
+  var adj=S.profile.activeAdj;
+  if(adj&&adj.sessionsLeft>0){adj.sessionsLeft--;if(adj.sessionsLeft<=0)delete S.profile.activeAdj;sv();}
+}
+
+// Rest day activity logging
+var REST_ACTIVITIES=[
+  {id:'foam_roll',name:'Foam Rolling',icon:'\u{1F9F4}',dur:'10-15 min'},
+  {id:'walk',name:'Walk',icon:'\u{1F6B6}',dur:'20-30 min'},
+  {id:'stretch',name:'Stretching',icon:'\u{1F9D8}',dur:'10-15 min'},
+  {id:'yoga_light',name:'Light Yoga',icon:'\u{1F64F}',dur:'15-20 min'},
+  {id:'swim',name:'Swimming',icon:'\u{1F3CA}',dur:'20-30 min'},
+  {id:'ice_bath',name:'Cold Exposure',icon:'\u{1F9CA}',dur:'2-5 min'},
+  {id:'sauna',name:'Sauna/Heat',icon:'\u{1F525}',dur:'15-20 min'},
+  {id:'sleep',name:'Extra Sleep',icon:'\u{1F634}',dur:'1+ hr'}
+];
+
+// === SCHEDULE MERGE ENGINE ===
+// Training science: merges multiple programs into a safe, progressive weekly plan
+// Rules:
+// 1. Never pair heavy lower-body lifting with long runs (same day)
+// 2. Hard days followed by easy/rest days
+// 3. Minimum 1 full rest day per week
+// 4. Running after upper-body lifting is OK (legs fresh)
+// 5. Yoga serves as active recovery or warm-up/cool-down enhancement
+// 6. Short runs (20-30 min) can pair with lifting
+// 7. Long runs need their own day
+
+var MERGE_TEMPLATES = {
+  // Strength + Running merge templates by total days
+  'strength+running': {
+    3: [
+      {type:'hybrid_upper_shortrun',label:'Upper Body + Short Run',types:['strength','running'],desc:'Upper body lift followed by 15-20 min easy run'},
+      {type:'run_focus',label:'Running Focus',types:['running'],desc:'Longer run — tempo or intervals'},
+      {type:'hybrid_lower_recovery',label:'Lower Body + Mobility',types:['strength'],desc:'Lower body lift with extra mobility work'}
+    ],
+    4: [
+      {type:'strength_push',label:'Push Day',types:['strength'],desc:'Chest, shoulders, triceps — full effort'},
+      {type:'run_easy',label:'Easy Run + Core',types:['running'],desc:'Easy pace 25-30 min, core work after'},
+      {type:'strength_pull',label:'Pull + Legs',types:['strength'],desc:'Back, biceps, and compound legs'},
+      {type:'run_long',label:'Long Run',types:['running'],desc:'Distance focus — build aerobic base'}
+    ],
+    5: [
+      {type:'strength_upper',label:'Upper Body',types:['strength'],desc:'Push/pull compound lifts'},
+      {type:'run_easy',label:'Easy Run',types:['running'],desc:'Recovery pace 20-25 min'},
+      {type:'strength_lower',label:'Lower Body',types:['strength'],desc:'Squats, deadlifts, lunges'},
+      {type:'rest',label:'Rest',types:[],desc:'Full recovery day',isRest:true},
+      {type:'hybrid_full_longrun',label:'Light Lift + Long Run',types:['strength','running'],desc:'Light full-body circuit then distance run'}
+    ],
+    6: [
+      {type:'strength_push',label:'Push Day',types:['strength'],desc:'Bench, OHP, triceps'},
+      {type:'run_easy',label:'Easy Run',types:['running'],desc:'Recovery pace — shake out legs'},
+      {type:'strength_pull',label:'Pull Day',types:['strength'],desc:'Rows, pull-ups, biceps'},
+      {type:'run_tempo',label:'Tempo Run',types:['running'],desc:'Moderate effort sustained pace'},
+      {type:'strength_legs',label:'Leg Day',types:['strength'],desc:'Squats, RDLs, lunges'},
+      {type:'run_long',label:'Long Run',types:['running'],desc:'Distance — longest run of the week'}
+    ]
+  },
+  'strength+yoga': {
+    3: [
+      {type:'strength_full',label:'Full Body Strength',types:['strength'],desc:'Compound lifts — squat, press, row'},
+      {type:'yoga_recovery',label:'Yoga Recovery',types:['yoga'],desc:'Deep stretches and recovery flow'},
+      {type:'strength_full2',label:'Full Body Strength B',types:['strength'],desc:'Deadlift, bench, pull-ups'}
+    ],
+    4: [
+      {type:'strength_upper',label:'Upper Body',types:['strength'],desc:'Push and pull compounds'},
+      {type:'yoga_flow',label:'Power Yoga',types:['yoga'],desc:'Strength-building flow with holds'},
+      {type:'strength_lower',label:'Lower Body',types:['strength'],desc:'Squat and hinge patterns'},
+      {type:'yoga_recovery',label:'Yin Yoga',types:['yoga'],desc:'Deep passive stretches — 3-5 min holds'}
+    ],
+    5: [
+      {type:'strength_push',label:'Push Day',types:['strength'],desc:'Chest, shoulders, triceps'},
+      {type:'yoga_flow',label:'Vinyasa Flow',types:['yoga'],desc:'Dynamic flow for mobility'},
+      {type:'strength_pull',label:'Pull Day',types:['strength'],desc:'Back and biceps focus'},
+      {type:'strength_legs',label:'Leg Day',types:['strength'],desc:'Squats, lunges, RDLs'},
+      {type:'yoga_recovery',label:'Recovery Yoga',types:['yoga'],desc:'Hip openers, twists, gentle stretches'}
+    ],
+    6: [
+      {type:'strength_push',label:'Push Day',types:['strength'],desc:'Bench, OHP, dips'},
+      {type:'yoga_flow',label:'Power Yoga',types:['yoga'],desc:'Warrior flows and balance'},
+      {type:'strength_pull',label:'Pull Day',types:['strength'],desc:'Rows, pull-ups, curls'},
+      {type:'yoga_recovery',label:'Yin Yoga',types:['yoga'],desc:'Long holds — hip and spine focus'},
+      {type:'strength_legs',label:'Leg Day',types:['strength'],desc:'Heavy squats and deadlifts'},
+      {type:'yoga_mobility',label:'Mobility Yoga',types:['yoga'],desc:'Active recovery and joint mobility'}
+    ]
+  },
+  'running+yoga': {
+    3: [
+      {type:'run_easy',label:'Easy Run',types:['running'],desc:'Conversational pace 25-30 min'},
+      {type:'yoga_recovery',label:'Recovery Yoga',types:['yoga'],desc:'Hip openers and hamstring stretches'},
+      {type:'run_long',label:'Long Run',types:['running'],desc:'Build endurance at easy pace'}
+    ],
+    4: [
+      {type:'run_tempo',label:'Tempo Run',types:['running'],desc:'Moderate-hard sustained effort'},
+      {type:'yoga_flow',label:'Dynamic Yoga',types:['yoga'],desc:'Sun salutations and warrior flows'},
+      {type:'run_long',label:'Long Run',types:['running'],desc:'Distance focus — slow and steady'},
+      {type:'yoga_recovery',label:'Yin Yoga',types:['yoga'],desc:'Deep stretches for runner recovery'}
+    ],
+    5: [
+      {type:'run_easy',label:'Easy Run',types:['running'],desc:'Recovery pace with strides'},
+      {type:'yoga_flow',label:'Vinyasa Flow',types:['yoga'],desc:'Build strength and balance'},
+      {type:'run_tempo',label:'Tempo Run',types:['running'],desc:'Threshold pace 20-25 min'},
+      {type:'yoga_recovery',label:'Recovery Yoga',types:['yoga'],desc:'Gentle stretches and breathing'},
+      {type:'run_long',label:'Long Run',types:['running'],desc:'Longest run of the week'}
+    ],
+    6: [
+      {type:'run_easy',label:'Easy Run',types:['running'],desc:'Shake out 20 min'},
+      {type:'yoga_flow',label:'Power Yoga',types:['yoga'],desc:'Standing poses and core'},
+      {type:'run_intervals',label:'Intervals',types:['running'],desc:'Speed work with recovery jogs'},
+      {type:'yoga_recovery',label:'Yin Yoga',types:['yoga'],desc:'Long holds for deep recovery'},
+      {type:'run_long',label:'Long Run',types:['running'],desc:'Aerobic base building'},
+      {type:'yoga_mobility',label:'Mobility Flow',types:['yoga'],desc:'Joint mobility and balance'}
+    ]
+  },
+  'strength+running+yoga': {
+    3: [
+      {type:'strength_full',label:'Full Body Strength',types:['strength'],desc:'Major compound lifts'},
+      {type:'run_easy',label:'Easy Run + Yoga Cool-Down',types:['running','yoga'],desc:'25 min run then 10 min yoga stretches'},
+      {type:'hybrid_strength_yoga',label:'Strength + Yoga Flow',types:['strength','yoga'],desc:'Light lifting then power yoga flow'}
+    ],
+    4: [
+      {type:'strength_upper',label:'Upper Body',types:['strength'],desc:'Push/pull compounds'},
+      {type:'run_tempo',label:'Tempo Run',types:['running'],desc:'Moderate effort 20-25 min'},
+      {type:'strength_lower',label:'Lower Body',types:['strength'],desc:'Squat and hinge focus'},
+      {type:'yoga_recovery',label:'Recovery Yoga',types:['yoga'],desc:'Full body recovery flow'}
+    ],
+    5: [
+      {type:'strength_push',label:'Push Day',types:['strength'],desc:'Chest, shoulders, triceps'},
+      {type:'run_easy',label:'Easy Run',types:['running'],desc:'Recovery pace 20-25 min'},
+      {type:'strength_pull_legs',label:'Pull + Legs',types:['strength'],desc:'Back, biceps, compound legs'},
+      {type:'yoga_flow',label:'Yoga Flow',types:['yoga'],desc:'Dynamic strength-building flow'},
+      {type:'run_long',label:'Long Run',types:['running'],desc:'Distance — aerobic base'}
+    ],
+    6: [
+      {type:'strength_push',label:'Push Day',types:['strength'],desc:'Bench, OHP, dips, triceps'},
+      {type:'run_easy',label:'Easy Run',types:['running'],desc:'Shake out legs 20 min'},
+      {type:'strength_pull',label:'Pull Day',types:['strength'],desc:'Rows, pull-ups, curls'},
+      {type:'yoga_flow',label:'Power Yoga',types:['yoga'],desc:'Balance, core, warrior flows'},
+      {type:'strength_legs',label:'Leg Day',types:['strength'],desc:'Squats, RDLs, lunges'},
+      {type:'run_long',label:'Long Run + Stretch',types:['running','yoga'],desc:'Long run then yoga cool-down'}
+    ]
+  }
+};
+
+function getMergeKey(programs){
+  var types=programs.map(function(p){return gPD(p.id).type;}).sort();
+  types=types.filter(function(t,i){return types.indexOf(t)===i;});// unique
+  return types.join('+');
+}
+
+function getMergedSchedule(){
+  if(S.enrolled.length<=1)return null;
+  var key=getMergeKey(S.enrolled);
+  var templates=MERGE_TEMPLATES[key];
+  if(!templates)return null;
+  // Calculate total training days (use max of enrolled days, capped at 6)
+  var totalDays=Math.min(Math.max.apply(null,S.enrolled.map(function(e){return e.days;})),6);
+  var sched=templates[totalDays];
+  if(!sched){// Find closest available
+    var avail=Object.keys(templates).map(Number).sort();
+    var closest=avail[0];avail.forEach(function(d){if(Math.abs(d-totalDays)<Math.abs(closest-totalDays))closest=d;});
+    sched=templates[closest];totalDays=closest;
+  }
+  return{days:totalDays,schedule:sched,key:key};
+}
+
+// Map merged day types to actual exercises from the enrolled programs
+function getMergedDayExercises(dayTemplate,weekNum){
+  var exercises=[];
+  S.enrolled.forEach(function(en){
+    var pd=gPD(en.id);if(!pd)return;
+    if(dayTemplate.types.indexOf(pd.type)===-1)return;
+    var wk=pd.data[weekNum]||pd.data[1];if(!wk)return;
+    // Find best matching day from program
+    var bestDay=null,bestScore=0;
+    Object.keys(wk.days).forEach(function(dk){
+      var dy=wk.days[dk];if(!dy||dy.isRest)return;
+      var score=0;
+      if(dayTemplate.type.indexOf('push')>-1&&dy.name&&dy.name.toLowerCase().indexOf('push')>-1)score+=10;
+      if(dayTemplate.type.indexOf('pull')>-1&&dy.name&&dy.name.toLowerCase().indexOf('pull')>-1)score+=10;
+      if(dayTemplate.type.indexOf('leg')>-1&&dy.name&&(dy.name.toLowerCase().indexOf('leg')>-1||dy.name.toLowerCase().indexOf('lower')>-1))score+=10;
+      if(dayTemplate.type.indexOf('upper')>-1&&dy.name&&(dy.name.toLowerCase().indexOf('upper')>-1||dy.name.toLowerCase().indexOf('push')>-1))score+=10;
+      if(dayTemplate.type.indexOf('full')>-1)score+=5;
+      if(dayTemplate.type.indexOf('easy')>-1&&dy.name&&dy.name.toLowerCase().indexOf('easy')>-1)score+=10;
+      if(dayTemplate.type.indexOf('long')>-1&&dy.name&&dy.name.toLowerCase().indexOf('long')>-1)score+=10;
+      if(dayTemplate.type.indexOf('tempo')>-1&&dy.name&&dy.name.toLowerCase().indexOf('tempo')>-1)score+=10;
+      if(dayTemplate.type.indexOf('interval')>-1&&dy.name&&dy.name.toLowerCase().indexOf('interval')>-1)score+=10;
+      if(dayTemplate.type.indexOf('flow')>-1&&dy.name&&dy.name.toLowerCase().indexOf('flow')>-1)score+=10;
+      if(dayTemplate.type.indexOf('recovery')>-1&&dy.name&&(dy.name.toLowerCase().indexOf('yin')>-1||dy.name.toLowerCase().indexOf('recovery')>-1||dy.name.toLowerCase().indexOf('restore')>-1))score+=10;
+      if(score===0)score=1;// fallback: any non-rest day
+      if(score>bestScore){bestScore=score;bestDay=dy;}
+    });
+    if(bestDay&&bestDay.ex){
+      // For hybrid days with running, limit strength exercises
+      var exList=bestDay.ex;
+      if(dayTemplate.types.length>1&&pd.type==='strength'){
+        exList=exList.slice(0,Math.min(exList.length,4));// Cap at 4 exercises for hybrid
+      }
+      exercises=exercises.concat(exList.map(function(ex){return Object.assign({},ex,{source:pd.type});}));
+    }
+  });
+  return exercises;
+}
+
+// === STATE ===
+var S={dark:false,screen:'onboarding',tab:'home',obStep:0,profile:{},enrolled:[],active:null,week:1,day:1,logs:{},bodyLogs:[],curLog:{},timer:null,tSec:60,tRun:false,tTotal:60,tInt:null,toast:null,tCls:'',ci:'',show:{},chatMsgs:[],chatIn:'',chatLoad:false,modal:null,sessTimer:0,sessRun:false,sessInt:null,prs:{},drill:null,exDB:null,editProfile:false,restDayLogs:{},customWks:[],ssMode:false,cwForm:{}};
+
+// === STORAGE ===
+function load(){try{
+var keys=['dark','profile','enrolled','active','logs','body','chat','prs','restdays','customwks'];
+keys.forEach(function(k){
+  var v=localStorage.getItem('rre2_'+k);
+  if(!v)return;
+  try{var p=JSON.parse(v);
+  if(k==='dark')S.dark=p;
+  else if(k==='profile'){S.profile=p;if(p.name)S.screen='app';}
+  else if(k==='enrolled')S.enrolled=p;
+  else if(k==='active')S.active=p;
+  else if(k==='logs')S.logs=p;
+  else if(k==='body')S.bodyLogs=p;
+  else if(k==='chat')S.chatMsgs=p;
+  else if(k==='prs')S.prs=p;
+  else if(k==='restdays')S.restDayLogs=p;
+  else if(k==='customwks')S.customWks=p;
+  }catch(e){}
+});
+}catch(e){}if(S.dark)document.body.classList.add('dark');if(S.enrolled.length>0&&!S.active)S.active=S.enrolled[0].id;}
+function sv(){try{
+localStorage.setItem('rre2_dark',JSON.stringify(S.dark));
+localStorage.setItem('rre2_profile',JSON.stringify(S.profile));
+localStorage.setItem('rre2_enrolled',JSON.stringify(S.enrolled));
+localStorage.setItem('rre2_active',JSON.stringify(S.active));
+localStorage.setItem('rre2_logs',JSON.stringify(S.logs));
+localStorage.setItem('rre2_body',JSON.stringify(S.bodyLogs));
+localStorage.setItem('rre2_chat',JSON.stringify(S.chatMsgs));
+localStorage.setItem('rre2_prs',JSON.stringify(S.prs));
+localStorage.setItem('rre2_restdays',JSON.stringify(S.restDayLogs));
+localStorage.setItem('rre2_customwks',JSON.stringify(S.customWks));
+}catch(e){}}
+
+// === HELPERS ===
+function h(t,a){var el=document.createElement(t);if(a)Object.keys(a).forEach(function(k){if(k==='className')el.className=a[k];else if(k==='style'&&typeof a[k]==='object')Object.assign(el.style,a[k]);else if(k.startsWith('on'))el.addEventListener(k.slice(2).toLowerCase(),a[k]);else if(k==='innerHTML')el.innerHTML=a[k];else el.setAttribute(k,a[k]);});for(var i=2;i<arguments.length;i++){var c=arguments[i];if(c==null||c===false)continue;if(typeof c==='string'||typeof c==='number')el.appendChild(document.createTextNode(c));else if(Array.isArray(c))c.forEach(function(cc){if(cc)el.appendChild(cc);});else el.appendChild(c);}return el;}
+function pRest(r){if(!r||r==='-'||r==='Circuit'||r==='Light')return 60;var m=r.match(/(\d+(?:\.\d+)?)/);if(!m)return 60;var n=parseFloat(m[1]);return r.indexOf('min')>-1?Math.round(n*60):n;}
+function fmtT(s){var m=Math.floor(s/60),ss=s%60;return m+':'+('0'+ss).slice(-2);}
+function toast(m,c){S.toast=m;S.tCls=c||'';R();setTimeout(function(){S.toast=null;R();},2800);}
+function gAP(){return S.enrolled.find(function(p){return p.id===S.active;});}
+function gPD(id){return PROGRAMS[id];}
+function lk(pid,w,d){return pid+'_w'+w+'d'+d;}
+function ensL(ei,sn){if(!S.curLog['e'+ei])S.curLog['e'+ei]={};if(!S.curLog['e'+ei]['s'+sn])S.curLog['e'+ei]['s'+sn]={};}
+
+function getStreak(){var streak=0;var now=new Date();for(var i=0;i<52;i++){var ws=new Date(now);ws.setDate(ws.getDate()-ws.getDay()-(i*7));ws.setHours(0,0,0,0);var we=new Date(ws);we.setDate(we.getDate()+6);we.setHours(23,59,59);var f=false;Object.keys(S.logs).forEach(function(k){var l=S.logs[k];if(l&&l.date){var d=new Date(l.date);if(d>=ws&&d<=we)f=true;}});
+if(!f&&S.customWks)S.customWks.forEach(function(cw){if(cw&&cw.date){var d=new Date(cw.date);if(d>=ws&&d<=we)f=true;}});
+if(f)streak++;else break;}return streak;}
+function checkPR(name,w){if(!w||w<=0)return false;var k=name.replace(/\s/g,'_');var p=S.prs[k]||0;if(w>p){S.prs[k]=w;return true;}return false;}
+
+// Exercise Database: scan all logs for exercise history
+function getExDB(){var db={};Object.keys(S.logs).forEach(function(logKey){var log=S.logs[logKey];if(!log||!log.date)return;
+// Find which program/week/day this log belongs to
+var parts=logKey.match(/(.+)_w(\d+)d(\d+)/);if(!parts)return;var pid=parts[1],wk=parseInt(parts[2]),dy=parseInt(parts[3]);
+var pd=gPD(pid);if(!pd)return;var wkD=pd.data[wk];if(!wkD)return;var dayD=wkD.days[dy];if(!dayD||!dayD.ex)return;
+dayD.ex.forEach(function(ex,ei){var eLog=log['e'+ei];if(!eLog)return;
+if(!db[ex.n])db[ex.n]={name:ex.n,entries:[]};
+Object.keys(eLog).forEach(function(sk){if(!sk.startsWith('s'))return;var s=eLog[sk];var w=parseFloat(s.w)||0,r=parseFloat(s.r)||0;
+if(w>0||r>0)db[ex.n].entries.push({date:log.date,w:w,r:r,vol:w*r});});});});
+// Sort entries by date and compute stats
+Object.keys(db).forEach(function(k){var ex=db[k];ex.entries.sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+ex.bestW=0;ex.bestVol=0;ex.totalVol=0;ex.sessions=0;
+var dates={};ex.entries.forEach(function(e){if(e.w>ex.bestW)ex.bestW=e.w;if(e.vol>ex.bestVol)ex.bestVol=e.vol;ex.totalVol+=e.vol;dates[e.date.split('T')[0]]=1;});ex.sessions=Object.keys(dates).length;});return db;}
+
+// Dashboard analytics
+function getDashStats(){var ap=gAP(),pd=ap?gPD(ap.id):null;
+// Also scan merged logs
+var merged=getMergedSchedule();
+if(!ap&&!merged)return null;
+if(!pd&&!merged)return null;
+if(!pd){// Pure merged mode - create minimal stats
+  var mst={totalVol:0,totalWk:0,totalSets:0,totalReps:0,bestDay:{vol:0,date:''},exCount:{},topExes:[],weekVols:[],recentLogs:[]};
+  Object.keys(S.logs).filter(function(k){return k.startsWith('merged_');}).forEach(function(k){
+    var log=S.logs[k];if(!log)return;mst.totalWk++;var dayVol=0;
+    Object.keys(log).forEach(function(ek){if(ek.startsWith('e'))Object.keys(log[ek]).forEach(function(sk){if(sk.startsWith('s')){var s=log[ek][sk];var wt=parseFloat(s.w)||0,rp=parseFloat(s.r)||0;var v=wt*rp;dayVol+=v;mst.totalSets++;mst.totalReps+=rp;}});});
+    mst.totalVol+=dayVol;if(dayVol>mst.bestDay.vol)mst.bestDay={vol:dayVol,date:log.date||'',w:0,d:0};
+    if(log.date)mst.recentLogs.push({date:log.date,vol:dayVol,w:0,d:0,name:'Merged'});
+  });mst.recentLogs.sort(function(a,b){return new Date(b.date)-new Date(a.date);});return mst;}
+var stats={totalVol:0,totalWk:0,totalSets:0,totalReps:0,bestDay:{vol:0,date:''},exCount:{},topExes:[],weekVols:[],recentLogs:[]};
+for(var w=1;w<=pd.weeks;w++){var wVol=0;for(var d=1;d<=6;d++){var log=S.logs[lk(ap.id,w,d)];if(!log)continue;stats.totalWk++;
+var wkD=pd.data[w];if(!wkD)continue;var dayD=wkD.days[d];if(!dayD||!dayD.ex)continue;
+var dayVol=0;dayD.ex.forEach(function(ex,ei){var eLog=log['e'+ei];if(!eLog)return;Object.keys(eLog).forEach(function(sk){if(!sk.startsWith('s'))return;var s=eLog[sk];var wt=parseFloat(s.w)||0,rp=parseFloat(s.r)||0;var v=wt*rp;dayVol+=v;stats.totalSets++;stats.totalReps+=rp;if(!stats.exCount[ex.n])stats.exCount[ex.n]=0;stats.exCount[ex.n]+=v;});});
+stats.totalVol+=dayVol;wVol+=dayVol;if(dayVol>stats.bestDay.vol){stats.bestDay={vol:dayVol,date:log.date||'',w:w,d:d};}
+if(log.date)stats.recentLogs.push({date:log.date,vol:dayVol,w:w,d:d,name:dayD.name});}stats.weekVols.push(wVol);}
+stats.recentLogs.sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+var exArr=Object.keys(stats.exCount).map(function(k){return{name:k,vol:stats.exCount[k]};});exArr.sort(function(a,b){return b.vol-a.vol;});stats.topExes=exArr.slice(0,10);
+return stats;}
+
+// === ONBOARDING ===
+var OBQ=[{id:"name",q:"What should we call you?",t:"text",ph:"Your name or nickname"},{id:"level",q:"What's your fitness level?",t:"single",opts:["Beginner","Intermediate","Advanced"],cu:1},{id:"goals",q:"What are your goals?",sub:"Select all that apply",t:"multi",opts:["Strength","Muscle Building","Fat Loss","General Fitness","Endurance","Flexibility","Running"],cu:1},{id:"equipment",q:"What equipment do you have?",sub:"Select all that apply",t:"multi",opts:["Full Gym","Barbells & Racks","Dumbbells","Kettlebells","Pull-Up Bar","Bands","Yoga Mat","Bodyweight Only"],cu:1},{id:"time",q:"How much time per session?",t:"single",opts:["20 min","30 min","45 min","60 min","90 min"],cu:1},{id:"days",q:"How many days per week?",t:"single",opts:["3 days","4 days","5 days","6 days"]},{id:"injuries",q:"Any injuries or limitations?",t:"multi",opts:["None","Lower Back","Shoulders","Knees","Wrists","Neck","Hips"],cu:1},{id:"measurements",q:"Starting measurements",sub:"We'll track these over time. All optional.",t:"measure"}];
+
+function rOB(){var q=OBQ[S.obStep],val=S.profile[q.id],isL=S.obStep===OBQ.length-1;
+var can=q.t==='text'?(val&&val.trim()):q.t==='measure'?true:(q.t==='single'?!!val:(Array.isArray(val)&&val.length>0));
+var w=h('div',{className:'ob-wrap'}),card=h('div',{className:'ob-card'});
+var dots=h('div',{className:'ob-dots'});for(var i=0;i<OBQ.length;i++)dots.appendChild(h('div',{className:'ob-dot'+(i<=S.obStep?' filled':'')}));card.appendChild(dots);
+card.appendChild(h('div',{style:{textAlign:'center',marginBottom:'20px'}},h('div',{style:{fontSize:'28px'}},'\u{1F415}'),h('h1',{style:{fontSize:'18px',fontWeight:800,margin:'4px 0 0'}},'RedRiversEdgeFitness'),h('p',{className:'label',style:{marginTop:'3px'}},'Step '+(S.obStep+1)+'/'+OBQ.length)));
+var qc=h('div',{className:'card',style:{padding:'20px'}});qc.appendChild(h('h2',{style:{fontSize:'17px',fontWeight:700}},q.q));
+if(q.sub)qc.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px',marginTop:'4px'}},q.sub));
+var body=h('div',{style:{marginTop:'14px'}});
+
+if(q.t==='text'){var inp=h('input',{className:'input',type:'text',placeholder:q.ph,value:val||'',id:'ob-inp'});
+inp.addEventListener('input',function(e){S.profile[q.id]=e.target.value;sv();var nb=document.getElementById('ob-nx');if(nb)nb.style.opacity=e.target.value.trim()?'1':'0.5';});
+inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&S.profile[q.id]&&S.profile[q.id].trim()){S.obStep++;S.ci='';R();}});
+body.appendChild(inp);setTimeout(function(){var el=document.getElementById('ob-inp');if(el)el.focus();},100);
+}else if(q.t==='measure'){
+// Measurement inputs for onboarding
+var meas=S.profile.measurements||{};
+var fields=[{k:'height',l:'Height (in)',ph:'e.g. 70'},{k:'weight',l:'Weight (lbs)',ph:'e.g. 185'},{k:'chest',l:'Chest (in)',ph:'optional'},{k:'waist',l:'Waist (in)',ph:'optional'},{k:'hips',l:'Hips (in)',ph:'optional'},{k:'arms',l:'Arms (in)',ph:'optional'}];
+fields.forEach(function(f){var row=h('div',{style:{marginBottom:'10px'}});
+row.appendChild(h('label',{style:{fontSize:'11px',fontWeight:700,color:'var(--text2)',display:'block',marginBottom:'3px'}},f.l));
+var inp=h('input',{className:'input',type:'number',step:'0.1',placeholder:f.ph,value:meas[f.k]||'',style:{padding:'10px 12px',fontSize:'14px'}});
+inp.addEventListener('change',function(e){if(!S.profile.measurements)S.profile.measurements={};S.profile.measurements[f.k]=e.target.value;sv();});
+row.appendChild(inp);body.appendChild(row);});
+}else{var pills=h('div',{className:'pill-wrap'});q.opts.forEach(function(opt){var sel=q.t==='single'?val===opt:(Array.isArray(val)&&val.indexOf(opt)>-1);var b=h('button',{className:'pill'+(sel?' active':'')},(sel?'\u2713 ':'')+opt);b.addEventListener('click',function(){if(q.t==='single')S.profile[q.id]=opt;else{var c=Array.isArray(val)?val.slice():[];if(opt==='None')c=['None'];else{c=c.filter(function(v){return v!=='None';});var i=c.indexOf(opt);i>-1?c.splice(i,1):c.push(opt);}S.profile[q.id]=c;}sv();R();});pills.appendChild(b);});body.appendChild(pills);
+if(q.cu){var row=h('div',{style:{display:'flex',gap:'6px',marginTop:'12px'}});var ci=h('input',{className:'input',placeholder:'Other',value:S.ci||'',style:{flex:1,padding:'10px',fontSize:'13px'},id:'ob-ci'});ci.addEventListener('input',function(e){S.ci=e.target.value;});ci.addEventListener('keydown',function(e){if(e.key==='Enter')addC(q);});row.appendChild(ci);row.appendChild(h('button',{className:'btn btn-primary btn-sm',innerHTML:svg('plus',14,'#fff'),onClick:function(){addC(q);}}));body.appendChild(row);}}
+qc.appendChild(body);card.appendChild(qc);
+var nav=h('div',{style:{display:'flex',justifyContent:'space-between',marginTop:'16px'}});
+nav.appendChild(h('button',{className:'btn btn-secondary',style:{opacity:S.obStep>0?1:.3},innerHTML:svg('left',14)+' Back',onClick:function(){if(S.obStep>0){S.obStep--;S.ci='';R();}}}));
+nav.appendChild(h('button',{className:'btn btn-primary',style:{opacity:can?1:.5,padding:'12px 24px'},id:'ob-nx',innerHTML:(isL?"Let's Go! ":'Next ')+svg('right',14,'#fff'),onClick:function(){if(!can)return;isL?finOB():(S.obStep++,S.ci='',R());}}));
+card.appendChild(nav);w.appendChild(card);return w;}
+function addC(q){var v=(S.ci||'').trim();if(!v)return;if(q.t==='single')S.profile[q.id]=v;else{var c=Array.isArray(S.profile[q.id])?S.profile[q.id].filter(function(x){return x!=='None';}):[];c.push(v);S.profile[q.id]=c;}S.ci='';sv();R();}
+function finOB(){
+  // Save initial measurements as first body log entry
+  var m=S.profile.measurements||{};
+  if(m.weight||m.chest||m.waist||m.hips||m.arms){
+    S.bodyLogs.push({date:new Date().toISOString().split('T')[0],wt:m.weight||'',ch:m.chest||'',wa:m.waist||'',hp:m.hips||'',ar:m.arms||''});
+  }
+  sv();S.screen='app';S.tab='home';R();
+}
+
+// === PROGRAM PICKER ===
+function rPP(){var el=h('div',{className:'page active'});el.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,marginBottom:'6px'}},'Choose Programs'));el.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'13px',marginBottom:'16px'}},'Select one or more.'));
+Object.keys(PROGRAMS).forEach(function(k){var prog=PROGRAMS[k];var en=S.enrolled.find(function(e){return e.id===k;});var icons={strength:'\u{1F4AA}',running:'\u{1F3C3}',yoga:'\u{1F9D8}'};
+var c=h('div',{className:'card',style:{border:en?'2px solid var(--accent)':'1px solid var(--border)'}});
+c.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},h('div',null,h('span',{style:{fontSize:'24px'}},icons[prog.type]||'\u{1F4AA}'),h('h3',{style:{fontSize:'15px',fontWeight:700,margin:'4px 0 2px'}},prog.name),h('p',{style:{color:'var(--text2)',fontSize:'11px'}},prog.weeks+'wk \u00B7 '+prog.desc)),
+h('button',{className:'btn '+(en?'btn-secondary':'btn-primary')+' btn-sm',onClick:function(ev){ev.stopPropagation();if(en){S.enrolled=S.enrolled.filter(function(e){return e.id!==k;});if(S.active===k)S.active=S.enrolled.length?S.enrolled[0].id:null;}else{S.enrolled.push({id:k,days:prog.daysPerWeek});if(!S.active)S.active=k;}sv();R();}},en?'\u2713 Enrolled':'+ Add')));el.appendChild(c);});
+if(S.enrolled.length>0)el.appendChild(h('button',{className:'btn btn-primary btn-block',style:{marginTop:'12px'},onClick:function(){S.tab='home';R();}},'Continue \u2192'));return el;}
+
+// === ADJUST DAYS ===
+function rAD(){var m=h('div',{className:'modal'});m.appendChild(h('h3',{style:{fontSize:'16px',fontWeight:700,marginBottom:'14px'}},'Adjust Training Days'));
+S.enrolled.forEach(function(en,idx){var pd=gPD(en.id);if(!pd)return;var c=h('div',{style:{marginBottom:'16px'}});c.appendChild(h('p',{style:{fontWeight:700,fontSize:'14px',marginBottom:'6px'}},pd.name+' (max '+pd.daysPerWeek+')'));
+var row=h('div',{style:{display:'flex',gap:'5px',flexWrap:'wrap'}});for(var d=1;d<=pd.daysPerWeek;d++){(function(dd){row.appendChild(h('button',{className:'pill'+(en.days===dd?' active':''),onClick:function(){S.enrolled[idx].days=dd;sv();R();}},dd+'d'));})(d);}c.appendChild(row);m.appendChild(c);});
+m.appendChild(h('button',{className:'btn btn-secondary btn-block',onClick:function(){S.modal=null;R();}},'Done'));return m;}
+
+// === DASHBOARD ===
+function rHome(){var el=h('div',{className:'page active'});
+if(S.drill)return rDrill(el);
+if(S.enrolled.length===0)return rPP();
+
+var merged=getMergedSchedule();
+var ap=gAP(),pd=ap?gPD(ap.id):null;
+var streak=getStreak();
+
+// === RED'S COACHING OVERVIEW ===
+function renderRedOverview(){
+  var rc=h('div',{className:'card',style:{borderLeft:'3px solid var(--accent)',background:'var(--card)'}});
+  var hd=h('div',{style:{display:'flex',alignItems:'center',gap:'8px',marginBottom:'8px'}});
+  hd.appendChild(h('div',{style:{width:'32px',height:'32px',borderRadius:'10px',background:'linear-gradient(135deg,#c8102e,#8b0000)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'16px',color:'#fff',fontWeight:800}},'R'));
+  hd.appendChild(h('div',null,h('p',{style:{fontWeight:800,fontSize:'13px',margin:0}},'Coach Red'),h('p',{style:{color:'var(--text2)',fontSize:'9px',margin:0}},'Your training overview')));
+  rc.appendChild(hd);
+
+  // Program overview
+  var overviews=[];
+  S.enrolled.forEach(function(en){
+    var p=gPD(en.id);if(!p)return;
+    var com=RED_COMMENTARY[en.id];
+    if(com)overviews.push(com.overview);
+  });
+  if(overviews.length>0){
+    rc.appendChild(h('p',{style:{fontSize:'12px',lineHeight:'1.5',color:'var(--text)',marginBottom:'8px'}},overviews.join(' ')));
+  }
+
+  // Journey status
+  var totalLogged=Object.keys(S.logs).length;
+  var journeyMsg='';
+  if(totalLogged===0)journeyMsg="You're right at the starting line. The hardest part is showing up \u2014 and you're here. Let's build something great.";
+  else if(totalLogged<5)journeyMsg="Nice start! You've got "+totalLogged+" session"+(totalLogged>1?'s':'')+' logged. The habit is forming. Keep showing up and the results will follow.';
+  else if(totalLogged<15)journeyMsg="You're building serious momentum with "+totalLogged+" sessions logged. Your body is adapting and getting stronger with every workout. This is where consistency pays off.";
+  else journeyMsg=totalLogged+" sessions deep \u2014 you're not messing around. The work you've put in is building a foundation that'll serve you for years. Respect. \u{1F4AA}";
+  rc.appendChild(h('p',{style:{fontSize:'12px',lineHeight:'1.5',color:'var(--text)',fontStyle:'italic',marginBottom:'8px'}},journeyMsg));
+
+  // Week-specific intro
+  var weekCom=null;
+  if(ap&&RED_COMMENTARY[ap.id]){weekCom=RED_COMMENTARY[ap.id].week_intros[S.week];}
+  if(weekCom){rc.appendChild(h('div',{style:{background:'var(--accent-light)',borderRadius:'8px',padding:'10px',marginBottom:'8px'}},h('p',{style:{fontSize:'10px',fontWeight:700,color:'var(--accent)',marginBottom:'3px'}},'WEEK '+S.week+' FOCUS'),h('p',{style:{fontSize:'11px',lineHeight:'1.5',color:'var(--text)'}},weekCom)));}
+
+  // Next workout preview
+  var nextEx=null,nextLabel='';
+  if(merged&&S.enrolled.length>1){
+    for(var d=0;d<merged.schedule.length;d++){var dt=merged.schedule[d];if(!dt.isRest&&!S.logs['merged_w'+S.week+'d'+(d+1)]){nextLabel=dt.label;nextEx=getMergedDayExercises(dt,S.week);break;}}
+  }else if(ap&&pd){
+    for(var w=S.week;w<=pd.weeks&&!nextEx;w++){var wk=pd.data[w];if(!wk)continue;for(var d=1;d<=ap.days&&!nextEx;d++){var dy=wk.days[d];if(dy&&!dy.isRest&&!S.logs[lk(ap.id,w,d)]){nextLabel=dy.name;nextEx=dy.ex;break;}}}
+  }
+  if(nextEx&&nextEx.length>0){
+    rc.appendChild(h('div',{style:{borderTop:'1px solid var(--border)',paddingTop:'8px',marginTop:'4px'}},
+      h('p',{style:{fontSize:'10px',fontWeight:700,color:'var(--text2)',marginBottom:'4px'}},'UP NEXT: '+nextLabel),
+      h('p',{style:{fontSize:'11px',color:'var(--text)'}},nextEx.slice(0,4).map(function(e){return e.n;}).join(', ')+(nextEx.length>4?' +'+( nextEx.length-4)+' more':''))
+    ));
+  }
+
+  // Smart adjustment alerts
+  var adjs=checkAdjustments();
+  if(adjs.length>0){
+    adjs.forEach(function(adj){
+      var ab=h('div',{style:{background:'rgba(200,16,46,0.08)',borderRadius:'8px',padding:'10px',marginTop:'8px',border:'1px solid rgba(200,16,46,0.2)'}});
+      ab.appendChild(h('p',{style:{fontSize:'11px',lineHeight:'1.5',color:'var(--text)',marginBottom:'8px'}},adj.msg));
+      var btns=h('div',{style:{display:'flex',gap:'6px'}});
+      btns.appendChild(h('button',{className:'btn btn-primary btn-sm',onClick:function(){applyAdjustment(adj);R();}},'Yes, adjust'));
+      btns.appendChild(h('button',{className:'btn btn-secondary btn-sm',onClick:function(){S.profile.adjDismissed=(S.profile.adjDismissed||0)+1;sv();R();}},'Not now'));
+      ab.appendChild(btns);rc.appendChild(ab);
+    });
+  }
+
+  // Active adjustment badge
+  var adj=S.profile.activeAdj;
+  if(adj&&adj.sessionsLeft>0){
+    var labels={deload:'Deload Mode',intensity_up:'Intensity Boost',comeback:'Comeback Mode'};
+    rc.appendChild(h('div',{style:{background:'var(--accent-light)',borderRadius:'6px',padding:'6px 10px',marginTop:'6px',display:'flex',justifyContent:'space-between',alignItems:'center'}},
+      h('span',{style:{fontSize:'10px',fontWeight:700,color:'var(--accent)'}},(labels[adj.type]||'Adjusted')+' \u2014 '+adj.sessionsLeft+' session'+(adj.sessionsLeft>1?'s':'')+' left'),
+      h('button',{style:{background:'none',border:'none',color:'var(--text2)',fontSize:'10px',cursor:'pointer'},onClick:function(){delete S.profile.activeAdj;sv();toast('Adjustment cleared');R();}},'Cancel')
+    ));
+  }
+
+  return rc;
+}
+
+// === MERGED MULTI-PROGRAM VIEW ===
+if(merged&&S.enrolled.length>1){
+  var hero=h('div',{className:'hero'});hero.appendChild(h('p',{style:{opacity:.85,fontSize:'12px'}},'Welcome back,'));
+  hero.appendChild(h('h2',{style:{fontSize:'22px',fontWeight:800,margin:'0 0 4px'}},S.profile.name||'Athlete'));
+  if(streak>0)hero.appendChild(h('span',{style:{background:'rgba(255,255,255,0.2)',color:'#fff',padding:'3px 10px',borderRadius:'8px',fontSize:'11px',fontWeight:700}},'\u{1F525} '+streak+' week streak'));
+  var pNames=S.enrolled.map(function(e){var p=gPD(e.id);return p?p.name:'';}).filter(Boolean).join(' + ');
+  hero.appendChild(h('p',{style:{opacity:.8,fontSize:'12px',marginTop:'6px'}},'\u{1F500} Merged: '+pNames));
+  hero.appendChild(h('p',{style:{opacity:.7,fontSize:'11px',marginTop:'2px'}},merged.days+' days/week \u00B7 Smart schedule'));
+  var logged=Object.keys(S.logs).filter(function(k){return k.startsWith('merged_');}).length;
+  var maxWks=Math.max.apply(null,S.enrolled.map(function(e){var p=gPD(e.id);return p?p.weeks:6;}));
+  var total=maxWks*merged.days;var pct=total>0?Math.round(logged/total*100):0;
+  var hr=h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginTop:'6px'}});
+  hr.appendChild(h('p',{style:{fontSize:'26px',fontWeight:800}},pct+'%'));hr.appendChild(h('p',{style:{opacity:.8,fontSize:'11px'}},logged+'/'+total));hero.appendChild(hr);
+  var bar=h('div',{style:{background:'rgba(255,255,255,0.2)',borderRadius:'6px',height:'6px',marginTop:'10px'}});bar.appendChild(h('div',{style:{background:'#fff',borderRadius:'6px',height:'6px',width:pct+'%'}}));hero.appendChild(bar);
+  el.appendChild(hero);
+
+  // Red's overview
+  el.appendChild(renderRedOverview());
+
+  // Weekly summary card
+  el.appendChild(rWeeklySummary());
+
+  // Week pills + schedule
+  el.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,margin:'12px 0 8px'}},'Week '+S.week+' Schedule'));
+  var wpills=h('div',{className:'pill-row',style:{marginBottom:'10px'}});
+  for(var w=1;w<=maxWks;w++){(function(ww){wpills.appendChild(h('button',{className:'pill'+(S.week===ww?' active':''),onClick:function(){S.week=ww;R();}},'W'+ww));})(w);}el.appendChild(wpills);
+
+  merged.schedule.forEach(function(dayTpl,idx){
+    var dayNum=idx+1;var logKey='merged_w'+S.week+'d'+dayNum;var done=!!S.logs[logKey];
+    var icons={strength:'\u{1F4AA}',running:'\u{1F3C3}',yoga:'\u{1F9D8}'};
+    var typeIcons=dayTpl.types.map(function(t){return icons[t]||'';}).join('');
+    var c=h('div',{className:'card',style:{padding:'14px',cursor:dayTpl.isRest?'default':'pointer',border:done?'2px solid var(--success)':'1px solid var(--border)',opacity:done?.75:1}});
+    if(!dayTpl.isRest)c.addEventListener('click',function(){S.day=dayNum;S.tab='track';S.curLog=JSON.parse(JSON.stringify(S.logs[logKey]||{}));S.sessTimer=0;S.sessRun=false;clearInterval(S.sessInt);R();});
+    c.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},
+      h('div',null,h('div',{style:{display:'flex',alignItems:'center',gap:'6px',marginBottom:'3px'}},h('span',{style:{fontSize:'10px',fontWeight:800,color:'var(--text2)'}},'DAY '+dayNum),done?h('span',{style:{fontSize:'10px',color:'var(--success)',fontWeight:700}},'\u2713 Done'):null),h('h3',{style:{fontSize:'14px',fontWeight:700,margin:'0 0 2px'}},dayTpl.label),h('p',{style:{color:'var(--text2)',fontSize:'11px',margin:0}},dayTpl.desc)),h('span',{style:{fontSize:'20px'}},dayTpl.isRest?'\u{1F9D8}':typeIcons)));
+    if(dayTpl.types.length>0){var badges=h('div',{style:{display:'flex',gap:'4px',marginTop:'6px'}});dayTpl.types.forEach(function(t){badges.appendChild(h('span',{style:{background:t==='strength'?'rgba(200,16,46,0.15)':t==='running'?'rgba(59,130,246,0.15)':'rgba(168,85,247,0.15)',color:t==='strength'?'var(--accent)':t==='running'?'#3b82f6':'#a855f7',padding:'2px 8px',borderRadius:'6px',fontSize:'9px',fontWeight:700,textTransform:'uppercase'}},t));});c.appendChild(badges);}
+    el.appendChild(c);});
+
+  var rc=h('div',{className:'card',style:{padding:'14px',opacity:.7,textAlign:'center'}});rc.appendChild(h('p',{style:{fontSize:'12px',color:'var(--text2)'}},(7-merged.days)+' rest day'+(7-merged.days>1?'s':'')+' per week'));el.appendChild(rc);
+  var acts=h('div',{className:'grid-2',style:{margin:'10px 0'}});
+  acts.appendChild(h('button',{className:'btn btn-secondary btn-block btn-sm',innerHTML:svg('plus',12)+' Programs',onClick:function(){S.tab='programs';R();}}));
+  acts.appendChild(h('button',{className:'btn btn-secondary btn-block btn-sm',innerHTML:svg('settings',12)+' Days',onClick:function(){S.modal='adjustDays';R();}}));
+  acts.appendChild(h('button',{className:'btn btn-secondary btn-block btn-sm',style:{gridColumn:'1/-1'},onClick:function(){S.active=S.enrolled[0].id;R();}},'View Individual Programs'));
+  el.appendChild(acts);return rDashWidgets(el);
+}
+
+// === SINGLE PROGRAM VIEW ===
+if(!ap||!pd)return rPP();
+var st=getDashStats();if(!st)return rPP();
+var totalD=pd.weeks*ap.days,logged=Object.keys(S.logs).filter(function(k){return k.startsWith(ap.id);}).length,pct=totalD>0?Math.round(logged/totalD*100):0;
+if(S.enrolled.length>1){var sw=h('div',{className:'pill-row',style:{marginBottom:'10px'}});sw.appendChild(h('button',{className:'pill',onClick:function(){R();}},'Merged View'));S.enrolled.forEach(function(en){var p=gPD(en.id);if(!p)return;sw.appendChild(h('button',{className:'pill'+(S.active===en.id?' active':''),onClick:function(){S.active=en.id;S.week=1;S.day=1;sv();R();}},p.name));});el.appendChild(sw);}
+var hero=h('div',{className:'hero'});hero.appendChild(h('p',{style:{opacity:.85,fontSize:'12px'}},'Welcome back,'));hero.appendChild(h('h2',{style:{fontSize:'22px',fontWeight:800,margin:'0 0 4px'}},S.profile.name||'Athlete'));
+if(streak>0)hero.appendChild(h('span',{style:{background:'rgba(255,255,255,0.2)',color:'#fff',padding:'3px 10px',borderRadius:'8px',fontSize:'11px',fontWeight:700}},'\u{1F525} '+streak+' week streak'));
+hero.appendChild(h('p',{style:{opacity:.8,fontSize:'12px',marginTop:'6px'}},pd.name));
+var hr=h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginTop:'6px'}});hr.appendChild(h('p',{style:{fontSize:'26px',fontWeight:800}},pct+'%'));hr.appendChild(h('p',{style:{opacity:.8,fontSize:'11px'}},logged+'/'+totalD));hero.appendChild(hr);
+var bar=h('div',{style:{background:'rgba(255,255,255,0.2)',borderRadius:'6px',height:'6px',marginTop:'10px'}});bar.appendChild(h('div',{style:{background:'#fff',borderRadius:'6px',height:'6px',width:pct+'%'}}));hero.appendChild(bar);el.appendChild(hero);
+
+// Red's overview
+el.appendChild(renderRedOverview());
+
+// Weekly summary
+el.appendChild(rWeeklySummary());
+
+// Next workout
+var next=null;for(var w=1;w<=pd.weeks&&!next;w++){var wk=pd.data[w];if(!wk)continue;for(var d=1;d<=ap.days&&!next;d++){var dy=wk.days[d];if(dy&&!dy.isRest&&!S.logs[lk(ap.id,w,d)])next={w:w,d:d,name:dy.name};}}
+if(next){var nx=h('div',{className:'card',style:{cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center'}});nx.addEventListener('click',function(){S.week=next.w;S.day=next.d;S.tab='track';loadCL();R();});
+nx.appendChild(h('div',null,h('p',{className:'label'},'Up Next'),h('h3',{style:{fontSize:'16px',fontWeight:700,margin:'3px 0'}},'W'+next.w+' D'+next.d),h('p',{style:{color:'var(--accent)',fontSize:'12px',fontWeight:600}},next.name)));
+nx.appendChild(h('div',{style:{background:'var(--accent-light)',borderRadius:'12px',padding:'10px'},innerHTML:svg('right',20,'var(--accent)')}));el.appendChild(nx);}
+var acts=h('div',{className:'grid-2',style:{marginBottom:'10px'}});acts.appendChild(h('button',{className:'btn btn-secondary btn-block btn-sm',innerHTML:svg('plus',12)+' Programs',onClick:function(){S.tab='programs';R();}}));acts.appendChild(h('button',{className:'btn btn-secondary btn-block btn-sm',innerHTML:svg('settings',12)+' Days',onClick:function(){S.modal='adjustDays';R();}}));el.appendChild(acts);
+// Weeks
+el.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,margin:'10px 0 8px'}},'Weeks'));var wg=h('div',{className:'grid-3',style:{marginBottom:'16px'}});
+for(var w=1;w<=pd.weeks;w++){(function(wk){var wkD=pd.data[wk];if(!wkD)return;var dl=Object.keys(S.logs).filter(function(k){return k.startsWith(ap.id+'_w'+wk);}).length;var td=0;for(var i=1;i<=ap.days;i++){var dy=wkD.days[i];if(dy&&!dy.isRest)td++;}var p=td>0?Math.round(dl/td*100):0;
+wg.appendChild(h('button',{style:{background:'var(--card)',borderRadius:'12px',padding:'12px',border:'2px solid '+(p===100?'var(--success)':'var(--border)'),cursor:'pointer',textAlign:'center',width:'100%'},onClick:function(){S.week=wk;S.tab='program';R();}},h('p',{style:{fontSize:'18px',fontWeight:800,margin:0}},p===100?'\u2713':'W'+wk),h('p',{style:{fontSize:'9px',color:'var(--text2)',margin:0}},wkD.name||''),h('div',{className:'progress-bar',style:{marginTop:'4px'}},h('div',{className:'progress-fill',style:{width:p+'%'}}))));
+})(w);}el.appendChild(wg);return rDashWidgets(el);}
+
+// === WEEKLY SUMMARY ===
+function rWeeklySummary(){
+  var now=new Date();var ws=new Date(now);ws.setDate(ws.getDate()-ws.getDay());ws.setHours(0,0,0,0);
+  var we=new Date(ws);we.setDate(we.getDate()+6);we.setHours(23,59,59);
+  var wkVol=0,wkSessions=0,wkSets=0,wkPRs=0,wkCustom=0;
+  Object.keys(S.logs).forEach(function(k){var l=S.logs[k];if(!l||!l.date)return;var d=new Date(l.date);if(d<ws||d>we)return;
+    wkSessions++;Object.keys(l).forEach(function(ek){if(ek.startsWith('e'))Object.keys(l[ek]).forEach(function(sk){if(sk.startsWith('s')){var s=l[ek][sk];wkVol+=(parseFloat(s.w)||0)*(parseFloat(s.r)||0);wkSets++;}});});});
+  // Count custom workouts this week
+  if(S.customWks)S.customWks.forEach(function(cw){if(cw&&cw.date){var d=new Date(cw.date);if(d>=ws&&d<=we)wkCustom++;}});
+  // Compare to last week
+  var lws=new Date(ws);lws.setDate(lws.getDate()-7);var lwe=new Date(ws);lwe.setDate(lwe.getDate()-1);lwe.setHours(23,59,59);
+  var lwVol=0;Object.keys(S.logs).forEach(function(k){var l=S.logs[k];if(!l||!l.date)return;var d=new Date(l.date);if(d<lws||d>lwe)return;
+    Object.keys(l).forEach(function(ek){if(ek.startsWith('e'))Object.keys(l[ek]).forEach(function(sk){if(sk.startsWith('s')){var s=l[ek][sk];lwVol+=(parseFloat(s.w)||0)*(parseFloat(s.r)||0);}});});});
+  var pctChange=lwVol>0?Math.round((wkVol-lwVol)/lwVol*100):0;
+
+  var sc=h('div',{className:'card',style:{padding:'14px'}});
+  sc.appendChild(h('h3',{style:{fontSize:'13px',fontWeight:700,marginBottom:'8px'}},'This Week'));
+  var grid=h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'8px',textAlign:'center'}});
+  grid.appendChild(h('div',null,h('p',{style:{fontSize:'18px',fontWeight:800,margin:0,color:'var(--accent)'}},wkVol>0?(wkVol/1000).toFixed(1)+'k':'0'),h('p',{style:{fontSize:'9px',color:'var(--text2)',margin:0}},'lbs volume'+(pctChange!==0?' ('+(pctChange>0?'+':'')+pctChange+'%)':''))));
+  grid.appendChild(h('div',null,h('p',{style:{fontSize:'18px',fontWeight:800,margin:0}},wkSessions+(wkCustom?'+'+wkCustom:'')),h('p',{style:{fontSize:'9px',color:'var(--text2)',margin:0}},'sessions'+(wkCustom?' (+'+wkCustom+' outside)':''))));
+  grid.appendChild(h('div',null,h('p',{style:{fontSize:'18px',fontWeight:800,margin:0}},wkSets+''),h('p',{style:{fontSize:'9px',color:'var(--text2)',margin:0}},'sets logged')));
+  sc.appendChild(grid);return sc;
+}
+
+// Dashboard widgets
+function rDashWidgets(el){
+  var st=getDashStats();
+  el.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'8px'}},'Analytics'));
+  var r1=h('div',{className:'grid-2',style:{marginBottom:'8px'}});
+  var volC=h('div',{className:'drill-card',onClick:function(){S.drill='volume';R();}});volC.appendChild(h('div',{className:'drill-hdr'},h('span',{className:'drill-sub'},'Total Volume'),h('span',{innerHTML:svg('right',14,'var(--text2)')})));
+  volC.appendChild(h('p',{className:'drill-val'},st&&st.totalVol>0?(st.totalVol/1000).toFixed(1)+'k':'\u2014'));volC.appendChild(h('p',{className:'drill-sub'},'lbs moved'));
+  if(st&&st.weekVols&&st.weekVols.length>1){var maxWV=Math.max.apply(null,st.weekVols)||1;var mc=h('div',{className:'mini-chart'});st.weekVols.forEach(function(v){mc.appendChild(h('div',{className:'mini-bar',style:{height:Math.max(v/maxWV*100,3)+'%'}}));});volC.appendChild(mc);}
+  r1.appendChild(volC);
+  var wkC=h('div',{className:'drill-card',onClick:function(){S.drill='workouts';R();}});wkC.appendChild(h('div',{className:'drill-hdr'},h('span',{className:'drill-sub'},'Workouts'),h('span',{innerHTML:svg('right',14,'var(--text2)')})));
+  wkC.appendChild(h('p',{className:'drill-val'},st?''+st.totalWk:'0'));wkC.appendChild(h('p',{className:'drill-sub'},'completed'));r1.appendChild(wkC);el.appendChild(r1);
+  var r2=h('div',{className:'grid-2',style:{marginBottom:'8px'}});
+  var bdC=h('div',{className:'drill-card',onClick:function(){S.drill='bestday';R();}});bdC.appendChild(h('div',{className:'drill-hdr'},h('span',{className:'drill-sub'},'Best Session'),h('span',{innerHTML:svg('right',14,'var(--text2)')})));
+  bdC.appendChild(h('p',{className:'drill-val'},st&&st.bestDay&&st.bestDay.vol>0?Math.round(st.bestDay.vol).toLocaleString():'\u2014'));bdC.appendChild(h('p',{className:'drill-sub'},st&&st.bestDay&&st.bestDay.date?'W'+st.bestDay.w+' D'+st.bestDay.d:'No data'));r2.appendChild(bdC);
+  var prC=h('div',{className:'drill-card',onClick:function(){S.drill='prs';R();}});prC.appendChild(h('div',{className:'drill-hdr'},h('span',{className:'drill-sub'},'Personal Records'),h('span',{innerHTML:svg('right',14,'var(--text2)')})));
+  prC.appendChild(h('p',{className:'drill-val'},''+Object.keys(S.prs).length));prC.appendChild(h('p',{className:'drill-sub'},'PRs set'));r2.appendChild(prC);el.appendChild(r2);
+  var r3=h('div',{className:'grid-2',style:{marginBottom:'8px'}});
+  var teC=h('div',{className:'drill-card',onClick:function(){S.drill='topex';R();}});teC.appendChild(h('div',{className:'drill-hdr'},h('span',{className:'drill-sub'},'Top Exercises'),h('span',{innerHTML:svg('right',14,'var(--text2)')})));
+  teC.appendChild(h('p',{className:'drill-val'},st&&st.topExes&&st.topExes.length>0?st.topExes[0].name.split(' ').slice(0,2).join(' '):'\u2014'));teC.appendChild(h('p',{className:'drill-sub'},'by volume'));r3.appendChild(teC);
+  var dbC=h('div',{className:'drill-card',onClick:function(){S.drill='exdb';R();}});dbC.appendChild(h('div',{className:'drill-hdr'},h('span',{className:'drill-sub'},'Exercise Database'),h('span',{innerHTML:svg('right',14,'var(--text2)')})));
+  dbC.appendChild(h('p',{className:'drill-val'},'\u{1F4CA}'));dbC.appendChild(h('p',{className:'drill-sub'},'Search & track'));r3.appendChild(dbC);el.appendChild(r3);
+  return el;
+}
+
+// === DRILL-DOWN VIEWS ===
+function rDrill(el){
+  el.appendChild(h('button',{className:'back-btn',innerHTML:svg('left',14,'var(--accent)')+' Dashboard',onClick:function(){S.drill=null;S.exDB=null;R();}}));
+  if(S.drill==='volume')return rDrillVol(el);
+  if(S.drill==='workouts')return rDrillWk(el);
+  if(S.drill==='bestday')return rDrillBest(el);
+  if(S.drill==='prs')return rDrillPR(el);
+  if(S.drill==='topex')return rDrillTopEx(el);
+  if(S.drill==='exdb')return rDrillExDB(el);
+  return el;
+}
+
+function rDrillVol(el){var st=getDashStats();if(!st)return el;
+  el.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,marginBottom:'4px'}},'Volume Breakdown'));
+  el.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px',marginBottom:'14px'}},'Total: '+Math.round(st.totalVol).toLocaleString()+' lbs across '+st.totalSets+' sets'));
+  // Weekly volume bars
+  var c=h('div',{className:'card'});c.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'Volume by Week'));
+  var maxV=Math.max.apply(null,st.weekVols)||1;
+  st.weekVols.forEach(function(v,i){var pct=maxV>0?(v/maxV*100):0;
+    var row=h('div',{style:{display:'flex',alignItems:'center',gap:'8px',marginBottom:'6px'}});
+    row.appendChild(h('span',{style:{fontSize:'11px',fontWeight:700,width:'30px',color:'var(--text2)'}},'W'+(i+1)));
+    var barBg=h('div',{style:{flex:1,background:'var(--border)',borderRadius:'4px',height:'16px',overflow:'hidden'}});
+    barBg.appendChild(h('div',{style:{width:pct+'%',height:'100%',background:'var(--accent)',borderRadius:'4px',transition:'width .3s'}}));
+    row.appendChild(barBg);
+    row.appendChild(h('span',{style:{fontSize:'10px',fontWeight:700,width:'50px',textAlign:'right'}},v>0?(v/1000).toFixed(1)+'k':'-'));
+    c.appendChild(row);});el.appendChild(c);
+  // Top contributing exercises
+  if(st.topExes.length>0){var tc=h('div',{className:'card'});tc.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'Where Your Volume Came From'));
+    st.topExes.slice(0,8).forEach(function(ex,i){tc.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',padding:'6px 0',borderBottom:'1px solid var(--border)'}},h('span',{style:{fontSize:'12px',fontWeight:600}},(i+1)+'. '+ex.name),h('span',{style:{fontSize:'12px',fontWeight:700,color:'var(--accent)'}},Math.round(ex.vol).toLocaleString())));});
+    el.appendChild(tc);}return el;}
+
+function rDrillWk(el){var st=getDashStats();if(!st)return el;
+  el.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,marginBottom:'4px'}},'Workout History'));
+  el.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px',marginBottom:'14px'}},st.totalWk+' workouts \u00B7 '+st.totalSets+' sets \u00B7 '+st.totalReps.toLocaleString()+' reps'));
+  st.recentLogs.slice(0,20).forEach(function(log){var c=h('div',{className:'card',style:{padding:'12px'}});
+    var top=h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}});
+    top.appendChild(h('div',null,h('p',{style:{fontWeight:700,fontSize:'13px'}},log.name),h('p',{style:{color:'var(--text2)',fontSize:'10px'}},'W'+log.w+' D'+log.d+' \u00B7 '+new Date(log.date).toLocaleDateString())));
+    top.appendChild(h('span',{style:{fontWeight:800,fontSize:'14px',color:'var(--accent)'}},Math.round(log.vol).toLocaleString()+' lbs'));
+    c.appendChild(top);el.appendChild(c);});return el;}
+
+function rDrillBest(el){var st=getDashStats();if(!st||!st.bestDay.date)return el;
+  el.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,marginBottom:'4px'}},'\u{1F3C6} Best Session'));
+  el.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px',marginBottom:'14px'}},Math.round(st.bestDay.vol).toLocaleString()+' lbs on '+new Date(st.bestDay.date).toLocaleDateString()));
+  var ap=gAP(),pd=ap?gPD(ap.id):null;if(!ap||!pd)return el;
+  var log=S.logs[lk(ap.id,st.bestDay.w,st.bestDay.d)];var wkD=pd.data[st.bestDay.w];if(!wkD)return el;var dayD=wkD.days[st.bestDay.d];
+  if(dayD&&dayD.ex){var c=h('div',{className:'card'});c.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},dayD.name+' \u2014 W'+st.bestDay.w+' D'+st.bestDay.d));
+    dayD.ex.forEach(function(ex,ei){var eLog=log?log['e'+ei]:{};if(!eLog)return;var exVol=0;Object.keys(eLog).forEach(function(sk){if(sk.startsWith('s')){var s=eLog[sk];exVol+=(parseFloat(s.w)||0)*(parseFloat(s.r)||0);}});
+      if(exVol>0)c.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',padding:'6px 0',borderBottom:'1px solid var(--border)'}},h('span',{style:{fontSize:'12px',fontWeight:600}},ex.n),h('span',{style:{fontSize:'12px',fontWeight:700,color:'var(--accent)'}},Math.round(exVol).toLocaleString()+' lbs')));});
+    el.appendChild(c);}
+  // Compare to other sessions
+  var sorted=st.recentLogs.slice().sort(function(a,b){return b.vol-a.vol;});
+  if(sorted.length>1){var rc=h('div',{className:'card'});rc.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'All Sessions Ranked'));
+    sorted.slice(0,10).forEach(function(log,i){rc.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',padding:'5px 0',borderBottom:'1px solid var(--border)'}},h('span',{style:{fontSize:'11px',fontWeight:600,color:i===0?'var(--accent)':'var(--text)'}},(i===0?'\u{1F947} ':'')+'W'+log.w+'D'+log.d+' '+log.name),h('span',{style:{fontSize:'11px',fontWeight:700}},Math.round(log.vol).toLocaleString())));});el.appendChild(rc);}return el;}
+
+function rDrillPR(el){
+  el.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,marginBottom:'14px'}},'\u{1F3C6} Personal Records'));
+  var keys=Object.keys(S.prs);if(keys.length===0){el.appendChild(h('p',{style:{color:'var(--text2)',textAlign:'center',padding:'30px'}},'No PRs yet. Start logging workouts!'));return el;}
+  keys.sort(function(a,b){return S.prs[b]-S.prs[a];});
+  var c=h('div',{className:'card'});keys.forEach(function(k,i){c.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 0',borderBottom:i<keys.length-1?'1px solid var(--border)':'none'}},h('span',{style:{fontSize:'13px',fontWeight:600}},k.replace(/_/g,' ')),h('span',{style:{fontSize:'14px',fontWeight:800,color:'var(--accent)'}},S.prs[k]+' lbs')));});el.appendChild(c);return el;}
+
+function rDrillTopEx(el){var st=getDashStats();if(!st)return el;
+  el.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,marginBottom:'14px'}},'Top Exercises by Volume'));
+  if(st.topExes.length===0){el.appendChild(h('p',{style:{color:'var(--text2)',textAlign:'center',padding:'30px'}},'No data yet.'));return el;}
+  var c=h('div',{className:'card'});var maxV=st.topExes[0].vol||1;
+  st.topExes.forEach(function(ex,i){var pct=(ex.vol/maxV*100);
+    var row=h('div',{style:{marginBottom:'10px'}});row.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'3px'}},h('span',{style:{fontSize:'12px',fontWeight:600}},(i+1)+'. '+ex.name),h('span',{style:{fontSize:'11px',fontWeight:700,color:'var(--accent)'}},Math.round(ex.vol).toLocaleString()+' lbs')));
+    var bg=h('div',{style:{background:'var(--border)',borderRadius:'4px',height:'8px',overflow:'hidden'}});bg.appendChild(h('div',{style:{width:pct+'%',height:'100%',background:'var(--accent)',borderRadius:'4px'}}));row.appendChild(bg);c.appendChild(row);});
+  el.appendChild(c);
+  // Clickable to drill into each exercise
+  el.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'11px',marginTop:'8px',textAlign:'center'}},'Use Exercise Database for per-exercise analytics'));return el;}
+
+function rDrillExDB(el){
+  var db=getExDB();var exNames=Object.keys(db).sort();
+  // If viewing a specific exercise
+  if(S.exDB){var ex=db[S.exDB];if(!ex){S.exDB=null;return rDrillExDB(el);}
+    el.appendChild(h('button',{className:'back-btn',innerHTML:svg('left',14,'var(--accent)')+' All Exercises',onClick:function(){S.exDB=null;R();}}));
+    el.appendChild(h('h2',{style:{fontSize:'18px',fontWeight:800,marginBottom:'4px'}},ex.name));
+    // 1RM Calculator
+    if(ex.bestW>0){var bestEntry=ex.entries.filter(function(e){return e.w===ex.bestW;})[0];var bestReps=bestEntry?bestEntry.r:1;var estimated1rm=est1RM(ex.bestW,bestReps);
+    el.appendChild(h('div',{style:{background:'var(--accent-light)',borderRadius:'8px',padding:'10px',marginBottom:'10px',display:'flex',justifyContent:'space-between',alignItems:'center'}},
+      h('div',null,h('p',{style:{fontSize:'10px',fontWeight:700,color:'var(--accent)'}},'ESTIMATED 1RM (Epley)'),h('p',{style:{fontSize:'20px',fontWeight:800,margin:'2px 0 0'}},estimated1rm+' lbs')),
+      h('div',{style:{textAlign:'right'}},h('p',{style:{fontSize:'10px',color:'var(--text2)'}},'Based on '+ex.bestW+'lbs × '+bestReps),h('p',{style:{fontSize:'9px',color:'var(--text2)',marginTop:'2px'}},'Strength zones:'),h('p',{style:{fontSize:'9px',color:'var(--text2)'}},Math.round(estimated1rm*0.85)+' (85%) · '+Math.round(estimated1rm*0.7)+' (70%)'))
+    ));}
+    el.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px',marginBottom:'14px'}},ex.sessions+' sessions \u00B7 Best: '+ex.bestW+' lbs \u00B7 Total: '+Math.round(ex.totalVol).toLocaleString()+' lbs'));
+    // Weight progression chart
+    var wts=ex.entries.filter(function(e){return e.w>0;});
+    if(wts.length>1){var cc=h('div',{className:'card'});cc.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'Weight Progression'));
+      var maxW=0;wts.forEach(function(e){if(e.w>maxW)maxW=e.w;});
+      var bc=h('div',{style:{display:'flex',alignItems:'flex-end',gap:'2px',height:'80px'}});
+      wts.forEach(function(e){var pct=maxW>0?(e.w/maxW*100):0;
+        var b=h('div',{style:{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:'1px'}});
+        b.appendChild(h('span',{style:{fontSize:'7px',color:'var(--text2)'}},e.w>0?''+Math.round(e.w):''));
+        b.appendChild(h('div',{style:{width:'100%',height:Math.max(pct,4)+'%',background:'var(--accent)',borderRadius:'2px 2px 0 0'}}));bc.appendChild(b);});
+      cc.appendChild(bc);el.appendChild(cc);}
+    // Full log table
+    var tc=h('div',{className:'card'});tc.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'All Sets'));
+    var th=h('div',{style:{display:'grid',gridTemplateColumns:'1fr 60px 50px 70px',gap:'4px',paddingBottom:'4px',borderBottom:'1px solid var(--border)'}});
+    ['Date','Weight','Reps','Volume'].forEach(function(t){th.appendChild(h('span',{className:'set-hdr'},t));});tc.appendChild(th);
+    ex.entries.slice().reverse().forEach(function(e){var row=h('div',{style:{display:'grid',gridTemplateColumns:'1fr 60px 50px 70px',gap:'4px',padding:'4px 0',borderBottom:'1px solid var(--border)',fontSize:'11px'}});
+      row.appendChild(h('span',null,new Date(e.date).toLocaleDateString()));
+      row.appendChild(h('span',{style:{fontWeight:700}},e.w>0?e.w+'':''));
+      row.appendChild(h('span',null,e.r>0?''+e.r:''));
+      row.appendChild(h('span',{style:{fontWeight:700,color:'var(--accent)'}},e.vol>0?Math.round(e.vol).toLocaleString():''));
+      tc.appendChild(row);});el.appendChild(tc);return el;}
+  // Exercise list
+  el.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,marginBottom:'4px'}},'Exercise Database'));
+  el.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px',marginBottom:'14px'}},exNames.length+' exercises tracked'));
+  if(exNames.length===0){el.appendChild(h('p',{style:{color:'var(--text2)',textAlign:'center',padding:'30px'}},'No exercise data yet. Complete some workouts!'));return el;}
+  exNames.forEach(function(name){var ex=db[name];
+    var c=h('div',{className:'ex-db-card',style:{cursor:'pointer'},onClick:function(){S.exDB=name;R();}});
+    c.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},h('div',null,h('p',{style:{fontWeight:700,fontSize:'13px',margin:0}},name),h('p',{style:{color:'var(--text2)',fontSize:'10px',margin:'2px 0 0'}},ex.sessions+'x \u00B7 Best: '+ex.bestW+'lbs')),h('span',{innerHTML:svg('right',14,'var(--text2)')})));
+    // Mini progression
+    if(ex.entries.length>2){var maxW=ex.bestW||1;var mc=h('div',{className:'mini-chart'});
+      var recent=ex.entries.slice(-15);recent.forEach(function(e){mc.appendChild(h('div',{className:'mini-bar',style:{height:Math.max(e.w/maxW*100,4)+'%'}}));});c.appendChild(mc);}
+    el.appendChild(c);});return el;}
+
+// === PROGRAM TAB ===
+function rProg(){var el=h('div',{className:'page active'});var ap=gAP(),pd=ap?gPD(ap.id):null;if(!ap||!pd)return rPP();var wk=pd.data[S.week];if(!wk)return el;
+var pills=h('div',{className:'pill-row',style:{marginBottom:'12px'}});for(var w=1;w<=pd.weeks;w++){(function(ww){pills.appendChild(h('button',{className:'pill'+(S.week===ww?' active':''),onClick:function(){S.week=ww;R();}},'W'+ww));})(w);}el.appendChild(pills);
+var info=h('div',{className:'card'});info.appendChild(h('h2',{style:{fontSize:'18px',fontWeight:800,margin:'0 0 3px'}},'Week '+S.week+': '+(wk.name||'')));if(wk.focus)info.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px'}},wk.focus));
+if(wk.rpe){var tags=h('div',{style:{display:'flex',gap:'8px',marginTop:'8px'}});tags.appendChild(h('span',{style:{background:'var(--accent-light)',color:'var(--accent)',padding:'4px 10px',borderRadius:'7px',fontSize:'11px',fontWeight:700}},'RPE '+wk.rpe));if(wk.int)tags.appendChild(h('span',{style:{background:'var(--accent-light)',color:'var(--accent)',padding:'4px 10px',borderRadius:'7px',fontSize:'11px',fontWeight:700}},wk.int));info.appendChild(tags);}el.appendChild(info);
+for(var dn=1;dn<=ap.days;dn++){(function(d){var dy=wk.days[d];if(!dy)return;var bl=h('div',{className:'ex-block'});var hd=h('div',{className:'ex-head'});hd.appendChild(h('div',null,h('span',{style:{fontWeight:800,fontSize:'10px',textTransform:'uppercase',color:'var(--text2)'}},'Day '+d),h('h3',{style:{fontSize:'14px',fontWeight:700,margin:'1px 0 0'}},dy.name)));
+if(!dy.isRest)hd.appendChild(h('button',{className:'btn btn-sm btn-primary',onClick:function(){S.day=d;S.tab='track';loadCL();R();}},'Track'));
+bl.appendChild(hd);
+if(!dy.isRest&&dy.ex){var bd=h('div',{style:{padding:'8px 14px'}});dy.ex.forEach(function(ex,i){bd.appendChild(h('div',{style:{padding:'5px 0',borderBottom:i<dy.ex.length-1?'1px solid var(--border)':'none',display:'flex',justifyContent:'space-between'}},h('span',{style:{fontWeight:600,fontSize:'12px'}},ex.n),h('span',{style:{color:'var(--text2)',fontSize:'11px'}},ex.s+'\u00D7'+ex.r)));});bl.appendChild(bd);}
+else if(dy.isRest)bl.appendChild(h('div',{style:{padding:'14px',textAlign:'center'}},h('p',{style:{color:'var(--text2)',fontSize:'12px'}},'Recovery day')));el.appendChild(bl);})(dn);}return el;}
+
+// === TRACKER ===
+function loadCL(){var ap=gAP();if(!ap)return;S.curLog=JSON.parse(JSON.stringify(S.logs[lk(ap.id,S.week,S.day)]||{}));S.sessTimer=0;S.sessRun=false;clearInterval(S.sessInt);}
+
+function rTrack(){var el=h('div',{className:'page active'});var ap=gAP(),pd=ap?gPD(ap.id):null;
+if(!ap||!pd){el.appendChild(h('p',{style:{textAlign:'center',padding:'40px',color:'var(--text2)'}},'Select a program first.'));return el;}
+var wk=pd.data[S.week];if(!wk){el.appendChild(h('p',null,'No data for week '+S.week));return el;}
+var pills=h('div',{className:'pill-row',style:{marginBottom:'8px'}});for(var dn=1;dn<=ap.days;dn++){(function(dd){var d=wk.days[dd];if(!d)return;pills.appendChild(h('button',{className:'pill'+(S.day===dd?' active':''),onClick:function(){S.day=dd;loadCL();R();}},d.isRest?'Rest':'D'+dd));})(dn);}el.appendChild(pills);
+var dy=wk.days[S.day];if(!dy){el.appendChild(h('p',{style:{color:'var(--text2)',textAlign:'center',padding:'20px'}},'No data for this day.'));return el;}
+// Show banner if this day was replaced by custom workout
+var curLogKey=lk(ap.id,S.week,S.day);
+var isCustomReplaced=S.logs[curLogKey]&&S.logs[curLogKey].custom;
+if(isCustomReplaced){
+  var cl=S.logs[curLogKey];
+  el.appendChild(h('div',{style:{background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.2)',borderRadius:'12px',padding:'14px',marginBottom:'10px'}},
+    h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},
+      h('div',null,
+        h('p',{style:{fontWeight:700,fontSize:'13px',color:'#10b981',margin:0}},'\u2705 Completed with: '+(cl.customName||'Outside Workout')),
+        h('p',{style:{fontSize:'10px',color:'var(--text2)',margin:'3px 0 0'}},cl.customType||'Custom')
+      ),
+      h('button',{className:'btn btn-sm',style:{fontSize:'10px'},onClick:function(){
+        delete S.logs[curLogKey];S.curLog={};sv();toast('Cleared \u2014 programmed workout restored');R();
+      }},'Undo')
+    ),
+    h('p',{style:{fontSize:'10px',color:'var(--text2)',marginTop:'8px'}},'The programmed workout is still below if you want to do it too.')
+  ));
+}
+if(dy.isRest)return rRestDay(el,dy);
+
+// === MANUAL SESSION TIMER ===
+var tc=h('div',{className:'card',style:{textAlign:'center',padding:'10px'}});
+tc.appendChild(h('p',{className:'label',style:{marginBottom:'4px'}},'Session Timer'));
+tc.appendChild(h('p',{style:{fontSize:'24px',fontWeight:800,fontVariantNumeric:'tabular-nums',margin:'0 0 8px'},id:'sess-t'},fmtT(S.sessTimer)));
+var btns=h('div',{className:'timer-ctrl'});
+if(!S.sessRun){btns.appendChild(h('button',{className:'timer-ctrl tc-start',onClick:function(){S.sessRun=true;S.sessInt=setInterval(function(){S.sessTimer++;var el=document.getElementById('sess-t');if(el)el.textContent=fmtT(S.sessTimer);},1000);R();}},S.sessTimer>0?'\u25B6 Resume':'\u25B6 Start'));}
+else{btns.appendChild(h('button',{className:'timer-ctrl tc-pause',onClick:function(){S.sessRun=false;clearInterval(S.sessInt);R();}},'\u23F8 Pause'));}
+if(S.sessTimer>0){btns.appendChild(h('button',{className:'timer-ctrl tc-finish',onClick:function(){S.sessRun=false;clearInterval(S.sessInt);S.curLog.dur=S.sessTimer;toast('Session: '+fmtT(S.sessTimer));R();}},'\u2713 Finish'));
+btns.appendChild(h('button',{className:'timer-ctrl tc-reset',onClick:function(){if(confirm('Reset timer?')){S.sessRun=false;clearInterval(S.sessInt);S.sessTimer=0;R();}}},'Reset'));}
+tc.appendChild(btns);el.appendChild(tc);
+
+// Active adjustment badge in tracker
+var adjF=getAdjFactor();
+if(adjF!==1){var adjLabel=adjF<1?'Reduced ('+Math.round(adjF*100)+'%)':'Boosted ('+Math.round(adjF*100)+'%)';
+  var adjBadge=h('div',{style:{background:adjF<1?'rgba(59,130,246,0.1)':'rgba(200,16,46,0.1)',borderRadius:'8px',padding:'8px 12px',marginBottom:'8px',display:'flex',justifyContent:'space-between',alignItems:'center'}});
+  adjBadge.appendChild(h('span',{style:{fontSize:'11px',fontWeight:700,color:adjF<1?'#3b82f6':'var(--accent)'}},'Red Adjusted: '+adjLabel));
+  adjBadge.appendChild(h('span',{style:{fontSize:'9px',color:'var(--text2)'}},'Weights auto-scaled'));
+  el.appendChild(adjBadge);}
+
+// Header
+var hdr=h('div',{className:'card',style:{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'6px'}});
+hdr.appendChild(h('div',null,h('p',{className:'label'},'W'+S.week+' D'+S.day),h('h2',{style:{fontSize:'16px',fontWeight:800,margin:'2px 0 0'}},dy.name)));
+var hbtns=h('div',{style:{display:'flex',gap:'4px'}});
+hbtns.appendChild(h('button',{className:'btn btn-primary btn-sm',onClick:function(){S.curLog.date=new Date().toISOString();if(S.sessTimer>0)S.curLog.dur=S.sessTimer;S.logs[lk(ap.id,S.week,S.day)]=JSON.parse(JSON.stringify(S.curLog));
+if(dy.ex)dy.ex.forEach(function(ex,ei){var eL=S.curLog['e'+ei];if(eL)Object.keys(eL).forEach(function(sk){if(sk.startsWith('s')){var w=parseFloat(eL[sk]&&eL[sk].w)||0;if(checkPR(ex.n,w)){sv();toast('\u{1F3C6} PR! '+ex.n+': '+w+'lbs','pr-toast');}}});});useAdjSession();sv();if(!S.toast)toast('Saved!');}},'Save'));
+hbtns.appendChild(h('button',{className:'btn btn-danger btn-sm',innerHTML:svg('trash',12,'var(--danger)'),onClick:function(){if(confirm('Clear?')){delete S.logs[lk(ap.id,S.week,S.day)];sv();S.curLog={};R();}}}));
+hdr.appendChild(hbtns);el.appendChild(hdr);
+
+// Feeling meter
+var fc=h('div',{className:'card',style:{display:'flex',alignItems:'center',gap:'6px',padding:'10px 12px'}});fc.appendChild(h('span',{innerHTML:svg('heart',14,'var(--accent)')}));fc.appendChild(h('span',{style:{color:'var(--text2)',fontSize:'10px',fontWeight:700,whiteSpace:'nowrap'}},'Feel'));
+var fr=h('div',{className:'feel-row',style:{marginLeft:'auto'}});for(var f=1;f<=10;f++){(function(ff){fr.appendChild(h('button',{className:'feel-btn'+(S.curLog.feeling===ff?' active':''),onClick:function(){S.curLog.feeling=ff;R();}},''+ff));})(f);}fc.appendChild(fr);el.appendChild(fc);
+
+// Superset toggle
+if(dy.ex)renderSSToggle(el,dy.ex);
+
+// Warmup
+var wType=dy.type||'full';var wups=WU[wType]||WU.full;
+if(wups&&wups.length){var wu=h('div',{className:'ex-block',style:{borderLeft:'3px solid var(--warn)'}});wu.appendChild(h('div',{style:{padding:'10px 14px',cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center'},onClick:function(){S.show.wu=!S.show.wu;R();}},h('span',{style:{fontWeight:700,fontSize:'12px',color:'var(--warn)'}},'\u{1F525} WARM-UP'),h('span',{style:{fontSize:'10px',color:'var(--text2)'}},S.show.wu?'\u25B2':'\u25BC')));
+if(S.show.wu){var wb=h('div',{style:{padding:'6px 14px'}});wups.forEach(function(w,i){wb.appendChild(h('div',{style:{padding:'5px 0',borderBottom:i<wups.length-1?'1px solid var(--border)':'none'}},h('p',{style:{fontWeight:600,fontSize:'12px'}},w.n+' \u2014 '+w.r),h('p',{style:{color:'var(--text2)',fontSize:'10px',marginTop:'1px'}},w.d)));});wu.appendChild(wb);}el.appendChild(wu);}
+
+// Exercises
+// Exercises
+var ssPairs=S.ssMode?getSupersets(dy.ex):[];
+var ssMap={};ssPairs.forEach(function(p){ssMap[p.a]=p;ssMap[p.b]=p;});
+var ssShown={};
+if(dy.ex) dy.ex.forEach(function(ex,ei){
+  // Superset label before first exercise of pair
+  if(S.ssMode&&ssMap[ei]){var pKey=Math.min(ssMap[ei].a,ssMap[ei].b);
+    if(!ssShown[pKey]){ssShown[pKey]=true;
+      var other=ssMap[ei].a===ei?dy.ex[ssMap[ei].b]:dy.ex[ssMap[ei].a];
+      el.appendChild(h('div',{className:'ss-label'},h('span',null,'\u{1F504} SUPERSET: '+ex.n.split(' ').slice(-2).join(' ')+' + '+(other?other.n.split(' ').slice(-2).join(' '):'')),h('span',{style:{fontSize:'9px',opacity:.7}},'60s between rounds')));
+    }
+  }
+  var eLog=S.curLog['e'+ei]||{};var bl=h('div',{className:'ex-block'+(S.ssMode&&ssMap[ei]?' ss-group':'')});
+var hd=h('div',{className:'ex-head'});hd.appendChild(h('div',null,h('h4',{style:{fontSize:'13px',fontWeight:700,margin:0}},ex.n),h('p',{style:{color:'var(--text2)',fontSize:'10px',margin:'1px 0 0'}},ex.s+'\u00D7'+ex.r+(ex.rest&&ex.rest!=='-'?' \u00B7 '+ex.rest:''))));
+if(ex.rest&&ex.rest!=='-'&&ex.rest!=='Circuit'&&ex.rest!=='Light')hd.appendChild(h('button',{className:'btn btn-sm',style:{background:'var(--accent)',color:'#fff',border:'none',fontSize:'10px'},innerHTML:svg('clock',10,'#fff')+' Rest',onClick:function(ev){ev.stopPropagation();openT(pRest(ex.rest));}}));
+bl.appendChild(hd);var bd=h('div',{className:'ex-body'});
+var desc=DESC[ex.n]||'';if(desc){var dk='d'+ei;bd.appendChild(h('button',{className:'section-toggle',onClick:function(){S.show[dk]=!S.show[dk];R();}},S.show[dk]?'Hide tips \u25B2':'How to \u25BC'));if(S.show[dk])bd.appendChild(h('p',{className:'desc-text'},desc));}
+var sh=h('div',{className:'set-grid',style:{marginBottom:'2px',paddingBottom:'2px',borderBottom:'1px solid var(--border)'}});['Set','Wt','Reps',''].forEach(function(t){sh.appendChild(h('span',{className:'set-hdr'},t));});bd.appendChild(sh);
+for(var s=1;s<=ex.s;s++){(function(sn,eidx){var sL=eLog['s'+sn]||{};var pW='',pR='';if(sn>1)for(var ps=sn-1;ps>=1;ps--){var prev=eLog['s'+ps];if(prev){if(prev.w&&!pW)pW=prev.w;if(prev.r&&!pR)pR=prev.r;if(pW&&pR)break;}}
+var dW=sL.w||pW,dR=sL.r||pR;var row=h('div',{className:'set-grid'});row.appendChild(h('span',{className:'set-num'},''+sn));
+var wi=h('input',{className:'input-sm',type:'number',step:'2.5',placeholder:'lbs',value:dW,style:{color:sL.w?'var(--text)':pW?'var(--text2)':'var(--text)'}});wi.addEventListener('focus',function(){if(!sL.w&&dW){ensL(eidx,sn);S.curLog['e'+eidx]['s'+sn].w=dW;}});wi.addEventListener('change',function(e){ensL(eidx,sn);S.curLog['e'+eidx]['s'+sn].w=e.target.value;R();});
+var ri=h('input',{className:'input-sm',type:'number',placeholder:'reps',value:dR,style:{color:sL.r?'var(--text)':pR?'var(--text2)':'var(--text)'}});ri.addEventListener('focus',function(){if(!sL.r&&dR){ensL(eidx,sn);S.curLog['e'+eidx]['s'+sn].r=dR;}});ri.addEventListener('change',function(e){ensL(eidx,sn);S.curLog['e'+eidx]['s'+sn].r=e.target.value;R();});
+var cb=h('button',{className:'chk'+(sL.done?' done':'')});if(sL.done)cb.innerHTML=svg('check',12,'#fff');cb.addEventListener('click',function(){ensL(eidx,sn);var c=S.curLog['e'+eidx]['s'+sn];c.done=!c.done;if(!c.w&&dW)c.w=dW;if(!c.r&&dR)c.r=dR;R();});
+row.appendChild(wi);row.appendChild(ri);row.appendChild(cb);bd.appendChild(row);})(s,ei);}
+var ta=h('textarea',{className:'input-sm',placeholder:'Notes...',style:{width:'100%',textAlign:'left',minHeight:'28px',marginTop:'4px',resize:'vertical',padding:'6px 10px',fontSize:'11px'}});ta.value=eLog.notes||'';ta.addEventListener('change',function(e){if(!S.curLog['e'+ei])S.curLog['e'+ei]={};S.curLog['e'+ei].notes=e.target.value;});bd.appendChild(ta);bl.appendChild(bd);el.appendChild(bl);});
+
+// Cooldown
+var cdb=h('div',{className:'ex-block',style:{borderLeft:'3px solid var(--success)'}});cdb.appendChild(h('div',{style:{padding:'10px 14px',cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center'},onClick:function(){S.show.cd=!S.show.cd;R();}},h('span',{style:{fontWeight:700,fontSize:'12px',color:'var(--success)'}},'\u{1F9CA} COOL-DOWN'),h('span',{style:{fontSize:'10px',color:'var(--text2)'}},S.show.cd?'\u25B2':'\u25BC')));
+if(S.show.cd){var cdd=h('div',{style:{padding:'6px 14px'}});CD.forEach(function(c,i){cdd.appendChild(h('div',{style:{padding:'5px 0',borderBottom:i<CD.length-1?'1px solid var(--border)':'none'}},h('p',{style:{fontWeight:600,fontSize:'12px'}},c.n),h('p',{style:{color:'var(--text2)',fontSize:'10px',marginTop:'1px'}},c.d)));});cdb.appendChild(cdd);}el.appendChild(cdb);
+// Today's custom workouts
+rCWList(el);
+// Add outside workout button
+rCWBtn(el,lk(ap.id,S.week,S.day));
+return el;}
+
+
+// === MERGED TRACKER ===
+function rMergedTrack(){
+  var el=h('div',{className:'page active'});
+  var merged=getMergedSchedule();if(!merged)return rTrack();
+  var dayTpl=merged.schedule[S.day-1];if(!dayTpl){el.appendChild(h('p',{style:{color:'var(--text2)',textAlign:'center',padding:'40px'}},'No data for this day.'));return el;}
+  var logKey='merged_w'+S.week+'d'+S.day;
+  if(!S.curLog||Object.keys(S.curLog).length===0)S.curLog=JSON.parse(JSON.stringify(S.logs[logKey]||{}));
+
+  if(dayTpl.isRest)return rRestDay(el,{name:dayTpl.label,isRest:true});
+
+  // Day pills
+  var pills=h('div',{className:'pill-row',style:{marginBottom:'8px'}});
+  merged.schedule.forEach(function(dt,idx){if(dt.isRest)return;
+    pills.appendChild(h('button',{className:'pill'+(S.day===(idx+1)?' active':''),onClick:function(){S.day=idx+1;S.curLog=JSON.parse(JSON.stringify(S.logs['merged_w'+S.week+'d'+(idx+1)]||{}));S.sessTimer=0;S.sessRun=false;clearInterval(S.sessInt);R();}},dt.label.split(' ')[0]));});
+  el.appendChild(pills);
+
+  // Session timer
+  var tc=h('div',{className:'card',style:{textAlign:'center',padding:'10px'}});
+  tc.appendChild(h('p',{className:'label',style:{marginBottom:'4px'}},'Session Timer'));
+  tc.appendChild(h('p',{style:{fontSize:'24px',fontWeight:800,fontVariantNumeric:'tabular-nums',margin:'0 0 8px'},id:'sess-t'},fmtT(S.sessTimer)));
+  var btns=h('div',{className:'timer-ctrl'});
+  if(!S.sessRun){btns.appendChild(h('button',{className:'timer-ctrl tc-start',onClick:function(){S.sessRun=true;S.sessInt=setInterval(function(){S.sessTimer++;var el=document.getElementById('sess-t');if(el)el.textContent=fmtT(S.sessTimer);},1000);R();}},S.sessTimer>0?'\u25B6 Resume':'\u25B6 Start'));}
+  else{btns.appendChild(h('button',{className:'timer-ctrl tc-pause',onClick:function(){S.sessRun=false;clearInterval(S.sessInt);R();}},'\u23F8 Pause'));}
+  if(S.sessTimer>0){btns.appendChild(h('button',{className:'timer-ctrl tc-finish',onClick:function(){S.sessRun=false;clearInterval(S.sessInt);S.curLog.dur=S.sessTimer;toast('Session: '+fmtT(S.sessTimer));R();}},'\u2713 Finish'));
+  btns.appendChild(h('button',{className:'timer-ctrl tc-reset',onClick:function(){if(confirm('Reset timer?')){S.sessRun=false;clearInterval(S.sessInt);S.sessTimer=0;R();}}},'Reset'));}
+  tc.appendChild(btns);el.appendChild(tc);
+
+// Active adjustment badge in tracker
+var adjF=getAdjFactor();
+if(adjF!==1){var adjLabel=adjF<1?'Reduced ('+Math.round(adjF*100)+'%)':'Boosted ('+Math.round(adjF*100)+'%)';
+  var adjBadge=h('div',{style:{background:adjF<1?'rgba(59,130,246,0.1)':'rgba(200,16,46,0.1)',borderRadius:'8px',padding:'8px 12px',marginBottom:'8px',display:'flex',justifyContent:'space-between',alignItems:'center'}});
+  adjBadge.appendChild(h('span',{style:{fontSize:'11px',fontWeight:700,color:adjF<1?'#3b82f6':'var(--accent)'}},'Red Adjusted: '+adjLabel));
+  adjBadge.appendChild(h('span',{style:{fontSize:'9px',color:'var(--text2)'}},'Weights auto-scaled'));
+  el.appendChild(adjBadge);}
+
+  // Header with type badges
+  var hdr=h('div',{className:'card',style:{padding:'14px'}});
+  var hTop=h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'8px'}});
+  hTop.appendChild(h('div',null,h('p',{className:'label'},'Week '+S.week+' \u00B7 Day '+S.day),h('h2',{style:{fontSize:'16px',fontWeight:800,margin:'2px 0 0'}},dayTpl.label)));
+  var hbtns=h('div',{style:{display:'flex',gap:'4px'}});
+  hbtns.appendChild(h('button',{className:'btn btn-primary btn-sm',onClick:function(){S.curLog.date=new Date().toISOString();if(S.sessTimer>0)S.curLog.dur=S.sessTimer;S.logs[logKey]=JSON.parse(JSON.stringify(S.curLog));
+  // Also check PRs
+  var exs=getMergedDayExercises(dayTpl,S.week);exs.forEach(function(ex,ei){var eL=S.curLog['e'+ei];if(eL)Object.keys(eL).forEach(function(sk){if(sk.startsWith('s')){var w=parseFloat(eL[sk]&&eL[sk].w)||0;if(checkPR(ex.n,w)){sv();toast('\u{1F3C6} PR! '+ex.n+': '+w+'lbs','pr-toast');}}});});
+  useAdjSession();sv();if(!S.toast)toast('Saved!');}},'Save'));
+  hbtns.appendChild(h('button',{className:'btn btn-danger btn-sm',innerHTML:svg('trash',12,'var(--danger)'),onClick:function(){if(confirm('Clear?')){delete S.logs[logKey];sv();S.curLog={};R();}}}));
+  hTop.appendChild(hbtns);hdr.appendChild(hTop);
+  // Type badges
+  var badges=h('div',{style:{display:'flex',gap:'4px'}});dayTpl.types.forEach(function(t){badges.appendChild(h('span',{style:{background:t==='strength'?'rgba(200,16,46,0.15)':t==='running'?'rgba(59,130,246,0.15)':'rgba(168,85,247,0.15)',color:t==='strength'?'var(--accent)':t==='running'?'#3b82f6':'#a855f7',padding:'3px 10px',borderRadius:'6px',fontSize:'10px',fontWeight:700,textTransform:'uppercase'}},t));});
+  hdr.appendChild(badges);hdr.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'11px',marginTop:'6px'}},dayTpl.desc));el.appendChild(hdr);
+
+  // Feeling meter
+  var fc=h('div',{className:'card',style:{display:'flex',alignItems:'center',gap:'6px',padding:'10px 12px'}});fc.appendChild(h('span',{innerHTML:svg('heart',14,'var(--accent)')}));fc.appendChild(h('span',{style:{color:'var(--text2)',fontSize:'10px',fontWeight:700,whiteSpace:'nowrap'}},'Feel'));
+  var fr=h('div',{className:'feel-row',style:{marginLeft:'auto'}});for(var f=1;f<=10;f++){(function(ff){fr.appendChild(h('button',{className:'feel-btn'+(S.curLog.feeling===ff?' active':''),onClick:function(){S.curLog.feeling=ff;R();}},''+ff));})(f);}fc.appendChild(fr);el.appendChild(fc);
+
+  // Superset toggle for merged day
+  var mergedExForSS=getMergedDayExercises(dayTpl,S.week);
+  if(mergedExForSS.length>1)renderSSToggle(el,mergedExForSS);
+
+  // Get exercises for this merged day
+  var exercises=getMergedDayExercises(dayTpl,S.week);
+  if(exercises.length===0){el.appendChild(h('div',{className:'card',style:{textAlign:'center',padding:'20px'}},h('p',{style:{color:'var(--text2)'}},dayTpl.desc)));return el;}
+
+  // Group by source type
+  var curSource='';
+  exercises.forEach(function(ex,ei){
+    if(ex.source!==curSource){curSource=ex.source;
+      el.appendChild(h('div',{style:{display:'flex',alignItems:'center',gap:'6px',margin:'10px 0 4px'}},
+        h('span',{style:{fontSize:'14px'}},ex.source==='strength'?'\u{1F4AA}':ex.source==='running'?'\u{1F3C3}':'\u{1F9D8}'),
+        h('span',{style:{fontSize:'11px',fontWeight:800,textTransform:'uppercase',color:'var(--text2)'}},ex.source)));}
+
+    var eLog=S.curLog['e'+ei]||{};var bl=h('div',{className:'ex-block'});
+    var hd=h('div',{className:'ex-head'});hd.appendChild(h('div',null,h('h4',{style:{fontSize:'13px',fontWeight:700,margin:0}},ex.n),h('p',{style:{color:'var(--text2)',fontSize:'10px',margin:'1px 0 0'}},ex.s+'\u00D7'+ex.r+(ex.rest&&ex.rest!=='-'?' \u00B7 '+ex.rest:''))));
+    if(ex.rest&&ex.rest!=='-'&&ex.rest!=='Circuit'&&ex.rest!=='Light')hd.appendChild(h('button',{className:'btn btn-sm',style:{background:'var(--accent)',color:'#fff',border:'none',fontSize:'10px'},innerHTML:svg('clock',10,'#fff')+' Rest',onClick:function(ev){ev.stopPropagation();openT(pRest(ex.rest));}}));
+    bl.appendChild(hd);var bd=h('div',{className:'ex-body'});
+    var desc=DESC[ex.n]||'';if(desc){var dk='d'+ei;bd.appendChild(h('button',{className:'section-toggle',onClick:function(){S.show[dk]=!S.show[dk];R();}},S.show[dk]?'Hide tips \u25B2':'How to \u25BC'));if(S.show[dk])bd.appendChild(h('p',{className:'desc-text'},desc));}
+    var sh=h('div',{className:'set-grid',style:{marginBottom:'2px',paddingBottom:'2px',borderBottom:'1px solid var(--border)'}});['Set','Wt','Reps',''].forEach(function(t){sh.appendChild(h('span',{className:'set-hdr'},t));});bd.appendChild(sh);
+    for(var s=1;s<=ex.s;s++){(function(sn,eidx){var sL=eLog['s'+sn]||{};var pW='',pR='';if(sn>1)for(var ps=sn-1;ps>=1;ps--){var prev=eLog['s'+ps];if(prev){if(prev.w&&!pW)pW=prev.w;if(prev.r&&!pR)pR=prev.r;if(pW&&pR)break;}}
+    var dW=sL.w||pW,dR=sL.r||pR;var row=h('div',{className:'set-grid'});row.appendChild(h('span',{className:'set-num'},''+sn));
+    var wi=h('input',{className:'input-sm',type:'number',step:'2.5',placeholder:'lbs',value:dW,style:{color:sL.w?'var(--text)':pW?'var(--text2)':'var(--text)'}});wi.addEventListener('focus',function(){if(!sL.w&&dW){ensL(eidx,sn);S.curLog['e'+eidx]['s'+sn].w=dW;}});wi.addEventListener('change',function(e){ensL(eidx,sn);S.curLog['e'+eidx]['s'+sn].w=e.target.value;R();});
+    var ri=h('input',{className:'input-sm',type:'number',placeholder:'reps',value:dR,style:{color:sL.r?'var(--text)':pR?'var(--text2)':'var(--text)'}});ri.addEventListener('focus',function(){if(!sL.r&&dR){ensL(eidx,sn);S.curLog['e'+eidx]['s'+sn].r=dR;}});ri.addEventListener('change',function(e){ensL(eidx,sn);S.curLog['e'+eidx]['s'+sn].r=e.target.value;R();});
+    var cb=h('button',{className:'chk'+(sL.done?' done':'')});if(sL.done)cb.innerHTML=svg('check',12,'#fff');cb.addEventListener('click',function(){ensL(eidx,sn);var c=S.curLog['e'+eidx]['s'+sn];c.done=!c.done;if(!c.w&&dW)c.w=dW;if(!c.r&&dR)c.r=dR;R();});
+    row.appendChild(wi);row.appendChild(ri);row.appendChild(cb);bd.appendChild(row);})(s,ei);}
+    bl.appendChild(bd);el.appendChild(bl);
+  });
+  // Custom workouts for merged day
+  rCWList(el);
+  rCWBtn(el,'merged_w'+S.week+'d'+S.day);
+  return el;
+}
+
+// === SUPERSET ENGINE ===
+var SS_PAIRS={
+'Barbell Bench Press':'Barbell Bent-Over Row',
+'Dumbbell Overhead Press':'Pull-Ups',
+'Incline Dumbbell Press':'Cable Face Pulls',
+'Dumbbell Lateral Raises':'Rear Delt Fly',
+'Overhead Tricep Extension':'Barbell Curl',
+'Barbell Back Squat':'Leg Curl Machine',
+'Romanian Deadlift':'Hanging Leg Raises',
+'Dumbbell Lunges':'Calf Raises',
+'Dumbbell Bicep Curls':'Skull Crushers',
+'Cable Tricep Pushdowns':'Hammer Curls',
+'Leg Press':'Seated Leg Curl',
+'Incline Dumbbell Curl':'Dumbbell Skull Crushers',
+'Barbell Bent-Over Row':'Barbell Bench Press',
+'Pull-Ups':'Dumbbell Overhead Press',
+'Cable Face Pulls':'Incline Dumbbell Press',
+'Rear Delt Fly':'Dumbbell Lateral Raises',
+'Barbell Curl':'Overhead Tricep Extension',
+'Leg Curl Machine':'Barbell Back Squat',
+'Hanging Leg Raises':'Romanian Deadlift',
+'Calf Raises':'Dumbbell Lunges',
+'Skull Crushers':'Dumbbell Bicep Curls',
+'Hammer Curls':'Cable Tricep Pushdowns',
+'Seated Leg Curl':'Leg Press',
+'Dumbbell Skull Crushers':'Incline Dumbbell Curl'
+};
+function getSupersets(exercises){
+  if(!exercises||exercises.length<2)return[];
+  var used={},groups=[];
+  for(var i=0;i<exercises.length;i++){
+    if(used[i])continue;var pair=SS_PAIRS[exercises[i].n];
+    if(pair){for(var j=i+1;j<exercises.length;j++){if(!used[j]&&exercises[j].n===pair){groups.push({a:i,b:j});used[i]=true;used[j]=true;break;}}}
+  }
+  return groups;
+}
+function renderSSToggle(el,exercises){
+  if(!exercises||exercises.length<2)return;
+  var pairs=getSupersets(exercises);
+  if(pairs.length===0)return;
+  var tb=h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'10px 14px',background:'var(--card)',borderRadius:'12px',marginBottom:'8px',border:'1px solid var(--border)'}});
+  tb.appendChild(h('div',{style:{display:'flex',alignItems:'center',gap:'8px'}},
+    h('span',{className:'ss-badge'},'SS'),
+    h('div',null,
+      h('span',{style:{fontSize:'12px',fontWeight:700}},'Superset Mode'),
+      h('p',{style:{fontSize:'9px',color:'var(--text2)',margin:'1px 0 0'}},pairs.length+' pair'+(pairs.length>1?'s':'')+' detected \u2014 saves ~'+Math.round(pairs.length*3)+' min')
+    )
+  ));
+  var tog=h('button',{className:'toggle'+(S.ssMode?' on':'')});tog.appendChild(h('div',{className:'toggle-knob'}));
+  tog.addEventListener('click',function(){S.ssMode=!S.ssMode;R();});
+  tb.appendChild(tog);el.appendChild(tb);
+  if(S.ssMode){el.appendChild(h('p',{style:{fontSize:'10px',color:'#a855f7',margin:'-4px 0 6px',fontStyle:'italic'}},'Alternate sets between paired exercises. 60s rest between rounds.'));}
+}
+
+// === CUSTOM / OUTSIDE WORKOUT ===
+function rCWBtn(el,logKey){
+  var btn=h('div',{className:'cw-card',onClick:function(){S.cwForm={type:'Group Fitness',name:'',dur:60,int:'Moderate',cal:'',notes:'',target:logKey};S.modal='customWk';R();}});
+  btn.appendChild(h('p',{style:{fontSize:'22px',margin:'0 0 2px',color:'var(--accent)'}},'+'));
+  btn.appendChild(h('p',{style:{fontSize:'12px',fontWeight:700,color:'var(--accent)'}},'Log Outside Workout'));
+  btn.appendChild(h('p',{style:{fontSize:'10px',color:'var(--text2)'}},'Group class, cardio, sports \u2014 counts toward streaks'));
+  el.appendChild(btn);
+}
+function rCWList(el){
+  var today=new Date().toISOString().split('T')[0];
+  var todayWks=(S.customWks||[]).filter(function(cw){return cw&&cw.date&&cw.date.startsWith(today);});
+  if(todayWks.length===0)return;
+  el.appendChild(h('h3',{style:{fontSize:'13px',fontWeight:700,margin:'12px 0 6px',color:'var(--text2)'}},'Additional Workouts Today'));
+  todayWks.forEach(function(cw){
+    var c=h('div',{className:'cw-log'});
+    c.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},
+      h('div',null,
+        h('p',{style:{fontWeight:700,fontSize:'13px',margin:0}},cw.name||cw.type),
+        h('p',{style:{color:'var(--text2)',fontSize:'10px',margin:'2px 0 0'}},cw.type+' \u00B7 '+cw.dur+' min'+(cw.int?' \u00B7 '+cw.int:'')+(cw.cal?' \u00B7 ~'+cw.cal+' cal':''))
+      ),
+      h('button',{style:{background:'none',border:'none',color:'var(--danger)',cursor:'pointer',padding:'4px'},innerHTML:svg('trash',14,'var(--danger)'),onClick:function(){
+        var idx=S.customWks.indexOf(cw);if(idx>-1){S.customWks.splice(idx,1);sv();R();}
+      }})
+    ));
+    if(cw.notes)c.appendChild(h('p',{style:{fontSize:'10px',color:'var(--text2)',marginTop:'4px',fontStyle:'italic'}},cw.notes));
+    el.appendChild(c);
+  });
+}
+function rCWModal(){
+  var m=h('div',{className:'modal',style:{maxHeight:'80vh',overflowY:'auto'}});
+  var f=S.cwForm||{};
+  m.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}},
+    h('h3',{style:{fontSize:'16px',fontWeight:700,margin:0}},'Log Outside Workout'),
+    h('button',{style:{background:'none',border:'none',cursor:'pointer',padding:'4px'},innerHTML:svg('x',16,'var(--text2)'),onClick:function(){S.modal=null;R();}})
+  ));
+  // Type tags
+  m.appendChild(h('p',{style:{fontSize:'11px',fontWeight:700,color:'var(--text2)',marginBottom:'4px'}},'TYPE'));
+  var tags=h('div',{style:{display:'flex',flexWrap:'wrap',marginBottom:'12px'}});
+  ['Group Fitness','Spin Class','CrossFit','Swimming','Basketball','Soccer','Hiking','Cycling','Boxing','Dance','Martial Arts','Yoga Class','Boot Camp','Other'].forEach(function(t){
+    tags.appendChild(h('button',{className:'cw-tag'+((f.type||'Group Fitness')===t?' active':''),onClick:function(){f.type=t;R();}},t));
+  });m.appendChild(tags);
+  // Name
+  m.appendChild(h('p',{style:{fontSize:'11px',fontWeight:700,color:'var(--text2)',marginBottom:'4px'}},'NAME / DESCRIPTION'));
+  var nameI=h('input',{className:'input',placeholder:'e.g. "HIIT at Orange Theory"',value:f.name||'',style:{marginBottom:'10px'}});
+  nameI.addEventListener('input',function(e){f.name=e.target.value;});m.appendChild(nameI);
+  // Duration
+  m.appendChild(h('p',{style:{fontSize:'11px',fontWeight:700,color:'var(--text2)',marginBottom:'4px'}},'DURATION (min)'));
+  var dRow=h('div',{className:'pill-row',style:{marginBottom:'10px'}});
+  [20,30,45,60,75,90].forEach(function(d){dRow.appendChild(h('button',{className:'pill'+((f.dur||60)===d?' active':''),onClick:function(){f.dur=d;R();}},''+d));});m.appendChild(dRow);
+  // Intensity
+  m.appendChild(h('p',{style:{fontSize:'11px',fontWeight:700,color:'var(--text2)',marginBottom:'4px'}},'INTENSITY'));
+  var iRow=h('div',{className:'pill-row',style:{marginBottom:'10px'}});
+  ['Light','Moderate','Hard','Max Effort'].forEach(function(i){iRow.appendChild(h('button',{className:'pill'+((f.int||'Moderate')===i?' active':''),onClick:function(){f.int=i;R();}},i));});m.appendChild(iRow);
+  // Calories
+  m.appendChild(h('p',{style:{fontSize:'11px',fontWeight:700,color:'var(--text2)',marginBottom:'4px'}},'ESTIMATED CALORIES (optional)'));
+  var calI=h('input',{className:'input',type:'number',placeholder:'e.g. 400',value:f.cal||'',style:{marginBottom:'10px'}});
+  calI.addEventListener('input',function(e){f.cal=e.target.value;});m.appendChild(calI);
+  // Notes
+  m.appendChild(h('p',{style:{fontSize:'11px',fontWeight:700,color:'var(--text2)',marginBottom:'4px'}},'NOTES (optional)'));
+  var notesI=h('textarea',{className:'input',placeholder:'What did you do?',value:f.notes||'',style:{minHeight:'50px',resize:'vertical',marginBottom:'12px'}});
+  notesI.addEventListener('input',function(e){f.notes=e.target.value;});m.appendChild(notesI);
+  // Context message
+  var hasLog=f.target&&S.logs[f.target];
+  if(hasLog){
+    m.appendChild(h('div',{style:{background:'rgba(16,185,129,0.08)',borderRadius:'8px',padding:'10px',marginBottom:'12px',border:'1px solid rgba(16,185,129,0.2)'}},
+      h('p',{style:{fontSize:'11px',color:'#10b981',fontWeight:600}},"\u2713 You already completed today's programmed workout. This adds as a bonus workout for the day!")
+    ));
+  }else if(f.target){
+    m.appendChild(h('div',{style:{background:'rgba(59,130,246,0.08)',borderRadius:'8px',padding:'10px',marginBottom:'12px',border:'1px solid rgba(59,130,246,0.2)'}},
+      h('p',{style:{fontSize:'11px',color:'#3b82f6',fontWeight:600}},"This will replace today's programmed workout and count toward your streak and progress.")
+    ));
+  }
+  // Buttons
+  var btns=h('div',{style:{display:'flex',gap:'8px'}});
+  btns.appendChild(h('button',{className:'btn btn-primary',style:{flex:1},onClick:function(){
+    var cw={date:new Date().toISOString(),name:f.name||(f.type||'Outside Workout'),type:f.type||'Group Fitness',dur:f.dur||60,int:f.int||'Moderate',cal:f.cal?parseInt(f.cal):null,notes:f.notes||'',target:f.target||null};
+    if(!S.customWks)S.customWks=[];
+    S.customWks.push(cw);
+    // If replacing a programmed workout (slot not yet logged), mark slot as done
+    if(f.target&&!S.logs[f.target]){
+      S.logs[f.target]={date:cw.date,custom:true,customName:cw.name,customType:cw.type,feeling:null,dur:cw.dur*60};
+    }
+    S.modal=null;S.cwForm={};sv();toast('\u2705 Workout logged!');R();
+  }},'Save Workout'));
+  btns.appendChild(h('button',{className:'btn btn-secondary',onClick:function(){S.modal=null;S.cwForm={};R();}},'Cancel'));
+  m.appendChild(btns);return m;
+}
+
+function rRestDay(el,dy){var rest=h('div',{className:'card',style:{textAlign:'center',padding:'28px'}});rest.appendChild(h('div',{style:{fontSize:'40px'}},'\u{1F9D8}'));rest.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,margin:'8px 0 4px'}},dy?dy.name:'Rest Day'));rest.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'13px',marginBottom:'16px'}},'Recovery is where gains happen.'));el.appendChild(rest);
+// Rest Day Activity Logging
+var today=new Date().toISOString().split('T')[0];
+if(!S.restDayLogs)S.restDayLogs={};
+var todayLog=S.restDayLogs[today]||{activities:[],notes:''};
+var rlc=h('div',{className:'card',style:{marginBottom:'12px'}});
+rlc.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'8px'}},'Log Recovery Activities'));
+var rlGrid=h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'6px'}});
+REST_ACTIVITIES.forEach(function(act){
+  var done=todayLog.activities.indexOf(act.id)>-1;
+  var btn=h('button',{style:{background:done?'var(--accent-light)':'var(--card)',border:'1px solid '+(done?'var(--accent)':'var(--border)'),borderRadius:'10px',padding:'10px',cursor:'pointer',textAlign:'left',display:'flex',alignItems:'center',gap:'8px'},onClick:function(){
+    if(!S.restDayLogs)S.restDayLogs={};if(!S.restDayLogs[today])S.restDayLogs[today]={activities:[],notes:''};
+    var idx=S.restDayLogs[today].activities.indexOf(act.id);
+    if(idx>-1)S.restDayLogs[today].activities.splice(idx,1);else S.restDayLogs[today].activities.push(act.id);sv();R();}});
+  btn.appendChild(h('span',{style:{fontSize:'18px'}},act.icon));
+  btn.appendChild(h('div',null,h('p',{style:{fontWeight:700,fontSize:'12px',margin:0,color:done?'var(--accent)':'var(--text)'}},act.name),h('p',{style:{fontSize:'9px',color:'var(--text2)',margin:0}},act.dur)));
+  rlGrid.appendChild(btn);
+});
+rlc.appendChild(rlGrid);
+var rnote=h('textarea',{className:'input',placeholder:'How are you feeling today?',style:{marginTop:'8px',fontSize:'12px',minHeight:'40px',resize:'vertical'},value:todayLog.notes||''});
+rnote.addEventListener('change',function(e){if(!S.restDayLogs)S.restDayLogs={};if(!S.restDayLogs[today])S.restDayLogs[today]={activities:[],notes:''};S.restDayLogs[today].notes=e.target.value;sv();});
+rlc.appendChild(rnote);el.appendChild(rlc);
+
+el.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,margin:'14px 0 8px'}},'Recovery Ideas'));
+REST.forEach(function(act){var card=h('div',{style:{background:'var(--card)',borderRadius:'14px',padding:'14px',marginBottom:'10px',cursor:'pointer',border:'1px solid var(--border)',boxShadow:'var(--shadow)'}});
+card.appendChild(h('div',{style:{display:'flex',alignItems:'center',gap:'10px'}},h('span',{style:{fontSize:'22px'}},act.icon),h('div',null,h('h4',{style:{fontSize:'14px',fontWeight:700,margin:0}},act.name),h('p',{style:{color:'var(--text2)',fontSize:'10px'}},act.dur))));
+var exp=!!S.show['r_'+act.name];card.addEventListener('click',function(){S.show['r_'+act.name]=!S.show['r_'+act.name];R();});
+if(exp){card.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px',margin:'10px 0',lineHeight:'1.5'}},act.desc));
+act.steps.forEach(function(step,i){card.appendChild(h('div',{style:{display:'flex',gap:'8px',marginBottom:'6px'}},h('span',{style:{background:'var(--accent)',color:'#fff',borderRadius:'50%',width:'18px',height:'18px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'9px',fontWeight:700,flexShrink:0}},''+(i+1)),h('p',{style:{fontSize:'12px',lineHeight:'1.4',margin:0}},step)));});}
+el.appendChild(card);});return el;}
+
+// === PROGRESS ===
+function rProgress(){var el=h('div',{className:'page active'});el.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,marginBottom:'14px'}},'Progress'));
+var ap=gAP(),pd=ap?gPD(ap.id):null;if(!ap||!pd){el.appendChild(h('p',{style:{color:'var(--text2)',textAlign:'center',padding:'40px'}},'Enroll in a program first.'));return el;}
+// PRs
+var prK=Object.keys(S.prs);if(prK.length>0){var prC=h('div',{className:'card'});prC.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'\u{1F3C6} Personal Records'));prK.sort(function(a,b){return S.prs[b]-S.prs[a];}).slice(0,8).forEach(function(k){prC.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',padding:'6px 0',borderBottom:'1px solid var(--border)'}},h('span',{style:{fontSize:'12px',fontWeight:600}},k.replace(/_/g,' ')),h('span',{style:{fontSize:'12px',fontWeight:800,color:'var(--accent)'}},S.prs[k]+' lbs')));});el.appendChild(prC);}
+// Strength table
+if(pd.type==='strength'){var lifts=['Barbell Bench Press','Barbell Back Squat','Barbell Deadlift','Barbell Bent-Over Row'];
+var sC=h('div',{className:'card'});sC.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'Strength by Week'));
+var tbl=h('table',{style:{width:'100%',borderCollapse:'collapse',fontSize:'11px'}});var thead=h('tr');['Lift'].concat(Array.from({length:pd.weeks},function(_,i){return 'W'+(i+1);})).forEach(function(t){thead.appendChild(h('th',{style:{background:'var(--accent)',color:'#fff',padding:'6px 3px',textAlign:'left',fontSize:'9px'}},t));});tbl.appendChild(thead);
+lifts.forEach(function(lift){var row=h('tr');row.appendChild(h('td',{style:{padding:'6px 3px',borderBottom:'1px solid var(--border)',fontWeight:600,fontSize:'10px'}},lift.replace('Barbell ','')));
+for(var w=1;w<=pd.weeks;w++){var best=0;var wkD=pd.data[w];if(wkD)for(var d=1;d<=6;d++){var log=S.logs[lk(ap.id,w,d)];if(!log)continue;var dy=wkD.days[d];if(!dy||dy.isRest||!dy.ex)continue;dy.ex.forEach(function(ex,ei){if(ex.n===lift){var eL=log['e'+ei];if(eL)Object.keys(eL).forEach(function(sk){if(sk.startsWith('s')){var wt=parseFloat(eL[sk]&&eL[sk].w)||0;if(wt>best)best=wt;}});}});}
+row.appendChild(h('td',{style:{padding:'6px 3px',borderBottom:'1px solid var(--border)',textAlign:'center'}},best?''+best:'-'));}tbl.appendChild(row);});sC.appendChild(tbl);el.appendChild(sC);}
+// Volume chart
+var vC=h('div',{className:'card'});vC.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'Weekly Volume'));
+var maxV=1,vols=[];for(var w=1;w<=pd.weeks;w++){var vol=0;for(var d=1;d<=6;d++){var log=S.logs[lk(ap.id,w,d)];if(log)Object.keys(log).forEach(function(k){if(k.startsWith('e'))Object.keys(log[k]).forEach(function(sk){if(sk.startsWith('s')){var ss=log[k][sk];vol+=(parseFloat(ss.w)||0)*(parseFloat(ss.r)||0);}});});}vols.push(vol);if(vol>maxV)maxV=vol;}
+var bc=h('div',{style:{display:'flex',alignItems:'flex-end',gap:'6px',height:'80px'}});vols.forEach(function(v,i){var pct=maxV>0?(v/maxV*100):0;bc.appendChild(h('div',{style:{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:'2px'}},h('span',{style:{fontSize:'8px',color:'var(--text2)',fontWeight:600}},v>0?(v/1000).toFixed(1)+'k':'-'),h('div',{style:{width:'100%',height:Math.max(pct,3)+'%',background:'var(--accent)',borderRadius:'4px 4px 0 0'}}),h('span',{style:{fontSize:'9px',fontWeight:700,color:'var(--text2)'}},'W'+(i+1))));});vC.appendChild(bc);el.appendChild(vC);
+// Body measurements
+// Body Measurement Progress Charts
+if(S.bodyLogs.length>1){
+  var bChart=h('div',{className:'card'});
+  bChart.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'Measurement Trends'));
+  var metrics=[{k:'wt',l:'Weight',c:'var(--accent)'},{k:'wa',l:'Waist',c:'#3b82f6'},{k:'ch',l:'Chest',c:'#10b981'},{k:'ar',l:'Arms',c:'#f59e0b'}];
+  metrics.forEach(function(met){
+    var vals=S.bodyLogs.map(function(e){return parseFloat(e[met.k])||0;}).filter(function(v){return v>0;});
+    if(vals.length<2)return;
+    var maxV=Math.max.apply(null,vals),minV=Math.min.apply(null,vals);
+    var range=maxV-minV||1;var change=vals[vals.length-1]-vals[0];
+    var row=h('div',{style:{marginBottom:'10px'}});
+    row.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'3px'}},
+      h('span',{style:{fontSize:'11px',fontWeight:700}},met.l),
+      h('span',{style:{fontSize:'11px',fontWeight:700,color:change<0?'var(--success)':change>0?'var(--warn)':'var(--text2)'}},
+        (change>0?'+':'')+change.toFixed(1)+' '+(met.k==='wt'?'lbs':'in'))));
+    var bc=h('div',{style:{display:'flex',alignItems:'flex-end',gap:'2px',height:'30px'}});
+    vals.forEach(function(v){var pct=(v-minV)/range*100;
+      bc.appendChild(h('div',{style:{flex:1,height:Math.max(pct,5)+'%',background:met.c,borderRadius:'2px 2px 0 0',opacity:.8}}));});
+    row.appendChild(bc);bChart.appendChild(row);});
+  el.appendChild(bChart);
+}
+
+var bC=h('div',{className:'card'});var bH=h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'10px'}});bH.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,margin:0}},'Body Measurements'));bH.appendChild(h('button',{className:'btn btn-primary btn-sm',innerHTML:svg('plus',12,'#fff')+' Add',onClick:function(){S.bodyLogs.push({date:new Date().toISOString().split('T')[0],wt:'',ch:'',wa:'',hp:'',ar:''});sv();R();}}));bC.appendChild(bH);
+// Show height from profile
+var ht=S.profile.measurements&&S.profile.measurements.height;
+if(ht)bC.appendChild(h('p',{style:{fontSize:'11px',color:'var(--text2)',marginBottom:'8px'}},'Height: '+ht+' in'));
+if(S.bodyLogs.length===0)bC.appendChild(h('p',{style:{textAlign:'center',color:'var(--text2)',padding:'16px',fontSize:'11px'}},'Track measurements over time.'));
+else{var bhr=h('div',{className:'body-row',style:{borderBottom:'1px solid var(--border)',paddingBottom:'3px',marginBottom:'5px'}});['Date','Wt','Ch','Wa','Hp','Ar',''].forEach(function(t){bhr.appendChild(h('span',{className:'set-hdr'},t));});bC.appendChild(bhr);
+S.bodyLogs.forEach(function(entry,idx){var row=h('div',{className:'body-row'});row.appendChild(h('span',{style:{color:'var(--text2)',fontWeight:600,fontSize:'9px'}},entry.date));['wt','ch','wa','hp','ar'].forEach(function(f){var inp=h('input',{className:'input-sm',type:'number',step:'0.1',value:entry[f]||'',style:{fontSize:'10px',padding:'4px 2px'}});inp.addEventListener('change',function(e){S.bodyLogs[idx][f]=e.target.value;sv();});row.appendChild(inp);});
+row.appendChild(h('button',{style:{background:'none',border:'none',color:'var(--danger)',cursor:'pointer',padding:'2px'},innerHTML:svg('x',10,'var(--danger)'),onClick:function(){S.bodyLogs.splice(idx,1);sv();R();}}));bC.appendChild(row);});}el.appendChild(bC);return el;}
+
+// === CHAT (Red AI Coach via Netlify proxy) ===
+function rChat(){var el=h('div',{className:'page active'});var wrap=h('div',{className:'chat-wrap'});
+var msgs=h('div',{className:'chat-msgs',id:'cmsg'});
+if(S.chatMsgs.length===0)msgs.appendChild(h('div',{className:'chat-msg bot'},h('div',{className:'bubble'},"Hey! I'm Red, your coach at RedRiversEdgeFitness. \u{1F4AA} Form tips, program questions, motivation \u2014 I'm here. What's up?")));
+S.chatMsgs.forEach(function(msg){
+  if(msg.isAction){
+    var ab=h('div',{className:'chat-msg bot'});var bub=h('div',{className:'bubble',style:{padding:'8px'}});
+    bub.appendChild(h('p',{style:{fontSize:'11px',marginBottom:'6px'}},msg.text));
+    var btns=h('div',{style:{display:'flex',gap:'6px'}});
+    if(msg.action==='reduce'){
+      btns.appendChild(h('button',{className:'btn btn-primary btn-sm',onClick:function(){applyAdjustment({action:'reduce_volume'});S.chatMsgs.push({role:'bot',text:"Done! I've lightened your next 3 sessions by 40%. You'll bounce back stronger."});sv();R();}},'Yes, lighten up'));
+    }else if(msg.action==='increase'){
+      btns.appendChild(h('button',{className:'btn btn-primary btn-sm',onClick:function(){applyAdjustment({action:'increase_intensity'});S.chatMsgs.push({role:'bot',text:"Weights bumped 10%! Let's see what you've got."});sv();R();}},'Bump it up'));
+    }
+    btns.appendChild(h('button',{className:'btn btn-secondary btn-sm',onClick:function(){S.chatMsgs=S.chatMsgs.filter(function(m){return m!==msg;});sv();R();}},'Skip'));
+    bub.appendChild(btns);ab.appendChild(bub);msgs.appendChild(ab);
+  }else{msgs.appendChild(h('div',{className:'chat-msg '+msg.role},h('div',{className:'bubble'},msg.text)));};});
+if(S.chatLoad)msgs.appendChild(h('div',{className:'chat-msg bot'},h('div',{className:'bubble',style:{color:'var(--text2)'}},'Red is thinking...')));
+wrap.appendChild(msgs);
+var ir=h('div',{className:'chat-ir'});var inp=h('input',{className:'chat-in',type:'text',placeholder:'Ask Red anything...',value:S.chatIn,id:'chat-f'});
+inp.addEventListener('input',function(e){S.chatIn=e.target.value;});inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&S.chatIn.trim())sendC();});
+ir.appendChild(inp);ir.appendChild(h('button',{className:'chat-sb',innerHTML:svg('send',16,'#fff'),onClick:function(){if(S.chatIn.trim())sendC();}}));wrap.appendChild(ir);el.appendChild(wrap);
+setTimeout(function(){var m=document.getElementById('cmsg');if(m)m.scrollTop=m.scrollHeight;},50);return el;}
+
+function sendC(){var msg=S.chatIn.trim();if(!msg)return;S.chatMsgs.push({role:'user',text:msg});S.chatIn='';S.chatLoad=true;sv();R();
+var ctx='User: '+(S.profile.name||'Athlete')+'. Level: '+(S.profile.level||'Intermediate')+'. Goals: '+(Array.isArray(S.profile.goals)?S.profile.goals.join(', '):'General Fitness')+'. Logged '+Object.keys(S.logs).length+' workouts. Week '+S.week+', Day '+S.day+'.';
+var adjState=S.profile.activeAdj?('Active adjustment: '+S.profile.activeAdj.type+', '+S.profile.activeAdj.sessionsLeft+' sessions left, factor: '+S.profile.activeAdj.factor):'No active adjustments';
+var cwCount=S.customWks?S.customWks.length:0;
+var feelData=[];Object.keys(S.logs).forEach(function(k){var l=S.logs[k];if(l&&l.feeling&&l.date)feelData.push({d:l.date.split('T')[0],f:l.feeling});});feelData.sort(function(a,b){return b.d<a.d?-1:1;});var recentFeel=feelData.slice(0,5).map(function(f){return f.f;}).join(',');
+var sys="You are Red, the built-in fitness coach for RedRiversEdgeFitness. CSCS-certified strength and conditioning specialist.\nPERSONALITY: Motivating like a teammate, warm, funny when it fits, confident not preachy.\nSTYLE: Simple clear language. Concise. Real encouragement.\nHELP WITH: Form, programming, nutrition basics, recovery, motivation, AND adjusting the user's program.\nPROGRAM ADJUSTMENTS: When the user says workouts are too hard, too easy, they're tired, sore, or want changes, you can suggest adjustments. Tell them what you'd change and why. Use phrases like 'I can reduce your weights by X% for the next few sessions' or 'Let me bump your intensity up'. The app will handle the actual adjustment - just give your coaching recommendation.\nDON'T: Diagnose injuries (say see a doc), push through pain, shame anyone.\nCONTEXT: "+ctx+"\nRecent feeling scores (newest first): "+recentFeel+"\n"+adjState+"\nCustom/outside workouts logged: "+cwCount+"\nKeep responses under 150 words.";
+var messages=[];S.chatMsgs.slice(-10).forEach(function(m){messages.push({role:m.role==='user'?'user':'assistant',content:m.text});});
+// Use Netlify function proxy
+var url=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'?'https://api.anthropic.com/v1/messages':'/.netlify/functions/chat';
+fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:500,system:sys,messages:messages})}).then(function(r){return r.json();}).then(function(data){
+var reply='';if(data.content)data.content.forEach(function(b){if(b.type==='text')reply+=b.text;});if(!reply)reply="Hmm, had trouble there. Try again!";
+S.chatMsgs.push({role:'bot',text:reply});S.chatLoad=false;
+// Check if Red suggested an adjustment
+var rl=reply.toLowerCase();
+if((rl.indexOf('reduce')>-1||rl.indexOf('lower')>-1||rl.indexOf('lighter')>-1||rl.indexOf('deload')>-1)&&(rl.indexOf('weight')>-1||rl.indexOf('intensity')>-1||rl.indexOf('volume')>-1)){
+  if(!S.profile.activeAdj){S.chatMsgs.push({role:'bot',text:'Want me to apply that? Tap below.',isAction:true,action:'reduce'});}
+}else if((rl.indexOf('increase')>-1||rl.indexOf('bump')>-1||rl.indexOf('raise')>-1)&&(rl.indexOf('weight')>-1||rl.indexOf('intensity')>-1)){
+  if(!S.profile.activeAdj){S.chatMsgs.push({role:'bot',text:'Ready to level up? Tap below.',isAction:true,action:'increase'});}
+}
+sv();R();}).catch(function(e){S.chatMsgs.push({role:'bot',text:"Can't connect to Red right now. Make sure the Netlify function is set up (see setup guide)."});S.chatLoad=false;sv();R();});}
+
+// === PROFILE (with edit mode) ===
+function rProfile(){var el=h('div',{className:'page active'});el.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,marginBottom:'14px'}},'Profile'));
+var pC=h('div',{className:'card'});
+// Avatar + name
+var av=h('div',{style:{display:'flex',alignItems:'center',gap:'12px',marginBottom:'14px'}});av.appendChild(h('div',{style:{width:'50px',height:'50px',borderRadius:'14px',background:'linear-gradient(135deg,var(--accent),#8b0000)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'22px',fontWeight:800,color:'#fff'}},(S.profile.name||'A')[0].toUpperCase()));
+if(!S.editProfile){av.appendChild(h('div',null,h('h3',{style:{fontSize:'16px',fontWeight:800,margin:0}},S.profile.name||'Athlete'),h('p',{style:{color:'var(--text2)',fontSize:'11px'}},S.profile.level||'')));}
+else{var ni=h('input',{className:'input',value:S.profile.name||'',style:{padding:'8px 12px',fontSize:'14px'}});ni.addEventListener('change',function(e){S.profile.name=e.target.value;sv();});av.appendChild(ni);}
+pC.appendChild(av);
+// Edit toggle
+pC.appendChild(h('button',{className:'btn btn-sm '+(S.editProfile?'btn-primary':'btn-secondary'),style:{marginBottom:'14px'},onClick:function(){S.editProfile=!S.editProfile;R();}},S.editProfile?'\u2713 Done Editing':'Edit Profile'));
+
+// Profile fields
+var fields=[{l:'Level',id:'level',t:'single',opts:['Beginner','Intermediate','Advanced']},{l:'Goals',id:'goals',t:'multi'},{l:'Equipment',id:'equipment',t:'multi'},{l:'Session',id:'time',t:'single',opts:['20 min','30 min','45 min','60 min','90 min']},{l:'Days',id:'days',t:'single',opts:['3 days','4 days','5 days','6 days']},{l:'Limitations',id:'injuries',t:'multi'}];
+fields.forEach(function(f){var val=S.profile[f.id];var display=Array.isArray(val)?val.join(', '):(val||'Not set');
+  if(!S.editProfile){pC.appendChild(h('div',{className:'edit-row'},h('div',null,h('p',{className:'edit-label'},f.l),h('p',{className:'edit-val'},display))));}
+  else{var sec=h('div',{style:{padding:'10px 0',borderBottom:'1px solid var(--border)'}});
+    sec.appendChild(h('p',{className:'edit-label'},f.l));
+    if(f.t==='single'&&f.opts){var pills=h('div',{style:{display:'flex',flexWrap:'wrap',gap:'5px',marginTop:'5px'}});
+      f.opts.forEach(function(opt){pills.appendChild(h('button',{className:'pill'+(val===opt?' active':''),style:{padding:'5px 10px',fontSize:'11px'},onClick:function(){S.profile[f.id]=opt;sv();R();}},opt));});sec.appendChild(pills);}
+    else{sec.appendChild(h('p',{style:{fontSize:'12px',color:'var(--text2)',marginTop:'3px'}},display+' (edit in onboarding)'));}
+    pC.appendChild(sec);}});
+el.appendChild(pC);
+
+// Height (one-time)
+var hC=h('div',{className:'card'});hC.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'8px'}},'Height'));
+var ht=(S.profile.measurements&&S.profile.measurements.height)||'';
+var htI=h('input',{className:'input',type:'number',step:'0.5',value:ht,placeholder:'Height in inches',style:{padding:'10px 12px',fontSize:'14px'}});
+htI.addEventListener('change',function(e){if(!S.profile.measurements)S.profile.measurements={};S.profile.measurements.height=e.target.value;sv();});
+hC.appendChild(htI);el.appendChild(hC);
+
+// Enrolled programs
+var eC=h('div',{className:'card'});eC.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'My Programs'));
+S.enrolled.forEach(function(en){var pd=gPD(en.id);if(!pd)return;eC.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 0',borderBottom:'1px solid var(--border)'}},h('div',null,h('p',{style:{fontWeight:600,fontSize:'13px'}},pd.name),h('p',{style:{color:'var(--text2)',fontSize:'10px'}},en.days+' days/wk')),h('button',{className:'btn btn-danger btn-sm',onClick:function(){if(confirm('Remove '+pd.name+'?')){S.enrolled=S.enrolled.filter(function(e){return e.id!==en.id;});if(S.active===en.id)S.active=S.enrolled.length?S.enrolled[0].id:null;sv();R();}}},'Remove')));});
+eC.appendChild(h('button',{className:'btn btn-secondary btn-block btn-sm',style:{marginTop:'10px'},innerHTML:svg('plus',12)+' Add Program',onClick:function(){S.tab='programs';R();}}));el.appendChild(eC);
+// Dark mode
+var dm=h('div',{className:'card',style:{display:'flex',justifyContent:'space-between',alignItems:'center'}});dm.appendChild(h('div',{style:{display:'flex',alignItems:'center',gap:'8px'}},h('span',{innerHTML:S.dark?svg('moon',16,'var(--accent)'):svg('sun',16,'var(--warn)')}),h('span',{style:{fontWeight:600,fontSize:'13px'}},'Dark Mode')));
+var tog=h('button',{className:'toggle'+(S.dark?' on':'')});tog.appendChild(h('div',{className:'toggle-knob'}));tog.addEventListener('click',function(){S.dark=!S.dark;document.body.classList.toggle('dark');sv();R();});dm.appendChild(tog);el.appendChild(dm);
+// Export/Import/Reset
+el.appendChild(h('button',{className:'btn btn-secondary btn-block',style:{marginBottom:'8px'},onClick:function(){var data=JSON.stringify({profile:S.profile,enrolled:S.enrolled,logs:S.logs,body:S.bodyLogs,prs:S.prs,customWks:S.customWks,restDayLogs:S.restDayLogs},null,2);var blob=new Blob([data],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='redge-fitness-backup.json';a.click();}},'Export Data'));
+el.appendChild(h('button',{className:'btn btn-secondary btn-block',style:{marginBottom:'8px'},onClick:function(){var inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=function(e){var f=e.target.files[0];if(!f)return;var reader=new FileReader();reader.onload=function(ev){try{var data=JSON.parse(ev.target.result);if(data.profile)S.profile=data.profile;if(data.enrolled)S.enrolled=data.enrolled;if(data.logs)S.logs=data.logs;if(data.body)S.bodyLogs=data.body;if(data.prs)S.prs=data.prs;if(data.customWks)S.customWks=data.customWks;if(data.restDayLogs)S.restDayLogs=data.restDayLogs;sv();toast('Data imported!');R();}catch(e){toast('Invalid file');}};reader.readAsText(f);};inp.click();}},'Import Data'));
+el.appendChild(h('button',{className:'btn btn-danger btn-block',onClick:function(){if(confirm('Reset everything? Cannot be undone.')){['rre2_dark','rre2_profile','rre2_enrolled','rre2_active','rre2_logs','rre2_body','rre2_chat','rre2_prs','rre2_restdays','rre2_customwks'].forEach(function(k){localStorage.removeItem(k);});location.reload();}}},'Reset App'));return el;}
+
+// === REST TIMER ===
+function openT(sec){S.timer=true;S.tSec=sec;S.tTotal=sec;S.tRun=false;clearInterval(S.tInt);R();}
+function closeT(){S.timer=null;S.tRun=false;clearInterval(S.tInt);R();}
+function togT(){if(S.tRun){S.tRun=false;clearInterval(S.tInt);}else{S.tRun=true;S.tInt=setInterval(function(){S.tSec--;if(S.tSec<=0){S.tSec=0;S.tRun=false;clearInterval(S.tInt);}R();},1000);}R();}
+function rstT(){S.tSec=S.tTotal;S.tRun=false;clearInterval(S.tInt);R();}
+
+function rTimer(){var ov=h('div',{className:'timer-ov',onClick:function(e){if(e.target===ov)closeT();}});
+var box=h('div',{className:'timer-box'});
+box.appendChild(h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}},h('h3',{style:{fontSize:'15px',fontWeight:700,margin:0}},'Rest Timer'),h('button',{style:{background:'none',border:'none',cursor:'pointer',padding:'4px'},innerHTML:svg('x',16,'var(--text2)'),onClick:closeT})));
+var pct=S.tTotal>0?((S.tTotal-S.tSec)/S.tTotal*100):0;var circ=2*Math.PI*50;var off=circ-(pct/100)*circ;
+var cw=h('div',{style:{position:'relative',width:'110px',height:'110px',margin:'0 auto 16px'}});
+cw.innerHTML='<svg width="110" height="110" viewBox="0 0 110 110" style="transform:rotate(-90deg)"><circle cx="55" cy="55" r="50" fill="none" stroke="var(--border)" stroke-width="7"/><circle cx="55" cy="55" r="50" fill="none" stroke="'+(S.tSec===0?'var(--success)':'var(--accent)')+'" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'" style="transition:stroke-dashoffset 1s linear"/></svg>';
+var tt=h('div',{style:{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}});
+tt.appendChild(h('span',{style:{fontSize:'28px',fontWeight:800,color:S.tSec===0?'var(--success)':'var(--text)',fontVariantNumeric:'tabular-nums'}},fmtT(S.tSec)));cw.appendChild(tt);box.appendChild(cw);
+if(S.tSec===0)box.appendChild(h('p',{style:{color:'var(--success)',fontWeight:700,fontSize:'13px',marginBottom:'10px'}},"Time's up! Next set!"));
+var btns=h('div',{style:{display:'flex',gap:'8px',justifyContent:'center'}});
+btns.appendChild(h('button',{className:'btn btn-primary',innerHTML:S.tRun?svg('pause',14,'#fff')+' Pause':(S.tSec===0?svg('check',14,'#fff')+' Done':svg('play',14,'#fff')+' Start'),onClick:S.tSec===0?closeT:togT}));
+btns.appendChild(h('button',{className:'btn btn-secondary',innerHTML:svg('reset',12)+' Reset',onClick:rstT}));box.appendChild(btns);
+var presets=h('div',{style:{display:'flex',gap:'5px',justifyContent:'center',marginTop:'12px'}});
+[30,60,90,120,180].forEach(function(s){presets.appendChild(h('button',{className:'pill',style:{padding:'4px 8px',fontSize:'10px',borderColor:S.tTotal===s?'var(--accent)':'var(--border)',background:S.tTotal===s?'var(--accent-light)':'transparent',color:S.tTotal===s?'var(--accent)':'var(--text2)'},onClick:function(){S.tSec=s;S.tTotal=s;S.tRun=false;clearInterval(S.tInt);R();}},s<60?s+'s':(s/60)+'m'));});box.appendChild(presets);
+ov.appendChild(box);return ov;}
+
+// === H5 TITAN DOG LOGO SVG ===
+var DOG_SVG='<svg width="22" height="22" viewBox="0 0 100 100" style="vertical-align:middle;margin-right:4px"><g fill="#c8102e"><polygon points="50,16 76,32 80,56 68,72 32,72 20,56 24,32"/><polygon points="50,16 24,32 20,56 32,72 50,76" fill="#a00d24" opacity="0.6"/><polygon points="24,32 12,10 40,24"/><polygon points="76,32 88,10 60,24"/><polygon points="25,31 16,14 38,25" fill="#8b0000"/><polygon points="75,31 84,14 62,25" fill="#8b0000"/><polygon points="50,46 66,54 60,68 40,68 34,54" fill="#8b0000"/><polygon points="46,50 50,46 54,50 50,53" fill="#0a0a0a"/><ellipse cx="38" cy="40" rx="6" ry="4.5" fill="#fff"/><circle cx="39" cy="40" r="3" fill="#0a0a0a"/><circle cx="39.8" cy="39.5" r="1" fill="#fff"/><ellipse cx="62" cy="40" rx="6" ry="4.5" fill="#fff"/><circle cx="61" cy="40" r="3" fill="#0a0a0a"/><circle cx="61.8" cy="39.5" r="1" fill="#fff"/><polygon points="26,32 32,28 44,36 42,38" fill="#8b0000"/><polygon points="74,32 68,28 56,36 58,38" fill="#8b0000"/><line x1="50" y1="16" x2="50" y2="46" stroke="#8b0000" stroke-width="1" opacity="0.4"/><rect x="28" y="72" width="44" height="5" rx="2" fill="#8b0000"/><rect x="38" y="73" width="4" height="3" rx="1" fill="#555"/><rect x="48" y="73" width="4" height="3" rx="1" fill="#555"/><rect x="58" y="73" width="4" height="3" rx="1" fill="#555"/></g></svg>';
+
+// === MAIN RENDER ===
+function R(){var app=document.getElementById('app');app.innerHTML='';
+if(S.screen==='onboarding'){app.appendChild(rOB());return;}
+var top=h('div',{className:'top-bar'});
+var logo=h('h1',{onClick:function(){S.drill=null;S.exDB=null;S.tab='home';R();}});
+logo.innerHTML=DOG_SVG;logo.appendChild(document.createTextNode('RedRiversEdgeFitness'));
+top.appendChild(logo);app.appendChild(top);
+var content=h('div',{style:{paddingTop:'10px'}});
+// Route: merged tracker when multiple programs and on track tab
+var merged=getMergedSchedule();
+if(S.tab==='home')content.appendChild(rHome());
+else if(S.tab==='program')content.appendChild(rProg());
+else if(S.tab==='track'){
+  if(merged&&S.enrolled.length>1)content.appendChild(rMergedTrack());
+  else content.appendChild(rTrack());
+}
+else if(S.tab==='progress')content.appendChild(rProgress());
+else if(S.tab==='chat')content.appendChild(rChat());
+else if(S.tab==='programs')content.appendChild(rPP());
+else if(S.tab==='profile')content.appendChild(rProfile());
+app.appendChild(content);
+var nav=h('div',{className:'bottom-nav'});
+[{id:'home',l:'Home',i:'home'},{id:'program',l:'Program',i:'book'},{id:'track',l:'Track',i:'dumbbell'},{id:'progress',l:'Progress',i:'chart'},{id:'chat',l:'Red',i:'chat'},{id:'profile',l:'Profile',i:'user'}].forEach(function(tab){
+var btn=h('button',{className:'nav-btn'+(S.tab===tab.id?' active':'')});btn.innerHTML=svg(tab.i,18,S.tab===tab.id?'var(--accent)':'var(--text2)');btn.appendChild(h('span',null,tab.l));
+btn.addEventListener('click',function(){S.tab=tab.id;S.drill=null;S.exDB=null;if(tab.id==='track')loadCL();R();});nav.appendChild(btn);});app.appendChild(nav);
+if(S.modal==='adjustDays'){var ov=h('div',{className:'modal-ov',onClick:function(e){if(e.target===ov){S.modal=null;R();}}});ov.appendChild(rAD());app.appendChild(ov);}
+if(S.modal==='customWk'){var ov=h('div',{className:'modal-ov',onClick:function(e){if(e.target===ov){S.modal=null;R();}}});ov.appendChild(rCWModal());app.appendChild(ov);}
+if(S.timer)app.appendChild(rTimer());
+if(S.toast){var t=h('div',{className:'toast'+(S.tCls?' '+S.tCls:'')});t.innerHTML=svg('check',14,'#fff')+' '+S.toast;app.appendChild(t);}
+}
+// === INIT ===
+load();R();
+</script>
+</body>
+</html>
