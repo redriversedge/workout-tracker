@@ -1,6 +1,6 @@
 {
-  "name": "RedRiversEdge Fitness",
-  "short_name": "RRE Fitness",
+  "name": "RedRiversEdgeFitness",
+  "short_name": "RREF",
   "description": "AI-powered personal training with Red, your CSCS-certified coach",
   "start_url": "/",
   "display": "standalone",
