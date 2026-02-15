@@ -1,10 +1,6 @@
-// netlify/functions/chat.js
-// Proxies chat requests to Anthropic API (keeps API key server-side)
-// Uses Node.js built-in https module for maximum compatibility
-
 var https = require(“https”);
 
-exports.handler = async function(event) {
+exports.handler = async function (event) {
 var headers = {
 “Content-Type”: “application/json”,
 “Access-Control-Allow-Origin”: “*”,
@@ -12,12 +8,10 @@ var headers = {
 “Access-Control-Allow-Methods”: “POST, OPTIONS”
 };
 
-// CORS preflight
 if (event.httpMethod === “OPTIONS”) {
 return { statusCode: 204, headers: headers, body: “” };
 }
 
-// Only POST allowed
 if (event.httpMethod !== “POST”) {
 return {
 statusCode: 405,
@@ -26,7 +20,6 @@ body: JSON.stringify({ error: { message: “Use POST” } })
 };
 }
 
-// Check API key
 var apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey) {
 return {
@@ -34,7 +27,7 @@ statusCode: 500,
 headers: headers,
 body: JSON.stringify({
 error: {
-message: “ANTHROPIC_API_KEY not set. Add it in Netlify Site Configuration > Environment Variables then redeploy.”
+message: “ANTHROPIC_API_KEY not set in Netlify environment variables.”
 }
 })
 };
@@ -45,12 +38,12 @@ var body = JSON.parse(event.body);
 var payload = JSON.stringify({
 model: body.model || “claude-sonnet-4-20250514”,
 max_tokens: body.max_tokens || 500,
-system: body.system || “”,
+system: body.system || “You are Red, the AI fitness coach for RedRiversEdgeFitness.”,
 messages: body.messages || []
 });
 
 ```
-var data = await new Promise(function(resolve, reject) {
+var data = await new Promise(function (resolve, reject) {
   var options = {
     hostname: "api.anthropic.com",
     port: 443,
@@ -64,26 +57,28 @@ var data = await new Promise(function(resolve, reject) {
     }
   };
 
-  var req = https.request(options, function(res) {
+  var req = https.request(options, function (res) {
     var chunks = [];
-    res.on("data", function(chunk) { chunks.push(chunk); });
-    res.on("end", function() {
+    res.on("data", function (chunk) {
+      chunks.push(chunk);
+    });
+    res.on("end", function () {
       try {
         var raw = Buffer.concat(chunks).toString();
         resolve(JSON.parse(raw));
       } catch (e) {
-        reject(new Error("Failed to parse Anthropic response"));
+        reject(new Error("Failed to parse response"));
       }
     });
   });
 
-  req.on("error", function(e) {
+  req.on("error", function (e) {
     reject(new Error("Request failed: " + e.message));
   });
 
-  req.setTimeout(30000, function() {
+  req.setTimeout(30000, function () {
     req.destroy();
-    reject(new Error("Request timed out after 30s"));
+    reject(new Error("Request timed out"));
   });
 
   req.write(payload);
