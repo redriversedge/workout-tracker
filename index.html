@@ -1540,7 +1540,7 @@ var exArr=Object.keys(stats.exCount).map(function(k){return{name:k,vol:stats.exC
 return stats;}
 
 // === ONBOARDING ===
-var OBQ=[{id:"name",q:"What should we call you?",t:"text",ph:"Your name or nickname"},{id:"sex",q:"Biological sex",sub:"This helps us calibrate strength standards, recovery, and programming. Select what applies to you.",t:"single",opts:["Male","Female","Prefer not to disclose"],cu:1},{id:"pregnant",q:"Are you currently pregnant?",sub:"This changes your programming for safety.",t:"single",opts:["No","Yes — 1st trimester","Yes — 2nd trimester","Yes — 3rd trimester"],cu:1,cond:function(){return S.profile.sex==='Female';}},{id:"level",q:"What's your fitness level?",sub:"Be honest — we'll build from where you are.",t:"single",opts:["Just Starting Out","Beginner","Intermediate","Advanced"],cu:1},{id:"goals",q:"What are your primary goals?",sub:"Select all that apply",t:"multi",opts:["Strength","Muscle Building","Fat Loss","General Fitness","Endurance","Flexibility & Mobility","Running","HIIT / Conditioning","Pilates","Prenatal Fitness"],cu:1},{id:"equipment",q:"What equipment do you have?",sub:"Select all that apply",t:"multi",opts:["Full Gym","Barbells & Racks","Dumbbells","Kettlebells","Pull-Up Bar","Resistance Bands","Yoga Mat","Foam Roller","Medicine Ball","Cable Machine","Rowing Machine","Bodyweight Only"],cu:1},{id:"runGoal",q:"What's your running goal?",sub:"This shapes your running program structure.",t:"single",opts:["Just starting (walk to run)","General fitness running","5K","10K","Half Marathon","Marathon","Sprint / Track","Trail Running"],cu:1,cond:function(){return Array.isArray(S.profile.goals)&&S.profile.goals.indexOf('Running')>-1;}},{id:"flexGoal",q:"What's your flexibility focus?",sub:"This shapes your mobility programming.",t:"single",opts:["General flexibility","Recovery & injury prevention","Athletic mobility","Pilates core & stability","Prenatal mobility","Stress relief & relaxation"],cu:1,cond:function(){return Array.isArray(S.profile.goals)&&(S.profile.goals.indexOf('Flexibility & Mobility')>-1||S.profile.goals.indexOf('Pilates')>-1||S.profile.goals.indexOf('Prenatal Fitness')>-1);}},{id:"strengthFocus",q:"What type of strength training?",sub:"This determines your program style.",t:"single",opts:["Pure Strength (build max strength)","Strength & Conditioning (strength + conditioning blend)","Muscle Building (hypertrophy focus)"],cu:1,cond:function(){return Array.isArray(S.profile.goals)&&(S.profile.goals.indexOf('Strength')>-1||S.profile.goals.indexOf('Muscle Building')>-1||S.profile.goals.indexOf('General Fitness')>-1||S.profile.goals.indexOf('Fat Loss')>-1);}},{id:"equipPref",q:"Preferred equipment for strength?",sub:"We'll build your program around this.",t:"single",opts:["Barbells & Racks","Dumbbells","Kettlebells","Bodyweight","No preference (mix it up)"],cu:1,cond:function(){return Array.isArray(S.profile.goals)&&(S.profile.goals.indexOf('Strength')>-1||S.profile.goals.indexOf('Muscle Building')>-1||S.profile.goals.indexOf('General Fitness')>-1||S.profile.goals.indexOf('Fat Loss')>-1);}},{id:"scElements",q:"Add training elements?",sub:"These blend into your Strength & Conditioning program. Totally optional — skip if unsure.",t:"multi",opts:["Barbell-focused compounds","Kettlebell conditioning","Dumbbell complexes","HIIT finishers"],cu:1,opt:true,cond:function(){return S.profile.strengthFocus==='Strength & Conditioning (strength + conditioning blend)';}},{id:"time",q:"How much time per session?",t:"single",opts:["20 min","30 min","45 min","60 min","90 min"],cu:1},{id:"days",q:"How many days per week?",sub:"We'll suggest optimal based on your goals.",t:"single",opts:["2 days","3 days","4 days","5 days","6 days"]},{id:"injuries",q:"Any injuries or limitations?",t:"multi",opts:["None","Lower Back","Shoulders","Knees","Wrists","Neck","Hips","Ankles","Elbows"],cu:1},{id:"measurements",q:"Starting measurements",sub:"We'll track these over time. All optional.",t:"measure"}];
+var OBQ=[{id:"name",q:"What should we call you?",t:"text",ph:"Your name or nickname"},{id:"sex",q:"Biological sex",sub:"This helps us calibrate strength standards, recovery, and programming. Select what applies to you.",t:"single",opts:["Male","Female","Prefer not to disclose"],cu:1},{id:"pregnant",q:"Are you currently pregnant?",sub:"This changes your programming for safety.",t:"single",opts:["No","Yes — 1st trimester","Yes — 2nd trimester","Yes — 3rd trimester"],cu:1,cond:function(){return S.profile.sex==='Female';}},{id:"level",q:"What's your fitness level?",sub:"Be honest — we'll build from where you are.",t:"single",opts:["Just Starting Out","Beginner","Intermediate","Advanced"],cu:1},{id:"goals",q:"What are your primary goals?",sub:"Select all that apply",t:"multi",opts:["Strength","Muscle Building","Fat Loss","General Fitness","Endurance","Flexibility & Mobility","Running","HIIT / Conditioning","Pilates","Prenatal Fitness"],cu:1},{id:"equipment",q:"What equipment do you have?",sub:"Select all that apply",t:"multi",opts:["Full Gym","Barbells & Racks","Dumbbells","Kettlebells","Pull-Up Bar","Resistance Bands","Yoga Mat","Foam Roller","Medicine Ball","Cable Machine","Rowing Machine","Bodyweight Only"],cu:1},{id:"runGoal",q:"What's your running goal?",sub:"This shapes your running program structure.",t:"single",opts:["Just starting (walk to run)","General fitness running","5K","10K","Half Marathon","Marathon","Sprint / Track","Trail Running"],cu:1,cond:function(){return Array.isArray(S.profile.goals)&&S.profile.goals.indexOf('Running')>-1;}},{id:"flexGoal",q:"What's your flexibility focus?",sub:"This shapes your mobility programming.",t:"single",opts:["General flexibility","Recovery & injury prevention","Athletic mobility","Pilates core & stability","Prenatal mobility","Stress relief & relaxation"],cu:1,cond:function(){return Array.isArray(S.profile.goals)&&(S.profile.goals.indexOf('Flexibility & Mobility')>-1||S.profile.goals.indexOf('Pilates')>-1||S.profile.goals.indexOf('Prenatal Fitness')>-1);}},{id:"strengthFocus",q:"What type of strength training?",sub:"This determines your program style.",t:"single",opts:["Pure Strength (build max strength)","Strength & Conditioning (strength + conditioning blend)","Muscle Building (hypertrophy focus)"],cu:1,cond:function(){return Array.isArray(S.profile.goals)&&(S.profile.goals.indexOf('Strength')>-1||S.profile.goals.indexOf('Muscle Building')>-1||S.profile.goals.indexOf('General Fitness')>-1||S.profile.goals.indexOf('Fat Loss')>-1);}},{id:"equipPref",q:"Preferred equipment for strength?",sub:"We'll build your program around this.",t:"single",opts:["Barbells & Racks","Dumbbells","Kettlebells","Bodyweight","No preference (mix it up)"],cu:1,cond:function(){return Array.isArray(S.profile.goals)&&(S.profile.goals.indexOf('Strength')>-1||S.profile.goals.indexOf('Muscle Building')>-1||S.profile.goals.indexOf('General Fitness')>-1||S.profile.goals.indexOf('Fat Loss')>-1);}},{id:"scElements",q:"Add training elements?",sub:"These blend into your Strength & Conditioning program. Totally optional — skip if unsure.",t:"multi",opts:["No preference","Barbell-focused compounds","Kettlebell conditioning","Dumbbell complexes","HIIT finishers"],cu:1,opt:true,cond:function(){return S.profile.strengthFocus==='Strength & Conditioning (strength + conditioning blend)';}},{id:"time",q:"How much time per session?",t:"single",opts:["20 min","30 min","45 min","60 min","90 min"],cu:1},{id:"days",q:"How many days per week?",sub:"We'll suggest optimal based on your goals.",t:"single",opts:["2 days","3 days","4 days","5 days","6 days"]},{id:"injuries",q:"Any injuries or limitations?",t:"multi",opts:["None","Lower Back","Shoulders","Knees","Wrists","Neck","Hips","Ankles","Elbows"],cu:1},{id:"measurements",q:"Starting measurements",sub:"We'll track these over time. All optional.",t:"measure"}];
 
 function getActiveOBQ(){return OBQ.filter(function(q){return !q.cond||q.cond();});}
 function rOB(){var activeQs=getActiveOBQ();var qIdx=Math.min(S.obStep,activeQs.length-1);var q=activeQs[qIdx],val=S.profile[q.id],isL=qIdx===activeQs.length-1;
@@ -1580,19 +1580,30 @@ ftSel.addEventListener('change',saveHt);inSel.addEventListener('change',saveHt);
 htWrap.appendChild(ftSel);htWrap.appendChild(inSel);
 htRow.appendChild(htWrap);body.appendChild(htRow);
 
-// Remaining fields (weight, chest, waist, hips, arms)
-var fields=[{k:'weight',l:'Weight (lbs)',ph:'e.g. 185'},{k:'chest',l:'Chest (in)',ph:'optional'},{k:'waist',l:'Waist (in)',ph:'optional'},{k:'hips',l:'Hips (in)',ph:'optional'},{k:'arms',l:'Arms (in)',ph:'optional'}];
-fields.forEach(function(f){var row=h('div',{style:{marginBottom:'10px'}});
-row.appendChild(h('label',{style:{fontSize:'11px',fontWeight:700,color:'var(--text2)',display:'block',marginBottom:'3px'}},f.l));
-var inp=h('input',{className:'input',type:'number',step:'0.1',placeholder:f.ph,value:meas[f.k]||'',style:{padding:'10px 12px',fontSize:'14px'}});
-inp.addEventListener('change',function(e){if(!S.profile.measurements)S.profile.measurements={};S.profile.measurements[f.k]=e.target.value;sv();});
-row.appendChild(inp);body.appendChild(row);});
+// Weight dropdown
+var wtRow=h('div',{style:{marginBottom:'14px'}});
+wtRow.appendChild(h('label',{style:{fontSize:'11px',fontWeight:700,color:'var(--text2)',display:'block',marginBottom:'6px'}},'Weight (lbs)'));
+var wtSel=h('select',{className:'input',style:{padding:'10px 12px',fontSize:'14px',appearance:'auto'}});
+wtSel.appendChild(h('option',{value:''},'Select weight'));
+for(var wi=80;wi<=400;wi+=5){var wo=h('option',{value:''+wi},wi+' lbs');if(parseInt(meas.weight)===wi)wo.selected=true;wtSel.appendChild(wo);}
+wtSel.addEventListener('change',function(e){if(!S.profile.measurements)S.profile.measurements={};S.profile.measurements.weight=e.target.value;sv();});
+wtRow.appendChild(wtSel);body.appendChild(wtRow);
+
+// Body measurement dropdowns (chest, waist, hips, arms - all optional)
+var measDD=[{k:'chest',l:'Chest',mn:20,mx:70},{k:'waist',l:'Waist',mn:20,mx:60},{k:'hips',l:'Hips',mn:25,mx:65},{k:'arms',l:'Arms',mn:8,mx:50}];
+measDD.forEach(function(f){var row=h('div',{style:{marginBottom:'10px'}});
+row.appendChild(h('label',{style:{fontSize:'11px',fontWeight:700,color:'var(--text2)',display:'block',marginBottom:'3px'}},f.l+' (in) — optional'));
+var sel=h('select',{className:'input',style:{padding:'10px 12px',fontSize:'14px',appearance:'auto'}});
+sel.appendChild(h('option',{value:''},'Skip'));
+for(var mi=f.mn*2;mi<=f.mx*2;mi++){var v=mi%2===0?''+(mi/2):''+(mi/2).toFixed(1);var so=h('option',{value:v},v+'"');if(meas[f.k]===v)so.selected=true;sel.appendChild(so);}
+(function(key){sel.addEventListener('change',function(e){if(!S.profile.measurements)S.profile.measurements={};S.profile.measurements[key]=e.target.value;sv();});})(f.k);
+row.appendChild(sel);body.appendChild(row);});
 }else{var pills=h('div',{className:'pill-wrap'});q.opts.forEach(function(opt){var sel=q.t==='single'?val===opt:(Array.isArray(val)&&val.indexOf(opt)>-1);var b=h('button',{className:'pill'+(sel?' active':'')},(sel?'\u2713 ':'')+opt);b.addEventListener('click',function(){if(q.t==='single')S.profile[q.id]=opt;else{var c=Array.isArray(val)?val.slice():[];if(opt==='None')c=['None'];else{c=c.filter(function(v){return v!=='None';});var i=c.indexOf(opt);i>-1?c.splice(i,1):c.push(opt);}S.profile[q.id]=c;}sv();R();});pills.appendChild(b);});body.appendChild(pills);
 if(q.cu){var row=h('div',{style:{display:'flex',gap:'6px',marginTop:'12px'}});var ci=h('input',{className:'input',placeholder:'Other',value:S.ci||'',style:{flex:1,padding:'10px',fontSize:'13px'},id:'ob-ci'});ci.addEventListener('input',function(e){S.ci=e.target.value;});ci.addEventListener('keydown',function(e){if(e.key==='Enter')addC(q);});row.appendChild(ci);row.appendChild(h('button',{className:'btn btn-primary btn-sm',innerHTML:svg('plus',14,'#fff'),onClick:function(){addC(q);}}));body.appendChild(row);}}
 qc.appendChild(body);card.appendChild(qc);
 var nav=h('div',{style:{display:'flex',justifyContent:'space-between',marginTop:'16px'}});
 nav.appendChild(h('button',{className:'btn btn-secondary',style:{opacity:S.obStep>0?1:.3},innerHTML:svg('left',14)+' Back',onClick:function(){if(S.obStep>0){S.obStep--;S.ci='';R();}}}));
-nav.appendChild(h('button',{className:'btn btn-primary',style:{opacity:can?1:.5,padding:'12px 24px'},id:'ob-nx',innerHTML:(isL?"Let's Go! ":'Next ')+svg('right',14,'#fff'),onClick:function(){var aq=getActiveOBQ(),qi=Math.min(S.obStep,aq.length-1),qq=aq[qi],vv=S.profile[qq.id];var ok=qq.t==='text'?(vv&&vv.trim()):qq.t==='measure'?true:(qq.t==='single'?!!vv:(Array.isArray(vv)&&vv.length>0));if(!ok)return;qi===aq.length-1?finOB():(S.obStep++,S.ci='',R());}}));
+nav.appendChild(h('button',{className:'btn btn-primary',style:{opacity:can?1:.5,padding:'12px 24px'},id:'ob-nx',innerHTML:(isL?"Let's Go! ":(q.opt?'Skip / Next ':'Next '))+svg('right',14,'#fff'),onClick:function(){var aq=getActiveOBQ(),qi=Math.min(S.obStep,aq.length-1),qq=aq[qi],vv=S.profile[qq.id];var ok=qq.t==='text'?(vv&&vv.trim()):qq.t==='measure'?true:(qq.t==='single'?!!vv:(Array.isArray(vv)&&vv.length>0));if(!ok)return;qi===aq.length-1?finOB():(S.obStep++,S.ci='',R());}}));
 card.appendChild(nav);w.appendChild(card);return w;}
 function addC(q){var v=(S.ci||'').trim();if(!v)return;if(q.t==='single')S.profile[q.id]=v;else{var c=Array.isArray(S.profile[q.id])?S.profile[q.id].filter(function(x){return x!=='None';}):[];c.push(v);S.profile[q.id]=c;}S.ci='';sv();R();}
 function applySCElements(exercises, elements){
@@ -1646,7 +1657,7 @@ function applySCElements(exercises, elements){
 function autoEnrollProgram(){
   var p=S.profile,lvl=p.level||'Beginner',goals=Array.isArray(p.goals)?p.goals:[],equip=Array.isArray(p.equipment)?p.equipment:[];
   var lvlMap={'Just Starting Out':'jso','Beginner':'beg','Intermediate':'int','Advanced':'adv'};
-  var lk=lvlMap[lvl]||'beg';
+  var lvlKey=lvlMap[lvl]||'beg';
   var enrolled=[];
 
   // Determine equipment preference
@@ -1668,19 +1679,19 @@ function autoEnrollProgram(){
 
   if(needsStrength){
     if(sf.indexOf('Strength & Conditioning')>-1){
-      var scId='sc_'+lk;
+      var scId='sc_'+lvlKey;
       if(PROGRAMS[scId]){
         var scEnroll={id:scId,days:PROGRAMS[scId].daysPerWeek,week:1,day:1};
         if(Array.isArray(p.scElements))scEnroll.scElements=p.scElements;
         enrolled.push(scEnroll);
       }
     } else {
-      var strId='str_'+lk+'_'+eqKey;
+      var strId='str_'+lvlKey+'_'+eqKey;
       if(PROGRAMS[strId])enrolled.push({id:strId,days:PROGRAMS[strId].daysPerWeek,week:1,day:1});
     }
   }
-  if(goals.indexOf('HIIT / Conditioning')>-1&&!sf.indexOf('Strength & Conditioning')>-1){
-    var hiitId=lk==='adv'?'hiit_adv':(lk==='int'?'hiit_int':'hiit_jso');
+  if(goals.indexOf('HIIT / Conditioning')>-1&&sf.indexOf('Strength & Conditioning')===-1){
+    var hiitId=lvlKey==='adv'?'hiit_adv':(lvlKey==='int'?'hiit_int':'hiit_jso');
     if(PROGRAMS[hiitId]&&!enrolled.find(function(e){return e.id===hiitId;}))enrolled.push({id:hiitId,days:PROGRAMS[hiitId].daysPerWeek,week:1,day:1});
   }
 
@@ -1693,7 +1704,7 @@ function autoEnrollProgram(){
     else if(rg.indexOf('Half')>-1)runId='run_half';
     else if(rg.indexOf('Marathon')>-1)runId='run_marathon';
     else if(rg.indexOf('Sprint')>-1||rg.indexOf('Track')>-1)runId='run_sprint';
-    else if(rg.indexOf('Just starting')>-1||lk==='jso')runId='run_jso';
+    else if(rg.indexOf('Just starting')>-1||lvlKey==='jso')runId='run_jso';
     if(PROGRAMS[runId])enrolled.push({id:runId,days:PROGRAMS[runId].daysPerWeek,week:1,day:1});
   }
 
@@ -1704,13 +1715,13 @@ function autoEnrollProgram(){
     if(fg.indexOf('Athletic')>-1)flexId='flex_athletic';
     else if(fg.indexOf('Pilates')>-1)flexId='flex_pilates';
     else if(fg.indexOf('Prenatal')>-1)flexId='flex_prenatal';
-    else if(lk==='jso')flexId='flex_jso';
+    else if(lvlKey==='jso')flexId='flex_jso';
     if(PROGRAMS[flexId])enrolled.push({id:flexId,days:PROGRAMS[flexId].daysPerWeek,week:1,day:1});
   }
 
   // Fallback: if nothing matched, enroll in the best general program
   if(enrolled.length===0){
-    var fallback='str_'+lk+'_'+eqKey;
+    var fallback='str_'+lvlKey+'_'+eqKey;
     if(PROGRAMS[fallback])enrolled.push({id:fallback,days:PROGRAMS[fallback].daysPerWeek,week:1,day:1});
   }
 
@@ -1822,7 +1833,7 @@ function getDayWorkouts(dateStr){
 
   return results;
 }
-function rCalStrip(el){
+function rCalStrip(el){try{
   if(!S.calDate)S.calDate=new Date().toISOString().split('T')[0];
   var today=new Date().toISOString().split('T')[0];
   var refDate=new Date(S.calDate+'T12:00:00');
@@ -1912,6 +1923,7 @@ function rCalStrip(el){
       el.appendChild(detail);
     }
   }
+}catch(e){console.error("Cal err:",e);}
 }
 
 function rHome(){var el=h('div',{className:'page active'});
@@ -1920,10 +1932,12 @@ if(S.enrolled.length===0)return rPP();
 
 var merged=getMergedSchedule();
 var ap=gAP(),pd=ap?gPD(ap.id):null;
+if(!ap&&S.enrolled.length>0){S.active=S.enrolled[0].id;ap=gAP();pd=ap?gPD(ap.id):null;}
+if(!ap||!pd)return rPP();
 var streak=getStreak();
 
 // Calendar strip
-rCalStrip(el);
+try{rCalStrip(el);}catch(e){}
 
 // === RED'S COACHING OVERVIEW ===
 function getJSOCoaching(ap,pd,wk,dy){
@@ -3251,31 +3265,7 @@ fields.forEach(function(f){var val=S.profile[f.id];var display=Array.isArray(val
 el.appendChild(pC);
 
 // Height - saved display with edit toggle
-var hC=h('div',{className:'card'});
-var totalIn=parseFloat((S.profile.measurements&&S.profile.measurements.height)||0);
-var curFt=totalIn>0?Math.floor(totalIn/12):0;
-var curIn=totalIn>0?Math.round(totalIn%12):0;
-var hHead=h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'6px'}});
-hHead.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,margin:0}},'Height'));
-if(totalIn>0&&!S.heightEdit){
-  hHead.appendChild(h('button',{className:'btn btn-secondary btn-sm',onClick:function(){S.heightEdit=true;R();}},'Edit'));
-  hC.appendChild(hHead);
-  hC.appendChild(h('p',{style:{fontSize:'16px',fontWeight:600}},curFt+"'"+curIn+'" ('+totalIn+' in)'));
-}else{
-  if(totalIn>0)hHead.appendChild(h('button',{className:'btn btn-secondary btn-sm',onClick:function(){S.heightEdit=false;R();}},'Cancel'));
-  hC.appendChild(hHead);
-  var hRow=h('div',{style:{display:'flex',gap:'10px',alignItems:'center'}});
-  var ftSel=h('select',{className:'input',style:{flex:1,padding:'10px 12px',fontSize:'14px',appearance:'auto',WebkitAppearance:'auto'}});
-  ftSel.appendChild(h('option',{value:''},'Feet'));
-  for(var ft=4;ft<=7;ft++){var o=h('option',{value:''+ft},ft+"'");if(ft===curFt)o.selected=true;ftSel.appendChild(o);}
-  var inSel=h('select',{className:'input',style:{flex:1,padding:'10px 12px',fontSize:'14px',appearance:'auto',WebkitAppearance:'auto'}});
-  inSel.appendChild(h('option',{value:''},'Inches'));
-  for(var inc=0;inc<=11;inc++){var o=h('option',{value:''+inc},inc+'"');if(inc===curIn&&totalIn>0)o.selected=true;inSel.appendChild(o);}
-  hRow.appendChild(ftSel);hRow.appendChild(inSel);
-  var hSave=h('button',{className:'btn btn-primary btn-sm',onClick:function(){var f=parseInt(ftSel.value)||0;var i=parseInt(inSel.value)||0;if(f>0){if(!S.profile.measurements)S.profile.measurements={};S.profile.measurements.height=''+(f*12+i);S.heightEdit=false;sv();R();}}},'Save');
-  hRow.appendChild(hSave);hC.appendChild(hRow);
-}
-el.appendChild(hC);
+// Height is in measurements section (onboarding)
 
 // Enrolled programs
 var eC=h('div',{className:'card'});eC.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},'My Programs'));
@@ -3338,6 +3328,7 @@ if(prevChat&&prevChat._vpCleanup){prevChat._vpCleanup();prevChat.classList.remov
 var navBar=document.querySelector('.bottom-nav');
 if(navBar)navBar.style.display='';
 
+try{
 if(S.tab==='home')content.appendChild(rHome());
 else if(S.tab==='program')content.appendChild(rProg());
 else if(S.tab==='track'){
@@ -3348,6 +3339,7 @@ else if(S.tab==='progress')content.appendChild(rProgress());
 else if(S.tab==='chat'){var chatPage=rChat();chatPage.classList.add('_vpActive');content.appendChild(chatPage);}
 else if(S.tab==='programs')content.appendChild(rPP());
 else if(S.tab==='profile')content.appendChild(rProfile());
+}catch(tabErr){console.error('Tab render error:',tabErr);content.appendChild(h('div',{style:{padding:'40px',textAlign:'center',color:'var(--text2)'}},h('p',null,'Something went wrong loading this tab.'),h('button',{className:'btn btn-primary btn-sm',style:{marginTop:'12px'},onClick:function(){S.tab='home';S.drill=null;R();}},'Go Home')));}
 app.appendChild(content);
 var nav=h('div',{className:'bottom-nav'});
 [{id:'home',l:'Home',i:'home'},{id:'track',l:'Track',i:'dumbbell'},{id:'chat',l:'Red',i:'red_wolf'},{id:'progress',l:'Progress',i:'chart'},{id:'program',l:'Program',i:'book'}].forEach(function(tab){
