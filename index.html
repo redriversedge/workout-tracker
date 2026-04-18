@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#c8102e">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>RedRiversEdgeFitness</title>
+<link rel="icon" href="/assets/red-wolf.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/rre.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/js/themes.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/programs.js"></script>
+<script src="/js/logging.js"></script>
+<script src="/js/analytics.js"></script>
+<script src="/js/red.js"></script>
+<script src="/js/onboarding.js"></script>
+<script src="/js/tabs.js"></script>
+<script src="/js/backup.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(function(){});
+}
+try { if (typeof load === 'function') load(); if (typeof R === 'function') R(); }
+catch (e) {
+  var app = document.getElementById('app');
+  app.innerHTML = '<div style="padding:24px;font-family:system-ui;color:#c8102e"><h2>App Error</h2><p>'+(e && e.message ? e.message : String(e))+'</p><p style="color:#666;font-size:12px">Modules are not yet populated. Open the browser console for details.</p></div>';
+  if (window.console) console.error('[RRE] boot failed:', e);
+}
+</script>
+</body>
+</html>
