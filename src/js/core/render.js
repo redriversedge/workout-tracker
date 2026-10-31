@@ -101,7 +101,10 @@ else if(S.tab==='program')safeRender(rProg,'rProg');
 else if(S.tab==='track'){
   // Auto-navigate to next unlogged workout (unless user chose specific day)
   var _isMerged=!!(merged&&S.enrolled.length>1);
-  if(!S._trackManual){
+  // Editing a day (even a finished one) pins Track to it until Save.
+  var _curDayKey=_isMerged?'merged_w'+S.week+'d'+S.day:(gAP()?lk(gAP().id,S.week,S.day):'');
+  var _editing=!!(_curDayKey&&S._curLogKey===_curDayKey&&curLogHasSets(S.curLog)&&JSON.stringify(S.curLog)!==JSON.stringify(S.logs[_curDayKey]||{}));
+  if(!S._trackManual&&!_editing){
     if(_isMerged){
       // Merged plans log under merged_w*d*, so they need their own "next workout".
       if(S.logs['merged_w'+S.week+'d'+S.day]||!merged.schedule[S.day-1]||merged.schedule[S.day-1].isRest){

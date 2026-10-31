@@ -122,15 +122,18 @@ var Backup = (function () {
       window.S.modal = {
         type: 'confirm',
         title: 'Restore this backup?',
-        msg: 'Backup from ' + info.when + ' with ' + info.workouts + ' workout' + (info.workouts === 1 ? '' : 's') + '. It replaces what is on this phone now (' + cur + ' workout' + (cur === 1 ? '' : 's') + '). You can undo this from Profile.',
+        msg: 'Backup from ' + info.when + ' with ' + info.workouts + ' workout' + (info.workouts === 1 ? '' : 's') + '. It replaces what is on this phone now (' + cur + ' workout' + (cur === 1 ? '' : 's') + ').',
         confirmText: 'Restore',
         cancelText: 'Cancel',
         onConfirm: function () {
           try {
-            snapshotBeforeImport();
+            var canUndo = snapshotBeforeImport();
+            if (!canUndo) { try { localStorage.removeItem('rre2_backup_pre_import'); } catch (e2) {} }
             applyPayload(data);
             window.S.modal = null;
-            window.sv(); window.toast('Backup restored'); window.R();
+            window.sv();
+            window.toast(canUndo ? 'Backup restored. Undo is on Profile.' : "Backup restored. Undo isn't available (phone storage is full).");
+            window.R();
             if (onDone) onDone(null);
           } catch (e) {
             window.S.modal = null; window.R();

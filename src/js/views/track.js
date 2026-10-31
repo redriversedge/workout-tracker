@@ -77,7 +77,7 @@ try{localStorage.removeItem('rre2_curlog');localStorage.removeItem('rre2_sesstim
 sv();
 // Celebration with session data for Red's post-workout feedback
 var _nxtW=getNextWorkout(ap,pd);
-var _logCopy=JSON.parse(JSON.stringify(S.curLog));
+var _logCopy=JSON.parse(JSON.stringify(S.logs[_svKey]));if(S._curLogKey===_svKey||!S._curLogKey){S.curLog={};S._curLogKey='';}
 S.modal={type:'celebration',dayName:dy.name,nextW:_nxtW,ap:ap,pd:pd,wk:wk,dy:dy,w:_svW,d:_svD,logKey:_svKey,curLog:_logCopy,feeling:null,redFeedback:null,redLoading:false};
 R();
 }},'Save'));
@@ -276,6 +276,7 @@ if(adjF!==1){var adjLabel=adjF<1?'Reduced ('+Math.round(adjF*100)+'%)':'Boosted 
   S.modal={type:'celebration',merged:true,dayName:dayTpl.label,nextW:_nxD,
     ap:{id:'merged'},pd:{name:S.enrolled.map(function(e){return PROGRAMS[e.id]?PROGRAMS[e.id].name:'';}).filter(Boolean).join(' + ')},
     wk:null,dy:{name:dayTpl.label,ex:_mExs},w:S.week,d:S.day,logKey:logKey,curLog:JSON.parse(JSON.stringify(S.curLog)),feeling:null,redFeedback:null,redLoading:false};
+  if(S._curLogKey===logKey||!S._curLogKey){S.curLog={};S._curLogKey='';}
   R();}},'Save'));
   hbtns.appendChild(h('button',{className:'btn btn-danger btn-sm',innerHTML:svg('trash',12,'var(--danger)'),'aria-label':'Clear this workout',onClick:function(){S.modal={type:'confirm',title:'Clear Workout?',msg:'This will erase all logged data for this workout.',confirmText:'Clear',cancelText:'Keep',onConfirm:function(){delete S.logs[logKey];sv();S.curLog={};S.modal=null;R();}};R();}}));
   hTop.appendChild(hbtns);hdr.appendChild(hTop);

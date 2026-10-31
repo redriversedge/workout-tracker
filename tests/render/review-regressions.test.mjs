@@ -142,3 +142,60 @@ test('chat never sticks on "thinking" if building context throws', async functio
   assert.ok(byText(app, /Try again/), 'retry offered');
   app.close();
 });
+
+test('first launch: a mid-workout single-program autosave is kept, not deleted, when merged mode starts', async function () {
+  const st = userStorage(['str_int_bb', 'run_5k'], 0);
+  st.rre2_curlog = { key: 'str_int_bb_w1d1', data: { e0: { _name: 'Barbell Bench Press', s1: { w: '185', r: '5', done: true } } } };
+  const app = bootApp(st);
+  app.run("S.tab='track';R();");
+  await app.flush();
+  const kept = app.S().logs.str_int_bb_w1d1;
+  assert.ok(kept, 'in-progress sets saved to history');
+  assert.equal(kept.e0.s1.w, '185');
+  assert.equal(JSON.parse(app.window.localStorage.getItem('rre2_logs')).str_int_bb_w1d1.e0.s1.w, '185', 'persisted');
+  app.close();
+});
+
+test('editing a finished day keeps Track on that day until Save', async function () {
+  for (const combo of [['str_int_bb', 'run_5k'], ['str_int_bb']]) {
+    const app = bootApp(userStorage(combo, 0.2));
+    const merged = combo.length > 1;
+    // Pick an already-logged day and open it the way a pill tap does.
+    const done = merged ? null : app.run("(function(){var k=Object.keys(S.logs).filter(function(k){return k.indexOf('str_int_bb_w')===0;})[0];var m=k.match(/_w(\\d+)d(\\d+)$/);return[+m[1],+m[2]];})()");
+    if (merged) {
+      const d1 = app.run("(function(){var m=getMergedSchedule();for(var i=0;i<m.schedule.length;i++){if(!m.schedule[i].isRest)return i+1;}})()");
+      app.run("S.week=1;S.day=" + d1 + ";S.logs['merged_w1d'+S.day]={date:localISOStr(),e0:{_name:'x',s1:{w:'100',r:'5'}}};sv();S._trackManual=true;loadMergedCL();S.tab='track';R();");
+    } else {
+      app.run('S.week=' + done[0] + ';S.day=' + done[1] + ";S._trackManual=true;loadCL();S.tab='track';R();");
+    }
+    await app.flush();
+    const w = app.S().week, d = app.S().day;
+    const inp = app.window.document.querySelector('input[type="number"]');
+    inp.value = '777';
+    inp.dispatchEvent(new app.window.Event('input', { bubbles: true }));
+    inp.dispatchEvent(new app.window.Event('change', { bubbles: true }));
+    app.run("S.tab='track';R();");
+    await app.flush();
+    assert.deepEqual([app.S().week, app.S().day], [w, d], (merged ? 'merged' : 'single') + ': stayed on the day being edited');
+    app.close();
+  }
+});
+
+test('restore with storage full: no stale undo is offered', async function () {
+  const app = bootApp(userStorage(['str_int_bb'], 0.3));
+  const ls = app.window.localStorage;
+  ls.setItem('rre2_backup_pre_import', JSON.stringify({ profile: { name: 'Ancient' }, logs: {} }));
+  const real = app.window.Storage.prototype.setItem;
+  app.window.Storage.prototype.setItem = function (k, v) {
+    if (k === 'rre2_backup_pre_import') { const e = new Error('full'); e.name = 'QuotaExceededError'; throw e; }
+    return real.call(this, k, v);
+  };
+  const file = new app.window.File([JSON.stringify({ version: 'rre-v20', profile: { name: 'Cliff' }, enrolled: [{ id: 'str_int_bb', days: 4 }], logs: {} })], 'b.json');
+  app.run('Backup.importFromFile')(file);
+  assert.ok(await waitFor(function () { return app.S().modal && app.S().modal.type === 'confirm'; }));
+  click(app, byText(app, /^Restore$/));
+  await app.flush();
+  assert.equal(ls.getItem('rre2_backup_pre_import'), null, 'stale undo removed');
+  assert.equal(app.run('Backup.hasUndo()'), false);
+  app.close();
+});

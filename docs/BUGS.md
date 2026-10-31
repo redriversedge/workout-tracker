@@ -32,6 +32,9 @@ Every item below has a regression test (file noted).
 | Celebration could not be closed while Red loaded, and a hung request blocked the queue | 35s client timeout; Close button during loading | `render/review-regressions` |
 | Merged rest day hid the day pills | Pills render before the rest-day view | `render/review-regressions` |
 | Chat stuck on "thinking" if building context threw | try/catch with retry bubble | `render/review-regressions` |
+| (second pass) A mid-workout single-program autosave was dropped when merged mode first opened | Kept in history (`autoSaved: true`) with a toast | `render/review-regressions` |
+| (second pass) Editing a finished day auto-advanced Track away before Save | Auto-advance pauses while the current day has unsaved edits | `render/review-regressions` |
+| (second pass) Failed undo snapshot left an older one in place | Remove stale snapshot; toast says undo is unavailable | `render/review-regressions` |
 
 ## Earlier fixes (v19, 2026-04)
 

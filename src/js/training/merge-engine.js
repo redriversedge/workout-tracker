@@ -240,6 +240,21 @@ function getNextMergedDay(merged){
 function loadMergedCL(){
   var key='merged_w'+S.week+'d'+S.day;
   if(S._curLogKey===key&&S.curLog&&Object.keys(S.curLog).length>0)return;
+  // An unsaved single-program workout (e.g. from before the merged plan existed) is kept
+  // in history rather than discarded.
+  if(S._curLogKey&&S._curLogKey.indexOf('merged_')!==0&&!S.logs[S._curLogKey]&&curLogHasSets(S.curLog)){
+    var kept=JSON.parse(JSON.stringify(S.curLog));kept.date=kept.date||localISOStr();kept.autoSaved=true;
+    S.logs[S._curLogKey]=kept;sv();
+    try{toast('Saved your in-progress workout to history');}catch(e){}
+  }
   S._curLogKey=key;
   S.curLog=JSON.parse(JSON.stringify(S.logs[key]||{}));
+}
+
+function curLogHasSets(log){
+  if(!log||typeof log!=='object')return false;
+  return Object.keys(log).some(function(ek){
+    if(!/^e\d+$/.test(ek)||!log[ek])return false;
+    return Object.keys(log[ek]).some(function(sk){var st=log[ek][sk];return /^s\d+$/.test(sk)&&st&&(parseFloat(st.w)>0||parseInt(st.r,10)>0||st.done===true);});
+  });
 }
