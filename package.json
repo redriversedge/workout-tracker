@@ -1,0 +1,21 @@
+{
+  "name": "redriversedgefitness",
+  "version": "20.0.0",
+  "private": true,
+  "description": "RedRiversEdgeFitness PWA with Red, the AI coach",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "npm run check && npm run build && node --test tests/unit tests/render",
+    "test:e2e": "node --test tests/e2e",
+    "serve": "npx serve dist"
+  },
+  "devDependencies": {
+    "acorn": "^8.19.0",
+    "jsdom": "^25.0.1",
+    "playwright-core": "^1.64.1"
+  }
+}

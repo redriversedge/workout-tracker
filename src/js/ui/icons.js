@@ -1,0 +1,26 @@
+// === ICONS ===
+function svg(n,s,c){s=s||18;c=c||'currentColor';var p={
+home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="'+c+'" stroke-width="2"/><polyline points="9,22 9,12 15,12 15,22" fill="none" stroke="'+c+'" stroke-width="2"/>',
+book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" fill="none" stroke="'+c+'" stroke-width="2"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" fill="none" stroke="'+c+'" stroke-width="2"/>',
+dumbbell:'<rect x="3" y="6" width="4" height="12" rx="1" fill="none" stroke="'+c+'" stroke-width="2"/><rect x="17" y="6" width="4" height="12" rx="1" fill="none" stroke="'+c+'" stroke-width="2"/><line x1="7" y1="12" x2="17" y2="12" stroke="'+c+'" stroke-width="2"/>',
+chart:'<line x1="12" y1="20" x2="12" y2="10" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="20" x2="18" y2="4" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="20" x2="6" y2="16" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="'+c+'" stroke-width="2"/><circle cx="12" cy="7" r="4" fill="none" stroke="'+c+'" stroke-width="2"/>',
+clock:'<circle cx="12" cy="12" r="10" fill="none" stroke="'+c+'" stroke-width="2"/><polyline points="12,6 12,12 16,14" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+check:'<polyline points="20,6 9,17 4,12" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+plus:'<line x1="12" y1="5" x2="12" y2="19" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+x:'<line x1="18" y1="6" x2="6" y2="18" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+trash:'<polyline points="3,6 5,6 21,6" fill="none" stroke="'+c+'" stroke-width="2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" fill="none" stroke="'+c+'" stroke-width="2"/>',
+play:'<polygon points="5,3 19,12 5,21" fill="'+c+'"/>',
+pause:'<rect x="6" y="4" width="4" height="16" fill="'+c+'"/><rect x="14" y="4" width="4" height="16" fill="'+c+'"/>',
+reset:'<polyline points="1,4 1,10 7,10" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+left:'<polyline points="15,18 9,12 15,6" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+right:'<polyline points="9,18 15,12 9,6" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>',
+heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="none" stroke="'+c+'" stroke-width="2"/>',
+sun:'<circle cx="12" cy="12" r="5" fill="none" stroke="'+c+'" stroke-width="2"/><line x1="12" y1="1" x2="12" y2="3" stroke="'+c+'" stroke-width="2"/>',
+moon:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="'+c+'" stroke-width="2"/>',
+chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="none" stroke="'+c+'" stroke-width="2"/>',
+send:'<line x1="22" y1="2" x2="11" y2="13" stroke="'+c+'" stroke-width="2"/><polygon points="22,2 15,22 11,13 2,9" fill="none" stroke="'+c+'" stroke-width="2"/>',
+settings:'<circle cx="12" cy="12" r="3" fill="none" stroke="'+c+'" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.18V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1.08H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1.08H21a2 2 0 0 1 0 4h-.09" fill="none" stroke="'+c+'" stroke-width="2"/>',
+trophy:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z" fill="none" stroke="'+c+'" stroke-width="2"/>',
+fire:'<path d="M12 12c2-2.96 0-7-1-8 0 3.038-1.773 4.741-3 6-1.226 1.26-2 3.24-2 5a6 6 0 1 0 12 0c0-1.532-1.056-3.94-2-5-1.786 3-2 4-4 2z" fill="none" stroke="'+c+'" stroke-width="2"/>'
+};return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24">'+(p[n]||'')+'</svg>';}
