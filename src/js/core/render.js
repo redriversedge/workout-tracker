@@ -100,17 +100,26 @@ if(S.tab==='home')safeRender(rHome,'rHome');
 else if(S.tab==='program')safeRender(rProg,'rProg');
 else if(S.tab==='track'){
   // Auto-navigate to next unlogged workout (unless user chose specific day)
+  var _isMerged=!!(merged&&S.enrolled.length>1);
   if(!S._trackManual){
-    var _ap=gAP(),_pd=_ap?gPD(_ap.id):null;
-    if(_ap&&_pd){
-      var _nxt=getNextWorkout(_ap,_pd);
-      if(_nxt&&(S.week!==_nxt.w||S.day!==_nxt.d)){
-        S.week=_nxt.w;S.day=_nxt.d;loadCL();
+    if(_isMerged){
+      // Merged plans log under merged_w*d*, so they need their own "next workout".
+      if(S.logs['merged_w'+S.week+'d'+S.day]||!merged.schedule[S.day-1]||merged.schedule[S.day-1].isRest){
+        var _mn=getNextMergedDay(merged);
+        if(_mn&&(S.week!==_mn.w||S.day!==_mn.d)){S.week=_mn.w;S.day=_mn.d;}
+      }
+    } else {
+      var _ap=gAP(),_pd=_ap?gPD(_ap.id):null;
+      if(_ap&&_pd){
+        var _nxt=getNextWorkout(_ap,_pd);
+        if(_nxt&&(S.week!==_nxt.w||S.day!==_nxt.d)){
+          S.week=_nxt.w;S.day=_nxt.d;loadCL();
+        }
       }
     }
   }
   S._trackManual=false;
-  if(merged&&S.enrolled.length>1)safeRender(rMergedTrack,'rMergedTrack');
+  if(_isMerged)safeRender(rMergedTrack,'rMergedTrack');
   else safeRender(rTrack,'rTrack');
 }
 else if(S.tab==='progress')safeRender(rProgress,'rProgress');
@@ -224,9 +233,12 @@ if(S.modal&&S.modal.type==='celebration'){
   }
   // Navigation buttons (always visible)
   var _nw=S.modal.nextW;
+  if(S.modal.redLoading){
+    _box.appendChild(h('button',{className:'btn btn-secondary',style:{width:'100%'},onClick:function(){S.modal=null;R();}},'Close (your workout is saved)'));
+  }
   if(S.modal.feeling!==null&&!S.modal.redLoading){
     _box.appendChild(h('button',{className:'btn btn-primary',style:{width:'100%',marginBottom:'8px'},onClick:function(){
-      if(_nw){S.week=_nw.w;S.day=_nw.d;if(S.modal.merged){S.curLog=JSON.parse(JSON.stringify(S.logs['merged_w'+_nw.w+'d'+_nw.d]||{}));S._trackManual=true;S.tab='track';}else{loadCL();}}
+      if(_nw){S.week=_nw.w;S.day=_nw.d;if(S.modal.merged){loadMergedCL();S._trackManual=true;S.tab='track';}else{loadCL();}}
       S.modal=null;R();
     }},_nw?'Next: W'+_nw.w+' D'+_nw.d+' \u2014 '+_nw.name:'Back to Home'));
     _box.appendChild(h('button',{className:'btn btn-secondary',style:{width:'100%'},onClick:function(){S.modal=null;S.tab='home';R();}},'Home'));

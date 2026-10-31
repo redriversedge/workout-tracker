@@ -21,6 +21,18 @@ Every item below has a regression test (file noted).
 | "215 sessions behind" banner after a long break | Discouraging, wrong-sounding message | Friendly welcome-back copy past 12 missed | - |
 | Developer error text in chat ("check ANTHROPIC_API_KEY") | Confusing messages for users | Friendly messages + Try again | `render/flows` |
 
+### Found in the independent pre-release review (same day)
+
+| Issue | Fix | Test |
+|---|---|---|
+| Merged Track auto-advance used the single-program lookup, snapping back to an already-saved merged day and overwriting it on the next Save | `getNextMergedDay()` for merged plans; pill and Home taps set `_trackManual` | `render/review-regressions` |
+| A v19 single-program autosave appeared inside the merged workout and got saved there | `loadMergedCL()` only keeps an autosave whose key matches | `render/review-regressions` |
+| One failed `localStorage` write (storage full) silently skipped every later key | `sv()` writes each key separately, drops disposable coach cache first, warns once; pre-migration snapshot skipped when large | `render/review-regressions` |
+| Restore replaced all data with no warning | Confirm with backup date and workout count; snapshot before restoring; Undo last restore on Profile; type checks | `render/review-regressions` |
+| Celebration could not be closed while Red loaded, and a hung request blocked the queue | 35s client timeout; Close button during loading | `render/review-regressions` |
+| Merged rest day hid the day pills | Pills render before the rest-day view | `render/review-regressions` |
+| Chat stuck on "thinking" if building context threw | try/catch with retry bubble | `render/review-regressions` |
+
 ## Earlier fixes (v19, 2026-04)
 
 - Red read a stale workout snapshot for post-workout feedback.

@@ -91,7 +91,14 @@ setTimeout(function(){
 
 return el;}
 
-function sendC(){var msg=S.chatIn.trim();if(!msg)return;S.chatMsgs.push({role:'user',text:msg});S.chatIn='';S.chatLoad=true;sv();R();
+function sendC(){var msg=(S.chatIn||'').trim();if(!msg||S.chatLoad)return;S.chatMsgs.push({role:'user',text:msg});S.chatIn='';S.chatLoad=true;sv();R();
+try{_sendCBuild(msg);}catch(e){
+  if(window.console)console.error('[RRE] chat context failed:',e);
+  S.chatMsgs.push({role:'bot',text:"Red couldn't respond just now. Try again in a moment.",isError:true,retryText:msg});
+  S.chatLoad=false;sv();R();
+}}
+// Builds Red's context from the user's data and sends. Any throw is caught by sendC.
+function _sendCBuild(msg){
 var ctx='User: '+(S.profile.name||'Athlete')+'. Level: '+(S.profile.level||'Intermediate')+'. Sex: '+(S.profile.sex||'Not disclosed')+'. Pregnancy: '+(S.profile.pregnant&&S.profile.pregnant!=='No'?S.profile.pregnant:'No')+'. Goals: '+(Array.isArray(S.profile.goals)?S.profile.goals.join(', '):'General Fitness')+'. Equipment: '+(Array.isArray(S.profile.equipment)?S.profile.equipment.join(', '):'Full Gym')+'. Limitations: '+(Array.isArray(S.profile.injuries)?S.profile.injuries.join(', '):'None')+'. Logged '+Object.keys(S.logs).length+' workouts. Week '+S.week+', Day '+S.day+'. Streak: '+getStreakNum()+' weeks.';
 var adjState=S.profile.activeAdj?('Active adjustment: '+S.profile.activeAdj.type+', '+S.profile.activeAdj.sessionsLeft+' sessions left, factor: '+S.profile.activeAdj.factor):'No active adjustments';
 var cwCount=S.customWks?S.customWks.length:0;

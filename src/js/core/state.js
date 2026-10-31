@@ -39,7 +39,9 @@ function migrateStorage(){
   if(cur>=STORAGE_SCHEMA)return;
   var hasData=false;
   try{var snap={};STORAGE_KEYS.forEach(function(k){var v=localStorage.getItem('rre2_'+k);if(v!==null){snap[k]=v;hasData=true;}});
-    if(hasData&&!localStorage.getItem('rre2_backup_pre_v2'))localStorage.setItem('rre2_backup_pre_v2',JSON.stringify({savedAt:localISOStr(),schema:cur,data:snap}));
+    var snapStr=JSON.stringify({savedAt:localISOStr(),schema:cur,data:snap});
+    // Only keep the snapshot when it fits comfortably; it must never crowd out live data.
+    if(hasData&&!localStorage.getItem('rre2_backup_pre_v2')&&snapStr.length<1500000)localStorage.setItem('rre2_backup_pre_v2',snapStr);
   }catch(e){if(window.console)console.warn('[RRE] could not save pre-migration snapshot',e);}
   for(var v=cur+1;v<=STORAGE_SCHEMA;v++){
     try{if(MIGRATIONS[v])MIGRATIONS[v]();}catch(e){if(window.console)console.warn('[RRE] migration '+v+' failed',e);}
@@ -74,23 +76,37 @@ try{var _cl=localStorage.getItem('rre2_curlog');if(_cl){var _clp=JSON.parse(_cl)
 var _st=localStorage.getItem('rre2_sesstimer');if(_st){var _stp=JSON.parse(_st);if(_stp&&_stp.startAt){S._sessStartAt=_stp.startAt;S.sessRun=!!_stp.running;}}
 var _da=localStorage.getItem('rre2_dismissed');if(_da)S._dismissedAlerts=JSON.parse(_da)||[];
 }catch(e){}}
-function sv(){try{
-localStorage.setItem('rre2_dark',JSON.stringify(S.dark));
-localStorage.setItem('rre2_profile',JSON.stringify(S.profile));
-localStorage.setItem('rre2_enrolled',JSON.stringify(S.enrolled));
-localStorage.setItem('rre2_active',JSON.stringify(S.active));
-localStorage.setItem('rre2_logs',JSON.stringify(S.logs));
-localStorage.setItem('rre2_body',JSON.stringify(S.bodyLogs));
-localStorage.setItem('rre2_chat',JSON.stringify(S.chatMsgs));
-localStorage.setItem('rre2_coachcache',JSON.stringify(S.coachCache||{}));
-localStorage.setItem('rre2_prs',JSON.stringify(S.prs));
-localStorage.setItem('rre2_restdays',JSON.stringify(S.restDayLogs));
-localStorage.setItem('rre2_customwks',JSON.stringify(S.customWks));
-localStorage.setItem('rre2_startdate',JSON.stringify(S.startDate||''));
-localStorage.setItem('rre2_curlog',JSON.stringify({key:S._curLogKey||'',data:S.curLog}));
-localStorage.setItem('rre2_sesstimer',JSON.stringify({key:S._curLogKey||'',startAt:S._sessStartAt||null,running:S.sessRun}));
-localStorage.setItem('rre2_dismissed',JSON.stringify(S._dismissedAlerts||[]));
-}catch(e){}}
+// Writes every key on its own, so one failed write (e.g. storage full) cannot silently skip
+// the rest. The first failure in a session tells the user once.
+var _svWarned=false;
+function _svOne(k,v){try{localStorage.setItem('rre2_'+k,JSON.stringify(v));return true;}catch(e){return false;}}
+function _svFailed(){
+  if(_svWarned)return;_svWarned=true;
+  if(window.console)console.error('[RRE] localStorage write failed (storage full?)');
+  try{toast("Couldn't save to this phone. Storage may be full. Save a backup from Profile.");}catch(e){}
+}
+function sv(){
+var ok=true;
+ok=_svOne('logs',S.logs)&&ok;
+ok=_svOne('profile',S.profile)&&ok;
+ok=_svOne('enrolled',S.enrolled)&&ok;
+ok=_svOne('active',S.active)&&ok;
+ok=_svOne('body',S.bodyLogs)&&ok;
+ok=_svOne('prs',S.prs)&&ok;
+ok=_svOne('restdays',S.restDayLogs)&&ok;
+ok=_svOne('customwks',S.customWks)&&ok;
+ok=_svOne('startdate',S.startDate||'')&&ok;
+ok=_svOne('curlog',{key:S._curLogKey||'',data:S.curLog})&&ok;
+ok=_svOne('sesstimer',{key:S._curLogKey||'',startAt:S._sessStartAt||null,running:S.sessRun})&&ok;
+ok=_svOne('dismissed',S._dismissedAlerts||[])&&ok;
+ok=_svOne('dark',S.dark)&&ok;
+ok=_svOne('chat',S.chatMsgs)&&ok;
+if(!_svOne('coachcache',S.coachCache||{})){
+  // Cached coaching text is disposable: drop it to make room rather than fail the save.
+  S.coachCache={};_svOne('coachcache',{});
+}
+if(!ok)_svFailed();
+}
 
 var _autosaveTimer=null;
-function autosaveCL(){clearTimeout(_autosaveTimer);_autosaveTimer=setTimeout(function(){try{localStorage.setItem('rre2_curlog',JSON.stringify({key:S._curLogKey||'',data:S.curLog}));if(S._sessStartAt)localStorage.setItem('rre2_sesstimer',JSON.stringify({key:S._curLogKey||'',startAt:S._sessStartAt,running:S.sessRun}));}catch(e){}},400);}
+function autosaveCL(){clearTimeout(_autosaveTimer);_autosaveTimer=setTimeout(function(){var ok=_svOne('curlog',{key:S._curLogKey||'',data:S.curLog});if(S._sessStartAt)ok=_svOne('sesstimer',{key:S._curLogKey||'',startAt:S._sessStartAt,running:S.sessRun})&&ok;if(!ok)_svFailed();},400);}

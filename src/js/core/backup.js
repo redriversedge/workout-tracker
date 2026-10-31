@@ -76,6 +76,11 @@ var Backup = (function () {
   function applyPayload(data) {
     if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Invalid backup file');
     if (!data.profile && !data.logs && !data.enrolled) throw new Error('This file is not an RRE Fitness backup');
+    function isObj(v) { return v && typeof v === 'object' && !Array.isArray(v); }
+    if (data.logs !== undefined && !isObj(data.logs)) throw new Error('Backup file is damaged (logs)');
+    if (data.profile !== undefined && !isObj(data.profile)) throw new Error('Backup file is damaged (profile)');
+    if (data.enrolled !== undefined && !Array.isArray(data.enrolled)) throw new Error('Backup file is damaged (programs)');
+    if (data.body !== undefined && !Array.isArray(data.body)) throw new Error('Backup file is damaged (measurements)');
     var S = window.S;
     if (!S) throw new Error('State not initialized');
     // v18c's 7 fields
@@ -95,22 +100,59 @@ var Backup = (function () {
     if (data.dismissedAlerts) S._dismissedAlerts = data.dismissedAlerts;
   }
 
+  // Saves the current data so a restore can be undone (Profile shows Undo restore when present).
+  function snapshotBeforeImport() {
+    try { localStorage.setItem('rre2_backup_pre_import', JSON.stringify(buildPayload(window.S))); return true; } catch (e) { return false; }
+  }
+
+  function summary(data) {
+    var n = data && data.logs ? Object.keys(data.logs).length : 0;
+    var when = data && data.exportedAt ? localDateStr(new Date(data.exportedAt)) : 'an older version';
+    return { workouts: n, when: when };
+  }
+
+  // Reads the file, then asks before replacing anything.
   function importFromFile(file, onDone) {
     var reader = new FileReader();
     reader.onload = function () {
-      try {
-        var data = JSON.parse(reader.result);
-        applyPayload(data);
-        if (typeof window.sv === 'function') window.sv();
-        if (typeof window.toast === 'function') window.toast('Backup restored');
-        if (typeof window.R === 'function') window.R();
-        if (onDone) onDone(null);
-      } catch (e) {
-        if (typeof window.toast === 'function') window.toast((e && e.message) || 'Could not read that file');
-        if (onDone) onDone(e);
-      }
+      var data;
+      try { data = JSON.parse(reader.result); } catch (e) { if (window.toast) window.toast('Could not read that file'); if (onDone) onDone(e); return; }
+      var info = summary(data);
+      var cur = window.S && window.S.logs ? Object.keys(window.S.logs).length : 0;
+      window.S.modal = {
+        type: 'confirm',
+        title: 'Restore this backup?',
+        msg: 'Backup from ' + info.when + ' with ' + info.workouts + ' workout' + (info.workouts === 1 ? '' : 's') + '. It replaces what is on this phone now (' + cur + ' workout' + (cur === 1 ? '' : 's') + '). You can undo this from Profile.',
+        confirmText: 'Restore',
+        cancelText: 'Cancel',
+        onConfirm: function () {
+          try {
+            snapshotBeforeImport();
+            applyPayload(data);
+            window.S.modal = null;
+            window.sv(); window.toast('Backup restored'); window.R();
+            if (onDone) onDone(null);
+          } catch (e) {
+            window.S.modal = null; window.R();
+            window.toast((e && e.message) || 'Could not restore that file');
+            if (onDone) onDone(e);
+          }
+        }
+      };
+      window.R();
     };
     reader.readAsText(file);
+  }
+
+  function hasUndo() { try { return !!localStorage.getItem('rre2_backup_pre_import'); } catch (e) { return false; } }
+
+  function undoImport() {
+    var raw = localStorage.getItem('rre2_backup_pre_import');
+    if (!raw) return false;
+    applyPayload(JSON.parse(raw));
+    try { localStorage.removeItem('rre2_backup_pre_import'); } catch (e) {}
+    window.sv();
+    return true;
   }
 
   function promptImport(onDone) {
@@ -132,6 +174,8 @@ var Backup = (function () {
     lastBackup: lastBackup,
     applyPayload: applyPayload,
     importFromFile: importFromFile,
+    hasUndo: hasUndo,
+    undoImport: undoImport,
     promptImport: promptImport
   };
 })();

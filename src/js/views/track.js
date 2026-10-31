@@ -230,15 +230,15 @@ function rMergedTrack(){
   var merged=getMergedSchedule();if(!merged)return rTrack();
   var dayTpl=merged.schedule[S.day-1];if(!dayTpl){el.appendChild(h('p',{style:{color:'var(--text2)',textAlign:'center',padding:'40px'}},'No data for this day.'));return el;}
   var logKey='merged_w'+S.week+'d'+S.day;
-  if(!S.curLog||Object.keys(S.curLog).length===0)S.curLog=JSON.parse(JSON.stringify(S.logs[logKey]||{}));
+  loadMergedCL();
 
-  if(dayTpl.isRest)return rRestDay(el,{name:dayTpl.label,isRest:true});
-
-  // Day pills
+  // Day pills (rendered first so a rest day still lets the user reach the other days)
   var pills=h('div',{className:'pill-row',style:{marginBottom:'8px'}});
   merged.schedule.forEach(function(dt,idx){if(dt.isRest)return;
-    pills.appendChild(h('button',{className:'pill'+(S.day===(idx+1)?' active':''),onClick:function(){S.day=idx+1;S.curLog=JSON.parse(JSON.stringify(S.logs['merged_w'+S.week+'d'+(idx+1)]||{}));S.sessTimer=0;S.sessRun=false;clearInterval(S.sessInt);R();}},dt.label.split(' ')[0]));});
+    pills.appendChild(h('button',{className:'pill'+(S.day===(idx+1)?' active':'')+(S.logs['merged_w'+S.week+'d'+(idx+1)]?' done':''),onClick:function(){S.day=idx+1;S._trackManual=true;loadMergedCL();S.sessTimer=0;S.sessRun=false;clearInterval(S.sessInt);R();}},dt.label.split(' ')[0]));});
   el.appendChild(pills);
+
+  if(dayTpl.isRest)return rRestDay(el,{name:dayTpl.label,isRest:true});
 
   // Session timer
   var tc=h('div',{className:'card',style:{textAlign:'center',padding:'10px'}});
@@ -272,7 +272,7 @@ if(adjF!==1){var adjLabel=adjF<1?'Reduced ('+Math.round(adjF*100)+'%)':'Boosted 
   try{localStorage.removeItem('rre2_curlog');localStorage.removeItem('rre2_sesstimer');}catch(e){}
   sv();
   var _mExs=getMergedDayExercises(dayTpl,S.week);
-  var _nxD=null;for(var _ni=S.day;_ni<merged.schedule.length;_ni++){var _nt=merged.schedule[_ni];if(_nt&&!_nt.isRest&&!S.logs['merged_w'+S.week+'d'+(_ni+1)]){_nxD={w:S.week,d:_ni+1,name:_nt.label};break;}}
+  var _nxD=getNextMergedDay(merged);
   S.modal={type:'celebration',merged:true,dayName:dayTpl.label,nextW:_nxD,
     ap:{id:'merged'},pd:{name:S.enrolled.map(function(e){return PROGRAMS[e.id]?PROGRAMS[e.id].name:'';}).filter(Boolean).join(' + ')},
     wk:null,dy:{name:dayTpl.label,ex:_mExs},w:S.week,d:S.day,logKey:logKey,curLog:JSON.parse(JSON.stringify(S.curLog)),feeling:null,redFeedback:null,redLoading:false};

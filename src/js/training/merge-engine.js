@@ -221,3 +221,25 @@ function getMergedDayExercises(dayTemplate,weekNum){
   });
   return exercises;
 }
+
+// Next unlogged training day in the merged plan, starting at the current week.
+// Merged workouts are stored under merged_w{week}d{day}.
+function getNextMergedDay(merged){
+  merged=merged||getMergedSchedule();if(!merged||!merged.schedule)return null;
+  var maxW=1;S.enrolled.forEach(function(e){var p=gPD(e.id);if(p&&p.weeks>maxW)maxW=p.weeks;});
+  for(var w=Math.max(1,S.week||1);w<=maxW;w++){
+    for(var i=0;i<merged.schedule.length;i++){
+      var t=merged.schedule[i];if(!t||t.isRest)continue;
+      if(!S.logs['merged_w'+w+'d'+(i+1)])return{w:w,d:i+1,name:t.label};
+    }
+  }
+  return null;
+}
+// Points S.curLog at the merged workout for S.week/S.day, keeping an autosave only if it
+// belongs to that same workout (an autosave from single-program mode never leaks in).
+function loadMergedCL(){
+  var key='merged_w'+S.week+'d'+S.day;
+  if(S._curLogKey===key&&S.curLog&&Object.keys(S.curLog).length>0)return;
+  S._curLogKey=key;
+  S.curLog=JSON.parse(JSON.stringify(S.logs[key]||{}));
+}

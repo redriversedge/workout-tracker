@@ -42,11 +42,18 @@ function redFriendlyError(err) {
   return "Red couldn't respond just now. Try again in a moment.";
 }
 
+var RED_CLIENT_TIMEOUT_MS = 35000;
 function _redSend(payload) {
-  return fetch(RED_API_URL, {
+  var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, RED_CLIENT_TIMEOUT_MS);
+  var timedOut = new Promise(function (res, rej) {
+    setTimeout(function () { var e = new Error('Timed out'); e.status = 504; rej(e); }, RED_CLIENT_TIMEOUT_MS + 500);
+  });
+  var req = fetch(RED_API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
+    signal: ctrl ? ctrl.signal : undefined
   }).then(function (r) {
     return r.json().catch(function () { return {}; }).then(function (d) {
       if (!r.ok || (d && d.error)) {
@@ -62,9 +69,10 @@ function _redSend(payload) {
     });
   }, function (netErr) {
     var e = new Error((netErr && netErr.message) || 'Network error');
-    e.network = true;
+    if (netErr && netErr.name === 'AbortError') e.status = 504; else e.network = true;
     throw e;
   });
+  return Promise.race([req, timedOut]).then(function (v) { clearTimeout(timer); return v; }, function (err) { clearTimeout(timer); throw err; });
 }
 
 // opts: { system, user } or { system, messages }, optional maxTokens
