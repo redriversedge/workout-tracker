@@ -75,7 +75,7 @@ GitHub Actions runs `npm test` and the browser check on every PR.
 
 Work on a branch, open a PR (Netlify posts a deploy preview), merge to `main` to ship.
 `main` auto-deploys to production. Roll back from Netlify Deploys or by reverting the merge.
-The pre-rebuild app is tagged `v19-final`.
+The last pre-rebuild commit is `9cda7c1` (v19).
 
 ## Design
 
