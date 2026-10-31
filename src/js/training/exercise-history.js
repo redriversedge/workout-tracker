@@ -101,7 +101,7 @@ function getWeeklyStats(){
   var cur={sessions:0,vol:0,sets:0},prev={sessions:0,vol:0,sets:0};
   Object.keys(S.logs).forEach(function(k){
     var l=S.logs[k];if(!l||!l.date)return;
-    var d=new Date(l.date);var wk=getWeekKey(d);
+    var d=parseLocalDate(l.date);var wk=getWeekKey(d);
     var stats=wk===wkKey?cur:wk===prevWk?prev:null;
     if(!stats)return;
     stats.sessions++;

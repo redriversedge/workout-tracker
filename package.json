@@ -9,8 +9,8 @@
   "scripts": {
     "check": "node scripts/check.mjs",
     "build": "node scripts/build.mjs",
-    "test": "npm run check && npm run build && node --test tests/unit tests/render",
-    "test:e2e": "node --test tests/e2e",
+    "test": "npm run check && npm run build && TZ=America/Chicago node --test --test-concurrency=4 --test-timeout=120000 \"tests/unit/**/*.test.mjs\" \"tests/render/**/*.test.mjs\"",
+    "test:e2e": "node --test --test-timeout=180000 \"tests/e2e/**/*.test.mjs\"",
     "serve": "npx serve dist"
   },
   "devDependencies": {

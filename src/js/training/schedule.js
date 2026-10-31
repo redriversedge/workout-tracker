@@ -20,7 +20,7 @@ function getMissedInfo(ap,pd){
   var dpw=ap.days||pd.daysPerWeek||3;
   var trainingDays=getTrainingDayPattern(dpw);
   // Count how many training days have passed since start
-  var start=new Date(startDate);
+  var start=parseLocalDate(startDate);
   var now=new Date();now.setHours(23,59,59);
   var expectedSlots=0;
   var cursor=new Date(start);

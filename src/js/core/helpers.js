@@ -10,6 +10,18 @@ function lk(pid,w,d){return pid+'_w'+w+'d'+d;}
 // Local timezone date helpers
 function localDateStr(d){d=d||new Date();var y=d.getFullYear(),m=d.getMonth()+1,dd=d.getDate();return y+'-'+(m<10?'0'+m:m)+'-'+(dd<10?'0'+dd:dd);}
 function localISOStr(d){d=d||new Date();return localDateStr(d)+'T'+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2);}
+// Parses stored dates as LOCAL time. "2026-10-31" must mean Oct 31 here, not UTC midnight
+// (which is Oct 30 evening in the US). Date-only strings land at local noon so they
+// sort and range-compare safely; full timestamps parse as written.
+function parseLocalDate(v){
+  if(v instanceof Date)return new Date(v.getTime());
+  if(typeof v!=='string')return new Date(v);
+  var m=v.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(m)return new Date(parseInt(m[1],10),parseInt(m[2],10)-1,parseInt(m[3],10),12,0,0);
+  m=v.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/);
+  if(m)return new Date(parseInt(m[1],10),parseInt(m[2],10)-1,parseInt(m[3],10),parseInt(m[4],10),parseInt(m[5],10),parseInt(m[6]||'0',10));
+  return new Date(v);
+}
 
 function ensL(ei,sn,eName){if(!S.curLog['e'+ei])S.curLog['e'+ei]={};if(eName)S.curLog['e'+ei]._name=eName;if(!S.curLog['e'+ei]['s'+sn])S.curLog['e'+ei]['s'+sn]={};autosaveCL();}
 
@@ -28,7 +40,7 @@ if(!db[ex.n])db[ex.n]={name:ex.n,entries:[]};
 Object.keys(eLog).forEach(function(sk){if(!sk.startsWith('s'))return;var s=eLog[sk];var w=parseFloat(s.w)||0,r=parseFloat(s.r)||0;
 if(w>0||r>0)db[ex.n].entries.push({date:log.date,w:w,r:r,vol:w*r});});});});
 // Sort entries by date and compute stats
-Object.keys(db).forEach(function(k){var ex=db[k];ex.entries.sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+Object.keys(db).forEach(function(k){var ex=db[k];ex.entries.sort(function(a,b){return parseLocalDate(a.date)-parseLocalDate(b.date);});
 ex.bestW=0;ex.bestVol=0;ex.totalVol=0;ex.sessions=0;
 var dates={};ex.entries.forEach(function(e){if(e.w>ex.bestW)ex.bestW=e.w;if(e.vol>ex.bestVol)ex.bestVol=e.vol;ex.totalVol+=e.vol;dates[e.date.split('T')[0]]=1;});ex.sessions=Object.keys(dates).length;});return db;}
 
@@ -181,13 +193,13 @@ if(!pd){// Pure merged mode - create minimal stats
     Object.keys(log).forEach(function(ek){if(ek.startsWith('e'))Object.keys(log[ek]).forEach(function(sk){if(sk.startsWith('s')){var s=log[ek][sk];var wt=parseFloat(s.w)||0,rp=parseFloat(s.r)||0;var v=wt*rp;dayVol+=v;mst.totalSets++;mst.totalReps+=rp;}});});
     mst.totalVol+=dayVol;if(dayVol>mst.bestDay.vol)mst.bestDay={vol:dayVol,date:log.date||'',w:0,d:0};
     if(log.date)mst.recentLogs.push({date:log.date,vol:dayVol,w:0,d:0,name:'Merged'});
-  });mst.recentLogs.sort(function(a,b){return new Date(b.date)-new Date(a.date);});return mst;}
+  });mst.recentLogs.sort(function(a,b){return parseLocalDate(b.date)-parseLocalDate(a.date);});return mst;}
 var stats={totalVol:0,totalWk:0,totalSets:0,totalReps:0,bestDay:{vol:0,date:''},exCount:{},topExes:[],weekVols:[],recentLogs:[]};
 for(var w=1;w<=pd.weeks;w++){var wVol=0;for(var d=1;d<=6;d++){var log=S.logs[lk(ap.id,w,d)];if(!log)continue;stats.totalWk++;
 var wkD=pd.data[w];if(!wkD||!wkD.days)continue;var dayD=wkD.days[d];if(!dayD||!dayD.ex)continue;
 var dayVol=0;dayD.ex.forEach(function(ex,ei){var eLog=log['e'+ei];if(!eLog)return;Object.keys(eLog).forEach(function(sk){if(!sk.startsWith('s'))return;var s=eLog[sk];var wt=parseFloat(s.w)||0,rp=parseFloat(s.r)||0;var v=wt*rp;dayVol+=v;stats.totalSets++;stats.totalReps+=rp;if(!stats.exCount[ex.n])stats.exCount[ex.n]=0;stats.exCount[ex.n]+=v;});});
 stats.totalVol+=dayVol;wVol+=dayVol;if(dayVol>stats.bestDay.vol){stats.bestDay={vol:dayVol,date:log.date||'',w:w,d:d};}
 if(log.date)stats.recentLogs.push({date:log.date,vol:dayVol,w:w,d:d,name:dayD.name});}stats.weekVols.push(wVol);}
-stats.recentLogs.sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+stats.recentLogs.sort(function(a,b){return parseLocalDate(b.date)-parseLocalDate(a.date);});
 var exArr=Object.keys(stats.exCount).map(function(k){return{name:k,vol:stats.exCount[k]};});exArr.sort(function(a,b){return b.vol-a.vol;});stats.topExes=exArr.slice(0,10);
 return stats;}

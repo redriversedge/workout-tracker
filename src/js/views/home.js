@@ -372,13 +372,13 @@ function rWeeklySummary(){
   var now=new Date();var ws=new Date(now);ws.setDate(ws.getDate()-ws.getDay());ws.setHours(0,0,0,0);
   var we=new Date(ws);we.setDate(we.getDate()+6);we.setHours(23,59,59);
   var wkVol=0,wkSessions=0,wkSets=0,wkPRs=0,wkCustom=0;
-  Object.keys(S.logs).forEach(function(k){var l=S.logs[k];if(!l||!l.date)return;var d=new Date(l.date);if(d<ws||d>we)return;
+  Object.keys(S.logs).forEach(function(k){var l=S.logs[k];if(!l||!l.date)return;var d=parseLocalDate(l.date);if(d<ws||d>we)return;
     wkSessions++;Object.keys(l).forEach(function(ek){if(ek.startsWith('e'))Object.keys(l[ek]).forEach(function(sk){if(sk.startsWith('s')){var s=l[ek][sk];wkVol+=(parseFloat(s.w)||0)*(parseFloat(s.r)||0);wkSets++;}});});});
   // Count custom workouts this week
-  if(S.customWks)S.customWks.forEach(function(cw){if(cw&&cw.date){var d=new Date(cw.date);if(d>=ws&&d<=we)wkCustom++;}});
+  if(S.customWks)S.customWks.forEach(function(cw){if(cw&&cw.date){var d=parseLocalDate(cw.date);if(d>=ws&&d<=we)wkCustom++;}});
   // Compare to last week
   var lws=new Date(ws);lws.setDate(lws.getDate()-7);var lwe=new Date(ws);lwe.setDate(lwe.getDate()-1);lwe.setHours(23,59,59);
-  var lwVol=0;Object.keys(S.logs).forEach(function(k){var l=S.logs[k];if(!l||!l.date)return;var d=new Date(l.date);if(d<lws||d>lwe)return;
+  var lwVol=0;Object.keys(S.logs).forEach(function(k){var l=S.logs[k];if(!l||!l.date)return;var d=parseLocalDate(l.date);if(d<lws||d>lwe)return;
     Object.keys(l).forEach(function(ek){if(ek.startsWith('e'))Object.keys(l[ek]).forEach(function(sk){if(sk.startsWith('s')){var s=l[ek][sk];lwVol+=(parseFloat(s.w)||0)*(parseFloat(s.r)||0);}});});});
   var pctChange=lwVol>0?Math.round((wkVol-lwVol)/lwVol*100):0;
 
@@ -451,13 +451,13 @@ function rDrillWk(el){var st=getDashStats();if(!st)return el;
   el.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px',marginBottom:'14px'}},st.totalWk+' workouts \u00B7 '+st.totalSets+' sets \u00B7 '+st.totalReps.toLocaleString()+' reps'));
   st.recentLogs.slice(0,20).forEach(function(log){var c=h('div',{className:'card',style:{padding:'12px'}});
     var top=h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}});
-    top.appendChild(h('div',null,h('p',{style:{fontWeight:700,fontSize:'13px'}},log.name),h('p',{style:{color:'var(--text2)',fontSize:'10px'}},'W'+log.w+' D'+log.d+' \u00B7 '+new Date(log.date).toLocaleDateString())));
+    top.appendChild(h('div',null,h('p',{style:{fontWeight:700,fontSize:'13px'}},log.name),h('p',{style:{color:'var(--text2)',fontSize:'10px'}},'W'+log.w+' D'+log.d+' \u00B7 '+parseLocalDate(log.date).toLocaleDateString())));
     top.appendChild(h('span',{style:{fontWeight:800,fontSize:'14px',color:'var(--accent)'}},Math.round(log.vol).toLocaleString()+' lbs'));
     c.appendChild(top);el.appendChild(c);});return el;}
 
 function rDrillBest(el){var st=getDashStats();if(!st||!st.bestDay.date)return el;
   el.appendChild(h('h2',{style:{fontSize:'20px',fontWeight:800,marginBottom:'4px'}},'\uD83C\uDFC6 Best Session'));
-  el.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px',marginBottom:'14px'}},Math.round(st.bestDay.vol).toLocaleString()+' lbs on '+new Date(st.bestDay.date).toLocaleDateString()));
+  el.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'12px',marginBottom:'14px'}},Math.round(st.bestDay.vol).toLocaleString()+' lbs on '+parseLocalDate(st.bestDay.date).toLocaleDateString()));
   var ap=gAP(),pd=ap?gPD(ap.id):null;if(!ap||!pd)return el;
   var log=S.logs[lk(ap.id,st.bestDay.w,st.bestDay.d)];var wkD=pd.data[st.bestDay.w];if(!wkD)return el;var dayD=wkD&&wkD.days?wkD.days[st.bestDay.d]:null;
   if(dayD&&dayD.ex){var c=h('div',{className:'card'});c.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,marginBottom:'10px'}},dayD.name+' \u2014 W'+st.bestDay.w+' D'+st.bestDay.d));
@@ -527,7 +527,7 @@ function rDrillExDB(el){
       var desc=pctChange>10?'Strong progress! Weight consistently increasing.':pctChange>3?'Steady gains. Keep it up.':pctChange>-3?'Maintaining. Consider progressive overload if plateau persists.':'Weight trending down. Could be intentional deload or time to reassess.';
       pCard.appendChild(h('p',{style:{fontSize:'10px',color:trendColor,marginTop:'4px',textAlign:'center',fontStyle:'italic'}},desc));
       }
-      if(ex.entries.length>=2){var firstDate=new Date(ex.entries[0].date);var lastDate=new Date(ex.entries[ex.entries.length-1].date);var daySpan=Math.max(1,(lastDate-firstDate)/(1000*60*60*24));var freq=(ex.sessions/daySpan*7).toFixed(1);
+      if(ex.entries.length>=2){var firstDate=parseLocalDate(ex.entries[0].date);var lastDate=parseLocalDate(ex.entries[ex.entries.length-1].date);var daySpan=Math.max(1,(lastDate-firstDate)/(1000*60*60*24));var freq=(ex.sessions/daySpan*7).toFixed(1);
       pCard.appendChild(h('p',{style:{fontSize:'10px',color:'var(--text2)',marginTop:'6px',textAlign:'center'}},'Frequency: ~'+freq+'x/week over '+Math.round(daySpan)+' days'));}
       el.appendChild(pCard);
     }
@@ -546,7 +546,7 @@ function rDrillExDB(el){
     var th=h('div',{style:{display:'grid',gridTemplateColumns:'1fr 60px 50px 70px',gap:'4px',paddingBottom:'4px',borderBottom:'1px solid var(--border)'}});
     ['Date','Weight','Reps','Volume'].forEach(function(t){th.appendChild(h('span',{className:'set-hdr'},t));});tc.appendChild(th);
     ex.entries.slice().reverse().forEach(function(e){var row=h('div',{style:{display:'grid',gridTemplateColumns:'1fr 60px 50px 70px',gap:'4px',padding:'4px 0',borderBottom:'1px solid var(--border)',fontSize:'11px'}});
-      row.appendChild(h('span',null,new Date(e.date).toLocaleDateString()));
+      row.appendChild(h('span',null,parseLocalDate(e.date).toLocaleDateString()));
       row.appendChild(h('span',{style:{fontWeight:700}},e.w>0?e.w+'':''));
       row.appendChild(h('span',null,e.r>0?''+e.r:''));
       row.appendChild(h('span',{style:{fontWeight:700,color:'var(--accent)'}},e.vol>0?Math.round(e.vol).toLocaleString():''));

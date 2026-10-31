@@ -1,27 +1,16 @@
-// backup.js - JSON export/import for user data portability.
+// backup.js - JSON export/import so user data can be backed up and moved between devices.
 //
-// Export (new format): downloads redge-fitness-backup-YYYY-MM-DD.json containing
-// version + exportedAt + every rre2_* state field. Superset of v18c's 7-field export.
-//
-// Import accepts EITHER shape:
-//   - v18c (no version field, 7 keys: profile/enrolled/logs/body/prs/customWks/restDayLogs).
-//     Needed so users can carry current progress forward into the new version.
-//   - v19+ (has version: 'rre-v19.x'). Restores everything present.
-//
-// Each field guarded with `if (data.x) S.x = data.x` so unknown/missing fields are safe.
-//
-// Monolith reference: Export button logic lives in rre-v18c-deploy/index.html line 3969,
-// Import button on line 3970, Reset button on line 3971. During Phase 4, lift those handlers
-// into this module and wire them from the rebuilt Profile tab.
+// Export writes redge-fitness-backup-YYYY-MM-DD.json (version, schema, exportedAt, all state).
+// On iPhone it opens the share sheet (Save to Files, AirDrop, Mail); elsewhere it downloads.
+// Import accepts v18c backups (no version field, 7 keys) and v19/v20 backups.
+// Every field is guarded, so missing fields in older files are left untouched.
 
 var Backup = (function () {
-  var VERSION = 'rre-v19.0';
+  var VERSION = 'rre-v20';
 
   function _todayISO() {
     var d = new Date();
-    var mm = String(d.getMonth() + 1).padStart(2, '0');
-    var dd = String(d.getDate()).padStart(2, '0');
-    return d.getFullYear() + '-' + mm + '-' + dd;
+    return localDateStr(d);
   }
 
   function buildPayload(S) {
@@ -29,6 +18,7 @@ var Backup = (function () {
     S = S || window.S || {};
     return {
       version: VERSION,
+      schema: typeof STORAGE_SCHEMA !== 'undefined' ? STORAGE_SCHEMA : 2,
       exportedAt: new Date().toISOString(),
       profile: S.profile,
       enrolled: S.enrolled,
@@ -46,18 +36,46 @@ var Backup = (function () {
     };
   }
 
+  function _markBackedUp() {
+    try { localStorage.setItem('rre2_lastbackup', JSON.stringify(localISOStr())); } catch (e) {}
+  }
+
+  function lastBackup() {
+    try { var v = localStorage.getItem('rre2_lastbackup'); return v ? JSON.parse(v) : null; } catch (e) { return null; }
+  }
+
+  // Returns a promise that resolves when the file has been handed to the user.
   function exportJSON() {
     var data = JSON.stringify(buildPayload(window.S), null, 2);
+    var name = 'redge-fitness-backup-' + _todayISO() + '.json';
+    var file = null;
+    try { file = new File([data], name, { type: 'application/json' }); } catch (e) { file = null; }
+    if (file && navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+      return navigator.share({ files: [file], title: 'RRE Fitness backup' }).then(function () {
+        _markBackedUp();
+      }, function (err) {
+        if (err && err.name === 'AbortError') throw err;
+        _download(data, name);
+      });
+    }
+    _download(data, name);
+    return Promise.resolve();
+  }
+
+  function _download(data, name) {
     var blob = new Blob([data], { type: 'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'redge-fitness-backup-' + _todayISO() + '.json';
+    a.download = name;
+    document.body.appendChild(a);
     a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    setTimeout(function () { URL.revokeObjectURL(a.href); if (a.parentNode) a.parentNode.removeChild(a); }, 1000);
+    _markBackedUp();
   }
 
   function applyPayload(data) {
-    if (!data || typeof data !== 'object') throw new Error('Invalid backup file');
+    if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Invalid backup file');
+    if (!data.profile && !data.logs && !data.enrolled) throw new Error('This file is not an RRE Fitness backup');
     var S = window.S;
     if (!S) throw new Error('State not initialized');
     // v18c's 7 fields
@@ -70,7 +88,7 @@ var Backup = (function () {
     if (data.restDayLogs) S.restDayLogs = data.restDayLogs;
     // v19+ additions (ignored if absent - keeps v18c imports working)
     if (data.active !== undefined) S.active = data.active;
-    if (data.chatMsgs) S.chatMsgs = data.chatMsgs;
+    if (data.chatMsgs) S.chatMsgs = typeof normalizeChat === 'function' ? normalizeChat(data.chatMsgs) : data.chatMsgs;
     if (data.coachCache) S.coachCache = data.coachCache;
     if (data.startDate !== undefined) S.startDate = data.startDate;
     if (data.dark !== undefined) S.dark = data.dark;
@@ -84,11 +102,11 @@ var Backup = (function () {
         var data = JSON.parse(reader.result);
         applyPayload(data);
         if (typeof window.sv === 'function') window.sv();
-        if (typeof window.toast === 'function') window.toast('Data imported');
+        if (typeof window.toast === 'function') window.toast('Backup restored');
         if (typeof window.R === 'function') window.R();
         if (onDone) onDone(null);
       } catch (e) {
-        if (typeof window.toast === 'function') window.toast('Invalid file');
+        if (typeof window.toast === 'function') window.toast((e && e.message) || 'Could not read that file');
         if (onDone) onDone(e);
       }
     };
@@ -111,6 +129,7 @@ var Backup = (function () {
     VERSION: VERSION,
     buildPayload: buildPayload,
     exportJSON: exportJSON,
+    lastBackup: lastBackup,
     applyPayload: applyPayload,
     importFromFile: importFromFile,
     promptImport: promptImport

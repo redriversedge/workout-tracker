@@ -65,7 +65,14 @@ el.appendChild(eC);
 var dm=h('div',{className:'card',style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'14px 16px'}});
 dm.appendChild(h('div',{style:{display:'flex',alignItems:'center',gap:'8px'}},h('span',{innerHTML:S.dark?svg('moon',16,'var(--accent)'):svg('sun',16,'var(--warn)')}),h('span',{style:{fontWeight:600,fontSize:'13px'}},'Dark Mode')));
 var tog=h('button',{className:'toggle'+(S.dark?' on':'')});tog.appendChild(h('div',{className:'toggle-knob'}));tog.addEventListener('click',function(){S.dark=!S.dark;document.body.classList.toggle('dark');sv();R();});dm.appendChild(tog);el.appendChild(dm);
-// Export/Import/Reset \u2014 routed through Backup module (js/backup.js). Import accepts both v18c and v19+ backup shapes.
-el.appendChild(h('button',{className:'btn btn-secondary btn-block',style:{marginBottom:'8px'},onClick:function(){try{Backup.exportJSON();toast('Backup downloaded');}catch(e){toast('Export failed');console.error(e);}}},'Export Data'));
-el.appendChild(h('button',{className:'btn btn-secondary btn-block',style:{marginBottom:'8px'},onClick:function(){Backup.promptImport(function(err){if(err)console.error('[RRE] import error:',err);});}},'Import Data'));
+// Backup: export (share sheet on iPhone) and restore. Import accepts v18c, v19 and v20 backups.
+var _lb=Backup.lastBackup();
+var _lbDays=_lb?Math.floor((Date.now()-parseLocalDate(_lb).getTime())/86400000):null;
+var _bk=h('div',{className:'card',style:{marginBottom:'10px'}});
+_bk.appendChild(h('p',{className:'label'},'Your data'));
+_bk.appendChild(h('p',{style:{fontSize:'12px',color:_lb&&_lbDays<30?'var(--text2)':'var(--warn)',margin:'4px 0 10px',lineHeight:'1.5'}},
+  _lb?('Last backup: '+(_lbDays===0?'today':_lbDays===1?'yesterday':_lbDays+' days ago')+'.'+(_lbDays>=30?' Worth saving a fresh copy.':'')):'Your workouts live only on this phone. Save a backup so they are safe if you switch phones or clear Safari.'));
+_bk.appendChild(h('button',{className:'btn btn-primary btn-block',style:{marginBottom:'8px'},onClick:function(){Backup.exportJSON().then(function(){toast('Backup saved');R();},function(e){if(!e||e.name!=='AbortError'){toast('Backup failed');console.error(e);}});}},'Save Backup'));
+_bk.appendChild(h('button',{className:'btn btn-secondary btn-block',onClick:function(){Backup.promptImport(function(err){if(err)console.error('[RRE] import error:',err);});}},'Restore from Backup'));
+el.appendChild(_bk);
 el.appendChild(h('button',{className:'btn btn-block',style:{background:'transparent',color:'var(--danger)',border:'1px solid var(--danger)'},onClick:function(){S.modal={type:'confirm',title:'Reset App?',msg:'This will erase ALL your data \u2014 workouts, measurements, programs, chat history \u2014 everything. This cannot be undone.',confirmText:'Yes, Reset Everything',cancelText:'Cancel',onConfirm:function(){['rre2_dark','rre2_profile','rre2_enrolled','rre2_active','rre2_logs','rre2_body','rre2_chat','rre2_prs','rre2_restdays','rre2_customwks','rre2_coachcache'].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});S.dark=false;S.screen='onboarding';S.tab='home';S.obStep=0;S.profile={};S.enrolled=[];S.active=null;S.week=1;S.day=1;S.logs={};S.bodyLogs=[];S.curLog={};S.chatMsgs=[];S.chatIn='';S.prs={};S.customWks=[];S.restDayLogs={};S.coachCache={};S.redInsights=[];S.transcripts={};S.modal=null;document.body.classList.remove('dark');R();}};R();}},'Reset App'));return el;}

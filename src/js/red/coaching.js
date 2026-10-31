@@ -16,13 +16,14 @@ var COACH_PROMPTS={
       user:"Coach me through: "+exName+"\nPrescribed: "+exData.s+"x"+exData.r+(exData.rest?" rest "+exData.rest:"")+"\nUser level: "+(S.profile.level||'Intermediate')+"\nForm cues, breathing, and what to focus on."
     };
   },
-  postWorkout:function(ap,pd,wk,dy,curLog,feeling){
+  postWorkout:function(ap,pd,wk,dy,curLog,feeling,wNum,dNum){
+    wNum=wNum||S.week;dNum=dNum||S.day;
     var sessSummary=buildSessionSummary(dy,curLog);
     var recentHistory=buildRecentHistory(ap.id);
     var adjF=getAdjFactor();
     return{
       system:"You are Red, a certified coach (NSCA-CSCS, CNS, SFB StrongFirst Bodyweight, E-RYT 500, USATF Level 3). Give post-workout feedback after a completed session.\n\nYour feedback has 3 parts (use NO headers/labels, just flow naturally):\n1. WHAT YOU NOTICED \u2014 specific observations from the logged data. Reference actual weights, reps, changes from last time. Be concrete.\n2. WHAT TO KEEP DOING \u2014 reinforce what's working. One sentence.\n3. WHAT TO IMPROVE \u2014 constructive coaching for next session. One sentence.\n\nPROGRAM ADJUSTMENT RULES (CRITICAL):\n- If program does NOT need adjusting: say NOTHING about adjustments. Zero mention.\n- If data TRENDS toward needing adjustment (weights stalling 2+ weeks, consistent max RPE, reps declining): give a HEADS-UP warning. \"I'm noticing X trend. If it continues next session, I'll adjust Y.\"\n- If an adjustment IS being made (adjFactor != 1): explain WHY clearly. \"I've adjusted X because Y. This isn't a step back \u2014 it's how you break through.\"\n\nTone: Like a coach in the locker room after a session. Conversational, direct, warm. Use contractions. 4-6 sentences total for main feedback. NOT a report, NOT generic praise.\n\nAfter your coaching feedback, add a line break then one SHORT nutrition tip (1 sentence) relevant to the session type. Start it with a food emoji."+(S.profile.level==='Just Starting Out'?"\nThis person is just starting out. Be extra encouraging about showing up and completing the work.":""),
-      user:"Post-workout feedback for "+(S.profile.name||'Athlete')+".\nLevel: "+(S.profile.level||'Intermediate')+"\nProgram: "+pd.name+", Week "+S.week+", Day "+S.day+" \u2014 "+dy.name+"\nFeeling: "+(feeling||'not rated')+"/10\n\nTODAY'S SESSION:\n"+sessSummary+"\nDuration: "+(curLog.dur?fmtT(curLog.dur):'not tracked')+"\n"+(recentHistory?"\nRECENT HISTORY (last 3 sessions for comparison):\n"+recentHistory:"")+(adjF!==1?"\nNOTE: Program is currently adjusted to "+Math.round(adjF*100)+"% \u2014 explain this to the user.":"")+"\n"
+      user:"Post-workout feedback for "+(S.profile.name||'Athlete')+".\nLevel: "+(S.profile.level||'Intermediate')+"\nProgram: "+pd.name+", Week "+wNum+", Day "+dNum+" \u2014 "+dy.name+"\nFeeling: "+(feeling||'not rated')+"/10\n\nTODAY'S SESSION:\n"+sessSummary+"\nDuration: "+(curLog.dur?fmtT(curLog.dur):'not tracked')+"\n"+(recentHistory?"\nRECENT HISTORY (last 3 sessions for comparison):\n"+recentHistory:"")+(adjF!==1?"\nNOTE: Program is currently adjusted to "+Math.round(adjF*100)+"% \u2014 explain this to the user.":"")+"\n"
     };
   }
 };
@@ -39,7 +40,9 @@ function buildSessionSummary(dy,curLog){
     if(eLog){for(var _sk in eLog){if(_sk.charAt(0)==='s'){var _sd=eLog[_sk];if(_sd&&(_sd.done===true||parseFloat(_sd.w)>0||parseInt(_sd.r,10)>0)){_hasAny=true;break;}}}}
     if(!_hasAny){lines.push(ex.n+': not completed');return;}
     var sets=[];var totalVol=0;
-    for(var si=1;si<=parseInt(ex.s)||5;si++){
+    var _setNums=Object.keys(eLog).filter(function(k){return /^s\d+$/.test(k);}).map(function(k){return parseInt(k.slice(1),10);}).sort(function(a,b){return a-b;});
+    for(var _sx=0;_sx<_setNums.length;_sx++){
+      var si=_setNums[_sx];
       var sd=eLog['s'+si];
       if(sd&&(sd.w||sd.r)){
         var w=parseFloat(sd.w)||0;var r=parseInt(sd.r)||0;
@@ -52,7 +55,7 @@ function buildSessionSummary(dy,curLog){
       var comp='';
       if(lastPerf&&lastPerf.maxW>0){
         var todayMax=0;
-        for(var si2=1;si2<=parseInt(ex.s)||5;si2++){var sd2=eLog['s'+si2];if(sd2&&parseFloat(sd2.w)>todayMax)todayMax=parseFloat(sd2.w);}
+        _setNums.forEach(function(si2){var sd2=eLog['s'+si2];if(sd2&&parseFloat(sd2.w)>todayMax)todayMax=parseFloat(sd2.w);});
         if(todayMax>0){var diff=todayMax-lastPerf.maxW;if(diff>0)comp=' [+'+diff+'lbs vs last]';else if(diff<0)comp=' ['+diff+'lbs vs last]';}
       }
       lines.push(ex.n+' (prescribed '+ex.s+'x'+ex.r+'): '+sets.join(', ')+comp+(totalVol>0?' \u2014 vol: '+totalVol+'lbs':''));
@@ -73,15 +76,25 @@ function buildRecentHistory(progId){
   }).join('\n');
 }
 
+// Fetches and caches a coaching text. cb(text) on success, cb(null, err) on failure.
+// Never re-fires while a request for the same key is in flight or recently failed.
 function generateCoaching(type,key,promptFn,cb){
-  var cacheKey=key;
-  var cached=S.coachCache[cacheKey];
+  var cached=S.coachCache[key];
   if(cached){cb(cached);return;}
+  if(redIsLoading(key)||redHasFailed(key))return;
   var prompt=promptFn();
-  fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,system:prompt.system,messages:[{role:'user',content:prompt.user}]})
-  }).then(function(r){return r.json();}).then(function(d){
-    var txt=(d.content&&d.content[0]&&d.content[0].text)||'';
-    S.coachCache[cacheKey]=txt;sv();cb(txt);
-  }).catch(function(e){cb('Hey, I had trouble loading that coaching. Let me try again next time.');});
+  var p=redOnce(key,{system:prompt.system,user:prompt.user,maxTokens:type==='intro'?350:250});
+  if(!p)return;
+  p.then(function(txt){S.coachCache[key]=txt;sv();cb(txt);},function(err){cb(null,err);});
+}
+
+// One-line summary of the program library for Red's app knowledge, built from PROGRAMS
+// so it can never drift from what the app actually offers.
+function redProgramCatalog(){
+  var byType={};var minW=99,maxW=0,total=0;
+  Object.keys(PROGRAMS).forEach(function(id){var p=PROGRAMS[id];if(!p)return;total++;
+    var t=p.type==='flexibility'?'Flexibility & Mobility':p.type==='hiit'?'HIIT':p.type==='running'?'Running':'Strength';
+    (byType[t]=byType[t]||[]).push(p.name);
+    if(p.weeks<minW)minW=p.weeks;if(p.weeks>maxW)maxW=p.weeks;});
+  return total+' programs, '+minW+' to '+maxW+' weeks long: '+Object.keys(byType).map(function(t){return t+' ('+byType[t].length+': '+byType[t].join(', ')+')';}).join('; ');
 }

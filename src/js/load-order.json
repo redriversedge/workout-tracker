@@ -18,6 +18,7 @@
   "views/program-picker.js",
   "views/home.js",
   "views/program.js",
+  "red/api.js",
   "red/coaching.js",
   "views/track.js",
   "training/supersets.js",

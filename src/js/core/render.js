@@ -171,25 +171,20 @@ if(S.modal&&S.modal.type==='celebration'){
         onClick:function(){
           S.modal.feeling=ff;
           // Save feeling to workout log
-          var _lk=lk(S.modal.ap.id,S.week,S.day);
+          // The Track tab has already advanced to the next workout, so use the key captured at Save.
+          var _lk=S.modal.logKey||lk(S.modal.ap.id,S.modal.w||S.week,S.modal.d||S.day);
           if(S.logs[_lk])S.logs[_lk].feeling=ff;
-          S.curLog.feeling=ff;sv();
+          sv();
           // Trigger Red's post-workout feedback \u2014 pass the live log, not the stale modal snapshot
           var _liveLog=S.logs[_lk]||S.modal.curLog||S.curLog||{};
-          console.log('[RRE] post-workout log passed to Red:',_liveLog);
-          S.modal.redLoading=true;R();
-          var _prompt=COACH_PROMPTS.postWorkout(S.modal.ap,S.modal.pd,S.modal.wk,S.modal.dy,_liveLog,ff);
-          fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:_prompt.system,messages:[{role:'user',content:_prompt.user}]})
-          }).then(function(r){return r.json();}).then(function(d){
-            if(d&&d.error){throw new Error(d.error.message||d.error.type||'Red API error');}
-            var _txt=(d.content&&d.content[0]&&d.content[0].text)||'';
-            if(!_txt){throw new Error('Empty response from Red');}
-            S.modal.redFeedback=_txt;S.modal.redLoading=false;R();
-          }).catch(function(e){
-            console.error('[RRE] post-workout Red error:',e);
-            S.modal.redFeedback="Great session today. I had trouble loading my full analysis ("+(e&&e.message?e.message:'connection error')+"), but keep building on this momentum.\n\n\uD83C\uDF57 Get some protein in within the hour \u2014 your muscles earned it.";
-            S.modal.redLoading=false;R();
+                    S.modal.redLoading=true;R();
+          var _prompt=COACH_PROMPTS.postWorkout(S.modal.ap,S.modal.pd,S.modal.wk,S.modal.dy,_liveLog,ff,S.modal.w,S.modal.d);
+          var _modalRef=S.modal;
+          redRequest({system:_prompt.system,user:_prompt.user,maxTokens:550}).then(function(_txt){
+            _modalRef.redFeedback=_txt;_modalRef.redLoading=false;if(S.modal===_modalRef)R();
+          },function(e){
+            _modalRef.redFeedback=(e.userMessage||"Red couldn't load the full breakdown.")+"\n\nNice work getting this one done. Get some protein in within the hour, your muscles earned it.";
+            _modalRef.redFailed=true;_modalRef.redLoading=false;if(S.modal===_modalRef)R();
           });
         }},
         h('span',{style:{fontSize:'14px',lineHeight:1}},_label),

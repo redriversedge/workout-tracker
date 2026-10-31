@@ -1,8 +1,54 @@
 // === STATE ===
 var S={dark:true,screen:'onboarding',tab:'home',obStep:0,profile:{},enrolled:[],active:null,week:1,day:1,logs:{},bodyLogs:[],curLog:{},timer:null,tSec:60,tRun:false,tTotal:60,tInt:null,toast:null,tCls:'',ci:'',show:{},chatMsgs:[],chatIn:'',chatLoad:false,modal:null,sessTimer:0,sessRun:false,sessInt:null,prs:{},drill:null,exDB:null,editProfile:false,restDayLogs:{},customWks:[],ssMode:false,cwForm:{},bodyEdit:null,heightEdit:false,coachCache:{},redInsights:[],warmupDone:false,cooldownDone:false,transcripts:{},_curLogKey:'',_sessStartAt:null,_dismissedAlerts:[],_introLoading:false};
 
+// === STORAGE MIGRATIONS ===
+// rre2_schema records which data shape is on this device. v18/v19 never wrote it (= 1).
+// Before migrating, the raw rre2_* data is copied once to rre2_backup_pre_v2 as a safety net.
+var STORAGE_SCHEMA=2;
+var STORAGE_KEYS=['dark','profile','enrolled','active','logs','body','chat','prs','restdays','customwks','coachcache','startdate','curlog','sesstimer','dismissed'];
+function _lsGet(k){try{var v=localStorage.getItem('rre2_'+k);return v?JSON.parse(v):null;}catch(e){return null;}}
+function _lsSet(k,v){try{localStorage.setItem('rre2_'+k,JSON.stringify(v));return true;}catch(e){return false;}}
+// Normalizes chat history to {role:'user'|'bot', text}, dropping error/outage noise.
+function normalizeChat(list){
+  if(!Array.isArray(list))return [];
+  return list.filter(function(m){return m&&typeof m==='object';}).map(function(m){
+    var text=typeof m.text==='string'?m.text:(typeof m.content==='string'?m.content:'');
+    var out={role:m.role==='user'?'user':'bot',text:text};
+    if(m.isAction){out.isAction=true;out.action=m.action;}
+    return out;
+  }).filter(function(m){
+    if(!m.text)return false;
+    if(m.role==='bot'&&/^\u26A0/.test(m.text))return false;
+    if(m.role==='bot'&&/^(Hey, I had trouble|Got an empty response)/.test(m.text))return false;
+    return true;
+  });
+}
+var MIGRATIONS={
+  // 1 -> 2: clean chat history left by the v19 outage and normalize message shape;
+  // drop empty cached coaching text so it regenerates.
+  2:function(){
+    var chat=_lsGet('chat');
+    if(Array.isArray(chat))_lsSet('chat',normalizeChat(chat));
+    var cc=_lsGet('coachcache');
+    if(cc&&typeof cc==='object'){Object.keys(cc).forEach(function(k){if(!cc[k]||typeof cc[k]!=='string'||/^Hey, I had trouble/.test(cc[k]))delete cc[k];});_lsSet('coachcache',cc);}
+  }
+};
+function migrateStorage(){
+  var cur=1;
+  try{var raw=localStorage.getItem('rre2_schema');if(raw)cur=parseInt(raw,10)||1;}catch(e){return;}
+  if(cur>=STORAGE_SCHEMA)return;
+  var hasData=false;
+  try{var snap={};STORAGE_KEYS.forEach(function(k){var v=localStorage.getItem('rre2_'+k);if(v!==null){snap[k]=v;hasData=true;}});
+    if(hasData&&!localStorage.getItem('rre2_backup_pre_v2'))localStorage.setItem('rre2_backup_pre_v2',JSON.stringify({savedAt:localISOStr(),schema:cur,data:snap}));
+  }catch(e){if(window.console)console.warn('[RRE] could not save pre-migration snapshot',e);}
+  for(var v=cur+1;v<=STORAGE_SCHEMA;v++){
+    try{if(MIGRATIONS[v])MIGRATIONS[v]();}catch(e){if(window.console)console.warn('[RRE] migration '+v+' failed',e);}
+  }
+  try{localStorage.setItem('rre2_schema',String(STORAGE_SCHEMA));}catch(e){}
+}
+
 // === STORAGE ===
-function load(){try{
+function load(){migrateStorage();try{
 var keys=['dark','profile','enrolled','active','logs','body','chat','prs','restdays','customwks','coachcache','startdate'];
 keys.forEach(function(k){
   var v=localStorage.getItem('rre2_'+k);

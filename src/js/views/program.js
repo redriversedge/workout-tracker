@@ -27,18 +27,19 @@ if(progOVExpanded){
   if(cachedOV){
     poBody.appendChild(h('p',{style:{fontSize:'12px',lineHeight:'1.6',color:'var(--text)',whiteSpace:'pre-line'}},cachedOV));
   } else {
-    poBody.appendChild(h('p',{style:{fontSize:'11px',color:'var(--text2)',fontStyle:'italic'}},'Loading program overview...'));
-    // Generate via API
-    var poPrompt={
-      system:"You are Red, a seasoned fitness coach with decades of experience. Give a clear, conversational overview of this training program. Explain what it is, how it is structured (phases, weekly schedule, progression), what the user can expect over the course of it, and why it fits their goals. Use contractions naturally. Be warm and authoritative but not stiff. Keep it 150-250 words. Address the user directly.",
-      user:"Program: "+pd.name+"\nType: "+pd.type+"\nLevel: "+pd.level+"\nWeeks: "+pd.weeks+"\nDays/week: "+pd.daysPerWeek+"\nUser: "+(S.profile.name||'Athlete')+"\nLevel: "+(S.profile.level||'Intermediate')+"\nGoals: "+(Array.isArray(S.profile.goals)?S.profile.goals.join(', '):'General Fitness')+"\n\nWeek structure sample: "+(pd.data[1]&&pd.data[1].days?Object.keys(pd.data[1].days).map(function(d){var dy=pd.data[1].days[d];return dy?'Day '+d+': '+dy.name:'';}).filter(Boolean).join(', '):'')+"\nWeek 1 focus: "+(pd.data[1]&&pd.data[1].name?pd.data[1].name:'')+(pd.data[1]&&pd.data[1].focus?' - '+pd.data[1].focus:'')
-    };
-    fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,system:poPrompt.system,messages:[{role:'user',content:poPrompt.user}]})
-    }).then(function(r){return r.json();}).then(function(d){
-      var txt=(d.content&&d.content[0]&&d.content[0].text)||'';
-      S.coachCache['progOV_'+ap.id]=txt;sv();R();
-    }).catch(function(e){console.error('progOV error:',e);});
+    var _poKey='progOV_'+ap.id;
+    var _poFailed=redHasFailed(_poKey);
+    if(_poFailed){
+      poBody.appendChild(h('button',{className:'btn btn-secondary btn-sm',onClick:function(e){e.stopPropagation();redRetry(_poKey);R();}},"Couldn't load Red's breakdown. Tap to retry"));
+    } else {
+      poBody.appendChild(h('p',{style:{fontSize:'12px',color:'var(--text2)',fontStyle:'italic'}},'Red is writing your program breakdown...'));
+      var poPrompt={
+        system:"You are Red, a seasoned fitness coach with decades of experience. Give a clear, conversational overview of this training program. Explain what it is, how it is structured (phases, weekly schedule, progression), what the user can expect over the course of it, and why it fits their goals. Use contractions naturally. Be warm and authoritative but not stiff. Keep it 150-250 words. Address the user directly.",
+        user:"Program: "+pd.name+"\nType: "+pd.type+"\nLevel: "+pd.level+"\nWeeks: "+pd.weeks+"\nDays/week: "+pd.daysPerWeek+"\nUser: "+(S.profile.name||'Athlete')+"\nLevel: "+(S.profile.level||'Intermediate')+"\nGoals: "+(Array.isArray(S.profile.goals)?S.profile.goals.join(', '):'General Fitness')+"\n\nWeek structure sample: "+(pd.data[1]&&pd.data[1].days?Object.keys(pd.data[1].days).map(function(d){var dy=pd.data[1].days[d];return dy?'Day '+d+': '+dy.name:'';}).filter(Boolean).join(', '):'')+"\nWeek 1 focus: "+(pd.data[1]&&pd.data[1].name?pd.data[1].name:'')+(pd.data[1]&&pd.data[1].focus?' - '+pd.data[1].focus:'')
+      };
+      var _poReq=redOnce(_poKey,{system:poPrompt.system,user:poPrompt.user,maxTokens:450});
+      if(_poReq)_poReq.then(function(txt){S.coachCache[_poKey]=txt;sv();R();},function(){R();});
+    }
   }
   poCard.appendChild(poBody);
 }

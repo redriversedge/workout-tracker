@@ -69,7 +69,7 @@ if(adjF!==1){var adjLabel=adjF<1?'Reduced ('+Math.round(adjF*100)+'%)':'Boosted 
 var hdr=h('div',{className:'card',style:{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'6px'}});
 hdr.appendChild(h('div',null,h('p',{className:'label'},'W'+S.week+' D'+S.day),h('h2',{style:{fontSize:'16px',fontWeight:800,margin:'2px 0 0'}},dy.name)));
 var hbtns=h('div',{style:{display:'flex',gap:'4px'}});
-hbtns.appendChild(h('button',{className:'btn btn-primary btn-sm',onClick:function(){S.curLog.date=localISOStr();if(S.sessTimer>0)S.curLog.dur=S.sessTimer;S.logs[lk(ap.id,S.week,S.day)]=JSON.parse(JSON.stringify(S.curLog));
+hbtns.appendChild(h('button',{className:'btn btn-primary btn-sm',onClick:function(){var _svW=S.week,_svD=S.day,_svKey=lk(ap.id,_svW,_svD);S.curLog.date=localISOStr();if(S.sessTimer>0)S.curLog.dur=S.sessTimer;S.logs[_svKey]=JSON.parse(JSON.stringify(S.curLog));
 if(dy.ex)dy.ex.forEach(function(ex,ei){if(ex.n&&(ex.n.indexOf('Dynamic Warm-Up')>-1||ex.n.indexOf('Dynamic Stretches')>-1))return;var eL=S.curLog['e'+ei];if(eL)Object.keys(eL).forEach(function(sk){if(sk.startsWith('s')){var w=parseFloat(eL[sk]&&eL[sk].w)||0;if(checkPR(ex.n,w)){sv();toast('\uD83C\uDFC6 PR! '+ex.n+': '+w+'lbs','pr-toast');}}});});useAdjSession();
 // Clear autosave + timer on completion
 S._sessStartAt=null;S.sessRun=false;S.sessTimer=0;clearInterval(S.sessInt);
@@ -78,7 +78,8 @@ sv();
 // Celebration with session data for Red's post-workout feedback
 var _nxtW=getNextWorkout(ap,pd);
 var _logCopy=JSON.parse(JSON.stringify(S.curLog));
-S.modal={type:'celebration',dayName:dy.name,nextW:_nxtW,ap:ap,pd:pd,wk:wk,dy:dy,curLog:_logCopy,feeling:null,redFeedback:null,redLoading:false};
+S.modal={type:'celebration',dayName:dy.name,nextW:_nxtW,ap:ap,pd:pd,wk:wk,dy:dy,w:_svW,d:_svD,logKey:_svKey,curLog:_logCopy,feeling:null,redFeedback:null,redLoading:false};
+R();
 }},'Save'));
 hbtns.appendChild(h('button',{className:'btn btn-danger btn-sm',innerHTML:svg('trash',12,'var(--danger)'),onClick:function(){S.modal={type:'confirm',title:'Clear Workout?',msg:'This will erase all logged data for this workout.',confirmText:'Clear',cancelText:'Keep',onConfirm:function(){delete S.logs[lk(ap.id,S.week,S.day)];S.curLog={};S._sessStartAt=null;S.sessTimer=0;S.sessRun=false;clearInterval(S.sessInt);try{localStorage.removeItem('rre2_curlog');localStorage.removeItem('rre2_sesstimer');}catch(e){}sv();S.modal=null;R();}};R();}}));
 hdr.appendChild(hbtns);el.appendChild(hdr);
@@ -100,17 +101,18 @@ if(_missedInfo.missed>0&&_missedInfo.msg&&(S._dismissedAlerts||[]).indexOf(_miss
 var introKey='intro_w'+S.week+'d'+S.day;
 var introText=S.coachCache[introKey]||null;
 // Auto-generate briefing if not cached
-if(!introText&&!S._introLoading){S._introLoading=true;generateCoaching('intro',introKey,function(){return COACH_PROMPTS.intro(ap,pd,wk,dy,getExDB());},function(text){S._introLoading=false;R();});}
-if(introText)S._introLoading=false;
+if(!introText)generateCoaching('intro',introKey,function(){return COACH_PROMPTS.intro(ap,pd,wk,dy,getExDB());},function(){R();});
+var _introFailed=!introText&&redHasFailed(introKey);
 var introSection=h('div',{className:'card',style:{padding:'10px 14px',marginBottom:'6px'}});
-var introTop=h('div',{style:{display:'flex',alignItems:'center',gap:'10px',cursor:'pointer'},onClick:function(){
+var introTop=h('div',{style:{display:'flex',alignItems:'center',gap:'10px',cursor:'pointer'},role:'button','aria-expanded':S.show['tr_'+introKey]?'true':'false',onClick:function(){
+  if(_introFailed){redRetry(introKey);R();return;}
   S.show['tr_'+introKey]=!S.show['tr_'+introKey];R();
 }});
 introTop.appendChild(h('div',{style:{width:'28px',height:'28px',borderRadius:'50%',background:'var(--accent)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}},h('span',{style:{color:'#fff',fontSize:'12px',fontWeight:800}},'R')));
-introTop.appendChild(h('div',{style:{flex:1}},h('p',{style:{fontWeight:700,fontSize:'13px',margin:0}},"Red's Workout Briefing"),h('p',{style:{fontSize:'10px',color:'var(--text2)',margin:'1px 0 0'}},introText?'Tap to expand':'\u23F3 Loading briefing...')));
-introTop.appendChild(h('span',{style:{fontSize:'10px',color:'var(--text2)',transition:'transform 0.2s',display:'inline-block',transform:S.show['tr_'+introKey]?'rotate(180deg)':'rotate(0deg)'}},'\u25BC'));
+introTop.appendChild(h('div',{style:{flex:1}},h('p',{style:{fontWeight:700,fontSize:'13px',margin:0}},"Red's Workout Briefing"),h('p',{style:{fontSize:'11px',color:_introFailed?'var(--accent)':'var(--text2)',margin:'1px 0 0'}},introText?(S.show['tr_'+introKey]?'Tap to collapse':'Tap to read'):(_introFailed?"Couldn't load. Tap to retry":'Red is writing your briefing...'))));
+if(!_introFailed)introTop.appendChild(h('span',{style:{fontSize:'10px',color:'var(--text2)',transition:'transform 0.2s',display:'inline-block',transform:S.show['tr_'+introKey]?'rotate(180deg)':'rotate(0deg)'}},'\u25BC'));
 introSection.appendChild(introTop);
-if(S.show['tr_'+introKey]){var _itxt=S.coachCache[introKey]||null;if(_itxt){introSection.appendChild(h('div',{style:{padding:'8px 0 4px',fontSize:'12px',lineHeight:'1.6',color:'var(--text2)'}},_itxt));}else{introSection.appendChild(h('div',{style:{padding:'8px 0 4px',fontSize:'11px',color:'var(--text2)',fontStyle:'italic'}},'\u23F3 Red is preparing your briefing...'));}}
+if(S.show['tr_'+introKey]&&introText){introSection.appendChild(h('div',{style:{padding:'8px 0 4px',fontSize:'13px',lineHeight:'1.6',color:'var(--text2)',whiteSpace:'pre-line'}},introText));}
 el.appendChild(introSection);
 
 // Feeling meter moved to post-workout congrats popup
@@ -158,12 +160,12 @@ var desc=getDesc(ex.n)||'';if(desc){var dk='d'+ei;bd.appendChild(h('button',{cla
 var _txt=S.coachCache[_eKey]||null;
 var _isOpen=S.show['tr_'+_eKey];
 var _tw=h('div',{className:'transcript-wrap',style:{marginTop:'4px',borderLeft:'2px solid var(--accent)',borderRadius:'0 6px 6px 0',background:'rgba(200,16,46,0.03)',overflow:'hidden',transition:'all 0.3s'}});
-var _tg=h('div',{style:{padding:'6px 10px',cursor:'pointer',display:'flex',alignItems:'center',gap:'6px',justifyContent:'space-between'},onClick:function(){S.show['tr_'+_eKey]=!S.show['tr_'+_eKey];if(S.show['tr_'+_eKey]&&!S.coachCache[_eKey]){generateCoaching('exercise',_eKey,function(){return COACH_PROMPTS.exercise(_eName,_eData,_ap,_pd);},function(){R();});}R();}});
+var _tg=h('div',{style:{padding:'6px 10px',cursor:'pointer',display:'flex',alignItems:'center',gap:'6px',justifyContent:'space-between'},onClick:function(){if(redHasFailed(_eKey)){redRetry(_eKey);S.show['tr_'+_eKey]=true;}else{S.show['tr_'+_eKey]=!S.show['tr_'+_eKey];}if(S.show['tr_'+_eKey]&&!S.coachCache[_eKey]){generateCoaching('exercise',_eKey,function(){return COACH_PROMPTS.exercise(_eName,_eData,_ap,_pd);},function(){R();});}R();}});
 _tg.appendChild(h('span',{style:{fontSize:'11px',color:'var(--accent)',fontWeight:600}},"Red's coaching cues"));
 _tg.appendChild(h('span',{style:{fontSize:'10px',color:'var(--text2)',transition:'transform 0.2s',display:'inline-block',transform:_isOpen?'rotate(180deg)':'rotate(0deg)'}},'\u25BC'));
 _tw.appendChild(_tg);
 if(_isOpen&&_txt){_tw.appendChild(h('div',{style:{padding:'4px 10px 8px',fontSize:'12px',lineHeight:'1.5',color:'var(--text2)'}},_txt));}
-else if(_isOpen&&!_txt){_tw.appendChild(h('div',{style:{padding:'4px 10px 8px',fontSize:'11px',color:'var(--text2)',fontStyle:'italic'}},'Generating coaching cues...'));}
+else if(_isOpen&&!_txt){_tw.appendChild(h('div',{style:{padding:'4px 10px 8px',fontSize:'11px',color:redHasFailed(_eKey)?'var(--accent)':'var(--text2)',fontStyle:'italic'}},redHasFailed(_eKey)?"Couldn't load cues. Tap above to retry.":'Red is writing your cues...'));}
 bd.appendChild(_tw);
 })(exKey,ex.n,ex,ap,pd);
 // Progressive overload: show last performance and suggestion

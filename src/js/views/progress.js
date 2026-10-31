@@ -95,14 +95,10 @@ if(_wStats.cur.sessions>0||_wStats.prev.sessions>0){
     if(_wStats.prev.sessions>0)_wkText+=' Last week: '+_wStats.prev.sessions+' sessions, '+Math.round(_wStats.prev.vol)+' lbs volume. Volume change: '+(_wStats.volChange>0?'+':'')+_wStats.volChange+'%.';
     _wkText+=' Streak: '+getStreak().current+' weeks.';
     _wkBody.textContent=_wkText;_wkBody.style.color='var(--text2)';
-    fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,
+    var _wkReq=redOnce(_wkCacheKey,{maxTokens:220,
         system:"You are Red, a warm authoritative fitness coach. Give a brief weekly check-in (60-80 words). Reference the specific numbers. Be encouraging but direct. Use contractions naturally.",
-        messages:[{role:'user',content:'Weekly stats for '+(S.profile.name||'athlete')+': '+_wkText+' Goals: '+(S.profile.goals||[]).join(', ')}]})
-    }).then(function(r){return r.json();}).then(function(d){
-      var txt=(d.content&&d.content[0]&&d.content[0].text)||'';
-      if(txt){S.coachCache[_wkCacheKey]=txt;sv();R();}
-    }).catch(function(e){});
+        user:'Weekly stats for '+(S.profile.name||'athlete')+': '+_wkText+' Goals: '+(S.profile.goals||[]).join(', ')});
+    if(_wkReq)_wkReq.then(function(txt){S.coachCache[_wkCacheKey]=txt;sv();R();},function(){});
   }
   _wkCard.appendChild(_wkBody);
   el.appendChild(_wkCard);
@@ -160,7 +156,7 @@ if(allFeelings.length>=3){
     bc.appendChild(h('div',{style:{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:'2px'}},
       h('span',{style:{fontSize:'9px',fontWeight:700}},f.f+''),
       h('div',{style:{width:'100%',height:Math.max(pct,8)+'%',background:color,borderRadius:'3px 3px 0 0'}}),
-      h('span',{style:{fontSize:'7px',color:'var(--text2)'}},new Date(f.d).toLocaleDateString('en',{month:'numeric',day:'numeric'}))
+      h('span',{style:{fontSize:'7px',color:'var(--text2)'}},parseLocalDate(f.d).toLocaleDateString('en',{month:'numeric',day:'numeric'}))
     ));});
   fC.appendChild(bc);el.appendChild(fC);
 }
