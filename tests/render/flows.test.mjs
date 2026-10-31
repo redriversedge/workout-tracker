@@ -182,3 +182,48 @@ test('custom workout and body measurement can be added', async function () {
   assert.deepEqual(app.errors, []);
   app.close();
 });
+
+test('multi-program Track: Save opens the celebration, rating saves to the merged log', async function () {
+  const app = bootApp(userStorage(['str_int_bb', 'run_5k'], 0.1));
+  app.run("S.tab='track';R();");
+  await app.flush();
+  assert.match(app.text(), /Week \d+ · Day \d+/, 'merged tracker shown');
+  assert.equal(app.window.document.querySelectorAll('.feel-row').length, 0, 'no mid-workout feeling row');
+  // Find a day with exercises (not a rest day).
+  for (let d = 1; d <= 7 && !buttonByText(app, /^Save$/); d++) { app.run('S.day=' + d + ';S.curLog={};R();'); await app.flush(); }
+  const w = app.S().week, d = app.S().day;
+  click(app, buttonByText(app, /^Save$/));
+  await app.flush();
+  assert.equal(app.S().modal && app.S().modal.type, 'celebration');
+  click(app, buttons(app).find(function (b) { return /(^|\D)9$/.test(b.textContent.trim()); }));
+  assert.ok(await waitFor(function () { return /Red's Take/.test(app.text()); }), 'Red feedback shown');
+  assert.equal(app.S().logs['merged_w' + w + 'd' + d].feeling, 9);
+  assert.deepEqual(app.errors, []);
+  app.close();
+});
+
+test('merge engine: every merged day pulls exercises that fit its label', function () {
+  const combos = [['str_int_bb', 'run_5k'], ['str_beg_db', 'flex_general'], ['str_adv_bb', 'run_half', 'flex_athletic'], ['run_10k', 'flex_pilates'], ['sc_int', 'run_10k']];
+  const lowerWords = /squat|deadlift|lunge|leg|hip thrust|rdl|romanian|step-up|calf|swing|glute|split/i;
+  const upperOnly = /bench|overhead press|pull-up|row|curl|dip|lateral raise|push-up|chin-up|tricep/i;
+  const problems = [];
+  combos.forEach(function (combo) {
+    const app = bootApp(userStorage(combo, 0));
+    const merged = app.run('getMergedSchedule()');
+    assert.ok(merged, combo.join('+') + ' should merge');
+    merged.schedule.forEach(function (day, i) {
+      if (day.isRest) return;
+      const exs = app.run('getMergedDayExercises(getMergedSchedule().schedule[' + i + '],1)');
+      if (!exs.length) { problems.push(combo.join('+') + ' day ' + (i + 1) + ' (' + day.label + ') has no exercises'); return; }
+      const strength = exs.filter(function (e) { return e.source === 'strength'; }).map(function (e) { return e.n; });
+      if (/^strength_(lower|legs)$/.test(day.type) && strength.length && !strength.some(function (n) { return lowerWords.test(n); })) problems.push(day.label + ': ' + strength.join(', '));
+      if (/^strength_(push|pull|upper)$/.test(day.type) && strength.length && strength.filter(function (n) { return upperOnly.test(n); }).length === 0) problems.push(day.label + ': ' + strength.join(', '));
+      day.types.forEach(function (t) {
+        const src = t === 'yoga' ? 'flexibility' : t;
+        if (combo.some(function (pid) { return pid.indexOf(src === 'flexibility' ? 'flex' : src === 'running' ? 'run' : 's') === 0; }) && !exs.some(function (e) { return e.source === src || (src === 'strength' && e.source === 'hiit'); })) problems.push(combo.join('+') + ' ' + day.label + ' is missing its ' + src + ' part');
+      });
+    });
+    app.close();
+  });
+  assert.deepEqual(problems, []);
+});

@@ -125,10 +125,17 @@ var MERGE_TEMPLATES = {
   }
 };
 
+// Maps enrolled programs to a MERGE_TEMPLATES key. Order-independent, and maps program types
+// onto the template vocabulary (flexibility programs use the 'yoga' templates; HIIT schedules
+// like strength). Returns the matching template key, or the joined types if none exists.
+var MERGE_TYPE_ALIAS={flexibility:'yoga',hiit:'strength'};
 function getMergeKey(programs){
-  var types=programs.map(function(p){var pd=gPD(p.id);return pd?pd.type:"unknown";}).sort();
-  types=types.filter(function(t,i){return types.indexOf(t)===i;});// unique
-  return types.join('+');
+  var types=programs.map(function(p){var pd=gPD(p.id);var t=pd?pd.type:'unknown';return MERGE_TYPE_ALIAS[t]||t;});
+  types=types.filter(function(t,i){return types.indexOf(t)===i;}).sort();
+  var want=types.join('+');
+  var keys=Object.keys(MERGE_TEMPLATES);
+  for(var i=0;i<keys.length;i++){if(keys[i].split('+').sort().join('+')===want)return keys[i];}
+  return want;
 }
 
 function getMergedSchedule(){try{
@@ -148,36 +155,66 @@ function getMergedSchedule(){try{
 }catch(e){console.error("Merge error:",e);return null;}}
 
 // Map merged day types to actual exercises from the enrolled programs
+// Intent words in a merge template's day type -> words that identify a matching program day.
+var MERGE_DAY_MATCH={
+  push:['push','chest','press','bench'],
+  pull:['pull','back','row','bicep'],
+  legs:['leg','lower','squat','hinge','posterior','swing','deadlift'],
+  lower:['leg','lower','squat','hinge','posterior','swing','deadlift'],
+  upper:['upper','push','pull','chest','press','shoulder','back','arm'],
+  full:['full','strength day','grind','complex'],
+  easy:['easy','run day'],
+  long:['long'],
+  tempo:['tempo','workout'],
+  intervals:['interval','speed','sprint','acceleration'],
+  focus:['tempo','interval','workout','speed'],
+  shortrun:['easy','run day'],
+  longrun:['long'],
+  recovery:['recovery','gentle','restore','foundation','yin'],
+  flow:['flow'],
+  mobility:['mobility','hip','spine','shoulder','prep','ankle'],
+  yoga:['flow','mobility','full body']
+};
+var MERGE_UPPER_WORDS=['upper','push','pull','chest','press','shoulder','arm','bicep','back'];
+var MERGE_LOWER_WORDS=['leg','lower','squat','hinge','posterior'];
+
+// Scores how well a program day fits a merged day template (higher is better, never 0 for a
+// training day so there is always a fallback).
+function mergeDayScore(templateType,dayName){
+  var t=(templateType||'').toLowerCase(),n=(dayName||'').toLowerCase(),score=1;
+  var intents=t.split('_');
+  intents.forEach(function(word){
+    var keys=MERGE_DAY_MATCH[word];if(!keys)return;
+    for(var i=0;i<keys.length;i++){if(n.indexOf(keys[i])>-1){score+=10;break;}}
+  });
+  var wantsLower=intents.indexOf('lower')>-1||intents.indexOf('legs')>-1;
+  var wantsUpper=intents.indexOf('upper')>-1||intents.indexOf('push')>-1||intents.indexOf('pull')>-1;
+  var isUpper=MERGE_UPPER_WORDS.some(function(w){return n.indexOf(w)>-1;});
+  var isLower=MERGE_LOWER_WORDS.some(function(w){return n.indexOf(w)>-1;});
+  if(wantsLower&&!wantsUpper&&isUpper&&!isLower)score-=8;
+  if(wantsUpper&&!wantsLower&&isLower&&!isUpper)score-=8;
+  return score;
+}
+
+// Map merged day types to actual exercises from the enrolled programs
 function getMergedDayExercises(dayTemplate,weekNum){
   var exercises=[];
   S.enrolled.forEach(function(en){
     var pd=gPD(en.id);if(!pd)return;
-    if(dayTemplate.types.indexOf(pd.type)===-1)return;
-    var wk=pd.data[weekNum]||pd.data[1];if(!wk)return;
-    // Find best matching day from program
-    var bestDay=null,bestScore=0;
+    var mType=MERGE_TYPE_ALIAS[pd.type]||pd.type;
+    if(dayTemplate.types.indexOf(mType)===-1)return;
+    var wk=pd.data[weekNum]||pd.data[1];if(!wk||!wk.days)return;
+    var bestDay=null,bestScore=-Infinity;
     Object.keys(wk.days).forEach(function(dk){
-      var dy=wk.days?wk.days[dk]:wk[dk];if(!dy||dy.isRest)return;
-      var score=0;
-      if(dayTemplate.type.indexOf('push')>-1&&dy.name&&dy.name.toLowerCase().indexOf('push')>-1)score+=10;
-      if(dayTemplate.type.indexOf('pull')>-1&&dy.name&&dy.name.toLowerCase().indexOf('pull')>-1)score+=10;
-      if(dayTemplate.type.indexOf('leg')>-1&&dy.name&&(dy.name.toLowerCase().indexOf('leg')>-1||dy.name.toLowerCase().indexOf('lower')>-1))score+=10;
-      if(dayTemplate.type.indexOf('upper')>-1&&dy.name&&(dy.name.toLowerCase().indexOf('upper')>-1||dy.name.toLowerCase().indexOf('push')>-1))score+=10;
-      if(dayTemplate.type.indexOf('full')>-1)score+=5;
-      if(dayTemplate.type.indexOf('easy')>-1&&dy.name&&dy.name.toLowerCase().indexOf('easy')>-1)score+=10;
-      if(dayTemplate.type.indexOf('long')>-1&&dy.name&&dy.name.toLowerCase().indexOf('long')>-1)score+=10;
-      if(dayTemplate.type.indexOf('tempo')>-1&&dy.name&&dy.name.toLowerCase().indexOf('tempo')>-1)score+=10;
-      if(dayTemplate.type.indexOf('interval')>-1&&dy.name&&dy.name.toLowerCase().indexOf('interval')>-1)score+=10;
-      if(dayTemplate.type.indexOf('flow')>-1&&dy.name&&dy.name.toLowerCase().indexOf('flow')>-1)score+=10;
-      if(dayTemplate.type.indexOf('recovery')>-1&&dy.name&&(dy.name.toLowerCase().indexOf('yin')>-1||dy.name.toLowerCase().indexOf('recovery')>-1||dy.name.toLowerCase().indexOf('restore')>-1))score+=10;
-      if(score===0)score=1;// fallback: any non-rest day
+      var dy=wk.days[dk];if(!dy||dy.isRest||!dy.ex)return;
+      var score=mergeDayScore(dayTemplate.type,dy.name);
       if(score>bestScore){bestScore=score;bestDay=dy;}
     });
     if(bestDay&&bestDay.ex){
-      // For hybrid days with running, limit strength exercises
+      // Hybrid days (lift + run or lift + flow) keep the strength part short.
       var exList=bestDay.ex;
-      if(dayTemplate.types.length>1&&pd.type==='strength'){
-        exList=exList.slice(0,Math.min(exList.length,4));// Cap at 4 exercises for hybrid
+      if(dayTemplate.types.length>1&&mType==='strength'){
+        exList=exList.slice(0,Math.min(exList.length,4));
       }
       exercises=exercises.concat(exList.map(function(ex){return Object.assign({},ex,{source:pd.type});}));
     }

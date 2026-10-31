@@ -44,7 +44,7 @@ ta.addEventListener('keydown',function(e){
   if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();if(S.chatIn&&S.chatIn.trim())sendC();}
 });
 
-var sb=h('button',{className:'chat-sb',innerHTML:svg('send',16,'#fff'),onClick:function(){if(S.chatIn&&S.chatIn.trim())sendC();}});
+var sb=h('button',{className:'chat-sb',innerHTML:svg('send',16,'#fff'),'aria-label':'Send message to Red',onClick:function(){if(S.chatIn&&S.chatIn.trim())sendC();}});
 
 ir.appendChild(ta);ir.appendChild(sb);wrap.appendChild(ir);el.appendChild(wrap);
 

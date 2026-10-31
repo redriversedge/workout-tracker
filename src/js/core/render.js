@@ -49,7 +49,7 @@ var logo=h('h1',{onClick:function(){S.drill=null;S.exDB=null;S.tab='home';R();},
 logo.innerHTML=REDWOLF_SVG.replace('width="22"','width="36"').replace('height="22"','height="36"');logo.appendChild(document.createTextNode(' RedRiversEdgeFitness'));
 top.appendChild(logo);
 var pInit=(S.profile.name||'U')[0].toUpperCase();
-var pBtn=h('button',{style:{width:'32px',height:'32px',borderRadius:'50%',border:'2px solid #c8102e',background:'transparent',color:'#c8102e',fontSize:'14px',fontWeight:800,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'inherit',letterSpacing:'-0.5px',flexShrink:0},onClick:function(){S.tab='profile';S.drill=null;S.exDB=null;R();}});
+var pBtn=h('button',{'aria-label':'Open profile',style:{width:'32px',height:'32px',borderRadius:'50%',border:'2px solid #c8102e',background:'transparent',color:'#c8102e',fontSize:'14px',fontWeight:800,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'inherit',letterSpacing:'-0.5px',flexShrink:0},onClick:function(){S.tab='profile';S.drill=null;S.exDB=null;R();}});
 pBtn.textContent=pInit;
 if(S.tab==='profile')pBtn.style.background='#c8102e',pBtn.style.color='#fff';
 top.appendChild(pBtn);app.appendChild(top);
@@ -157,7 +157,7 @@ if(S.modal&&S.modal.type==='celebration'){
   // Streak
   var _sk=getStreak();
   if(_sk.current>0)_box.appendChild(h('div',{style:{background:'var(--accent-light)',padding:'8px 12px',borderRadius:'8px',marginBottom:'16px',fontSize:'12px',textAlign:'center'}},
-    h('span',{style:{fontWeight:700,color:'var(--accent)'}},'\uD83D\uDD25 '+(_sk.current||0)+' week streak \u00B7 '+(_sk.thisWeek||0)+' sessions this week')));
+    h('span',{style:{fontWeight:700,color:'var(--accent)'}},'\uD83D\uDD25 '+(_sk.current||0)+' week streak \u00B7 '+(_sk.thisWeek||0)+(_sk.thisWeek===1?' session':' sessions')+' this week')));
   // 2. FEELING RATING (before Red's feedback so it's unbiased)
   if(S.modal.feeling===null){
     _box.appendChild(h('div',{style:{textAlign:'center',marginBottom:'16px'}},
@@ -226,7 +226,7 @@ if(S.modal&&S.modal.type==='celebration'){
   var _nw=S.modal.nextW;
   if(S.modal.feeling!==null&&!S.modal.redLoading){
     _box.appendChild(h('button',{className:'btn btn-primary',style:{width:'100%',marginBottom:'8px'},onClick:function(){
-      if(_nw){S.week=_nw.w;S.day=_nw.d;loadCL();}
+      if(_nw){S.week=_nw.w;S.day=_nw.d;if(S.modal.merged){S.curLog=JSON.parse(JSON.stringify(S.logs['merged_w'+_nw.w+'d'+_nw.d]||{}));S._trackManual=true;S.tab='track';}else{loadCL();}}
       S.modal=null;R();
     }},_nw?'Next: W'+_nw.w+' D'+_nw.d+' \u2014 '+_nw.name:'Back to Home'));
     _box.appendChild(h('button',{className:'btn btn-secondary',style:{width:'100%'},onClick:function(){S.modal=null;S.tab='home';R();}},'Home'));

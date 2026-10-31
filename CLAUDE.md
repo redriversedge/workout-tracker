@@ -1,86 +1,83 @@
-# CLAUDE.md — RedRiversEdgeFitness
+# CLAUDE.md - RedRiversEdgeFitness
 
-AI-coached fitness PWA. Programs + workout logging + Red (Claude coach). Deployed on Netlify.
+AI-coached fitness PWA: 34 training programs, workout logging, and Red (Claude) as coach.
+Vanilla JS, no framework. Source in `src/`, built to `dist/`, deployed by Netlify.
+Live: https://redriversedgefitness.netlify.app
 
-## Architecture
+## Layout
 
 ```
-index.html          App shell (~30 lines). Loads modules in order, boots the app.
-css/rre.css         All styling.
-js/
-  themes.js         Dark/light theme toggle. FOUC guard.
-  core.js           S state object, load/sv, autosave, utils (h, toast, lk, etc.), R/safeRender/showFatalError, rest timer.
-  programs.js       PROGRAMS library, exercise descriptions, warmup/cooldown, scheduling, weight adjustments.
-  logging.js        curLog mutations, loadCL, PR detection, est1RM, exercise history, supersets.
-  analytics.js      Pure functions: buildSessionSummary, buildRecentHistory. Testable.
-  red.js            Claude prompts (COACH_PROMPTS), callClaude wrapper with rate-limit + retry, chat send.
-  onboarding.js     OBQ flow, auto-enroll.
-  tabs.js           All tab and modal renderers (Home, Programs, Track, Progress, Chat, Profile).
-  backup.js         JSON export/import. Accepts v18c backup shape for one-way migration.
-netlify/functions/
-  chat.js           Claude API proxy. Reads ANTHROPIC_API_KEY env var.
-sw.js               Service worker. Bump CACHE_VERSION on every deploy.
-netlify.toml        publish=".", functions dir, security headers.
-manifest.json       PWA manifest.
-tests/              Browser-runnable smoke tests (open tests/smoke.html).
-docs/
-  BUGS.md           Known issues and fix log.
-  SCHEMA.md         S object + rre2_* localStorage key reference.
-  plans/            Archived implementation plans.
-Version Archive/    Old snapshots (including 2.19_pre-split/ with the v18c monolith).
+src/
+  index.html            Shell. Build injects the fingerprinted JS/CSS file names.
+  sw.template.js        Service worker template. Build sets the cache version.
+  manifest.json         PWA manifest.
+  assets/               Icons and the wolf logo.
+  css/app.css           All styles.
+  js/load-order.json    THE list of JS files, in load order. Build and tests read it.
+  js/ui/                theme.js (runs first), icons.js, rest-timer.js
+  js/data/              PROGRAMS, exercise descriptions, warmups, S&C programs, normalization
+  js/training/          schedule, exercise history/streaks, adjustments, merge engine, supersets
+  js/core/              state.js (S, load/sv, migrations), helpers.js, render.js (R, safeRender,
+                        modals), navigation.js, backup.js, boot.js (runs last)
+  js/red/               api.js (every Red call), coaching.js (prompts, session summary)
+  js/views/             one file per screen: home, program, track, progress, chat, profile,
+                        onboarding, program-picker, custom-workout
+netlify/functions/chat.mjs  Red's proxy to Anthropic. Picks the model.
+scripts/check.mjs       Guards: ES5 only, ASCII only, load order matches disk.
+scripts/build.mjs       src -> dist (fingerprinted bundle, generated sw.js).
+tests/                  unit/, render/ (jsdom), e2e/ (real Chrome at iPhone size)
+docs/                   SCHEMA.md (data), BUGS.md (fix log)
 ```
 
-## State
+All JS files share one global scope (the build concatenates them). Function declarations
+are hoisted across files; top-level statements run in load-order.json order.
 
-Single global `S` object persisted to `localStorage`. Keys are prefixed `rre2_`. Full list in [docs/SCHEMA.md](docs/SCHEMA.md).
-
-Autosave is debounced 400ms via `autosaveCL()` for in-progress workouts; other writes call `sv()` directly.
-
-## Red (AI coach)
-
-Three prompt families in `red.js`:
-- **Intro** — pre-workout briefing.
-- **Exercise cues** — form reminders per exercise.
-- **Post-workout** — summary + feedback. MUST receive the live workout log (`S.logs[lk(...)]`), never a snapshot. The v18c bug was passing a stale pre-Save copy — see [docs/BUGS.md](docs/BUGS.md).
-
-All Claude calls go through `Red.callClaude()` which enforces a 1500ms rate limit and returns proper errors for UI retry buttons.
-
-## Code conventions
-
-- **ES5 only.** `var` (not `let`/`const`). No arrow functions. No template literals. No destructuring. Matches Larry.
-- **IIFE modules.** Each `js/*.js` exposes an object via `var Name = (function(){ ... return { ... }; })()`. Globals on `window`: `S`, `h`, `toast`, `gAP`, `gPD`, `lk`, `svg`, `localDateStr`, `load`, `sv`, `autosaveCL`, `R`, `safeRender`, `showFatalError`, `REDWOLF_SVG`.
-- **Try/catch render boundaries.** `safeRender` wraps every tab render. On throw, show a diagnostic error card. Never blank-screen.
-- **Emojis in user-facing strings are fine** as Unicode escapes (`'\u{1F3C6}'`). Do not paste raw bytes into JS source.
-- **No em dashes.** Use commas, periods, or parens.
-
-## Dev workflow
+## Commands
 
 ```bash
-# Syntax check all modules before pushing
-node --check js/themes.js js/core.js js/programs.js js/logging.js js/analytics.js js/red.js js/onboarding.js js/tabs.js js/backup.js
-
-# ES5 lint (zero hits expected)
-grep -rE '(^|\s)(let |const |=>)' js/        # no let/const/arrow
-grep -rF '`' js/                              # no template literals
-
-# Local preview (no Netlify functions — Red API calls will 404 locally)
-npx serve .
-
-# Smoke tests: open tests/smoke.html in a browser, all rows green
+npm install
+npm test          # check + build + 140+ unit/render/flow tests (TZ=America/Chicago)
+npm run test:e2e  # real Chrome at 393x852, both themes, screenshots in test-results/
+npm run build     # just build dist/
+npm run serve     # preview dist/ locally (Red calls 404 without netlify dev)
 ```
 
-Branch model: `dev` for work, merge to `main` for Netlify auto-deploy. Bump `CACHE_VERSION` in `sw.js` on every merge to `main`.
+Netlify runs `npm test` as the build command. A failing test blocks the deploy.
+GitHub Actions runs `npm test` and the browser check on every PR.
 
-## Design tokens
+## Rules
 
-- `--accent: #c8102e` (light) / `#e8233a` (dark)
-- `--success: #10b981`, `--warn: #f59e0b`, `--danger: #ef4444`
-- Hero gradient: `linear-gradient(135deg, var(--accent), #8b0000)`
+- **ES5 only** in `src/js` and `src/sw.template.js`: `var`, `function`, no arrows, template
+  literals, `let/const`, spread, or `\u{...}` escapes. `check.mjs` parses every file as ES5.
+- **ASCII only** in everything shipped. Write emoji and dashes as `\uXXXX` escapes
+  (surrogate pairs for emoji, e.g. `'🔥'`). This is what stopped the iOS
+  smart-quote 502s for good.
+- **New JS file?** Add it to `src/js/load-order.json` or the check fails.
+- **Every Red call goes through `redRequest()` / `redOnce()`** in `red/api.js`. Never call
+  `fetch` for Red directly and never send a `model`. The function picks it.
+- **Use `parseLocalDate()`** for any stored date string. `new Date('2026-10-31')` is UTC
+  midnight, which is the previous evening in the US.
+- **Changing stored data shape?** Bump `STORAGE_SCHEMA` in `core/state.js`, add a
+  `MIGRATIONS[n]` step, add a test in `tests/unit/data.test.mjs`, update docs/SCHEMA.md.
+- **Post-workout feedback must use the saved log**: the celebration modal carries
+  `logKey`, `w`, `d` captured at Save. Track auto-advances on re-render, so `S.week/S.day`
+  already point at the next workout by the time the user rates the session.
+- No cache-version bumping needed: the build fingerprints assets and versions sw.js.
 
-## Do NOT
+## Red
 
-- Pass stale workout snapshots into Red prompts.
-- Use `let`/`const`/arrow functions/template literals.
-- Commit directly to `main`.
-- Commit `.env`, API keys, or credentials.
-- Skip bumping `CACHE_VERSION` — it'll leave users on stale cached JS.
+- Model: `RED_MODEL` env var on Netlify, else `DEFAULT_MODEL` in `chat.mjs`. When Anthropic
+  retires a model, change the env var (or the default) and redeploy. No app change needed.
+- Health check: `GET /.netlify/functions/chat` returns 405 when the function is loaded.
+- `ANTHROPIC_API_KEY` lives in Netlify env vars (production, deploy-preview, branch-deploy).
+
+## Git
+
+Work on a branch, open a PR (Netlify posts a deploy preview), merge to `main` to ship.
+`main` auto-deploys to production. Roll back from Netlify Deploys or by reverting the merge.
+The pre-rebuild app is tagged `v19-final`.
+
+## Design
+
+Dark-first. `--accent: #c8102e` (light) / `#e8233a` (dark), background `#0a0a0a`.
+Mobile-first: test at 393px wide. Inputs are 16px on touch devices so iOS does not zoom.

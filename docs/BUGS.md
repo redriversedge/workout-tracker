@@ -1,53 +1,34 @@
 # Bugs and Fixes
 
-## Fixed
+## v20 rebuild (2026-10-31)
 
-### Red reads stale workout snapshot (post-workout feedback)
-**Fixed:** 2026-04-17. Verified in consolidated `js/core.js`.
+Every item below has a regression test (file noted).
 
-The post-workout handler now passes the live log (`S.logs[_lk]`) into `COACH_PROMPTS.postWorkout` instead of the stale `S.modal.curLog` snapshot. `buildSessionSummary` guard tightened so "not completed" only appears when the set grid is truly empty (checks `done===true`, `w>0`, `r>0`). Audit `console.log('[RRE] post-workout log passed to Red:', _liveLog)` retained for future debugging.
+| Bug | User-visible effect | Fix | Test |
+|---|---|---|---|
+| App sent `claude-sonnet-4-20250514`, retired by Anthropic 2026-06-15 | Every Red feature failed since June | App sends no model; `chat.mjs` picks it (`RED_MODEL` env or default) | `unit/chat-function` |
+| `buildSessionSummary` loop condition `si<=parseInt(ex.s)\|\|5` never false | App froze when rating a workout that had logged sets | Iterate the logged set keys | `render/flows` finishing a workout |
+| Failed Red calls cached `''` and re-rendered | Track briefing and Program breakdown re-requested in a loop while Red was down | `redOnce()` de-dupes in-flight and recently failed keys; retry buttons | `render/flows` no API storm |
+| Save set the celebration modal without re-rendering | Nothing happened on Save unless a PR toast fired | `R()` after opening the modal | `render/flows` |
+| Track auto-advances on re-render; rating used `S.week/S.day` | Feeling rating saved onto the next workout; Red told the wrong day | Modal carries `logKey`, `w`, `d` captured at the start of Save | `render/flows` |
+| Chat history sent with leading Red message / error bubbles | API rejected chats; error text fed back to Red | `redCleanMessages()`; errors marked `isError` | `unit/data`, `render/flows` chat |
+| 22 places parsed `YYYY-MM-DD` with `new Date()` (UTC) | Dates off by a day in US evenings | `parseLocalDate()` | `unit/data` dates |
+| Inputs under 16px after allowing zoom | iPhone zoomed into fields on tap | 16px inputs on touch devices | e2e |
+| Merge engine never matched a template (lookup sorted types alphabetically; templates say `yoga`, programs say `flexibility`) | Multi-program users only ever saw their first program | Order-independent key lookup with type aliases | `render/tabs` combos, `render/flows` merge engine |
+| Merged day picker only knew a few words ("leg" but not "lower") | "Lower Body" day listed bench press and dips | Keyword groups per intent, penalty for opposite body region | `render/flows` merge engine |
+| Merged Track had no post-workout flow and rated feeling mid-workout | No rating or Red feedback for multi-program users | Same celebration as single-program Track; rating moved after Save | `render/flows` multi-program |
+| Body measurement delete had no confirmation | One mis-tap lost an entry | Confirm dialog | - |
+| "215 sessions behind" banner after a long break | Discouraging, wrong-sounding message | Friendly welcome-back copy past 12 missed | - |
+| Developer error text in chat ("check ANTHROPIC_API_KEY") | Confusing messages for users | Friendly messages + Try again | `render/flows` |
 
-### Red API errors were silent
-**Fixed:** 2026-04-18.
+## Earlier fixes (v19, 2026-04)
 
-Post-workout celebration now parses `d.error` from the Claude proxy response and re-throws with the real message. The catch block surfaces the error message to the user ("I had trouble loading my full analysis (reason)...") and logs full detail to console.
+- Red read a stale workout snapshot for post-workout feedback.
+- Weight inputs accepted non-numeric values.
+- Favicon was a dog emoji; now the wolf.
+- Export/import moved into `backup.js` with v18c compatibility.
 
-### Weight input accepted non-numeric values
-**Fixed:** 2026-04-18.
-
-Set-grid weight inputs now reject NaN and negative values (shows "Invalid weight" toast) and clamp above 9999. Applied to both `rTrack` and `rMergedTrack` set grids.
-
-### Favicon was a dog emoji while Red is a wolf everywhere else
-**Fixed:** 2026-04-18.
-
-Favicon now points to `/assets/red-wolf.svg`. The in-code `DOG_SVG` constant was renamed to `REDWOLF_SVG`.
-
-### Export/Import wired into proper module
-**Done:** 2026-04-18.
-
-Profile tab Export/Import buttons now use the `Backup` module ([js/backup.js](../js/backup.js)). Export writes the new `redge-fitness-backup-YYYY-MM-DD.json` format (superset of v18c's 7-field format). Import accepts either shape, so existing v18c backup files carry forward into the new app. Reset button behavior preserved.
-
----
-
-## Deferred — next session
-
-### Full module split
-**Status:** Not critical for shipping. App currently runs with the monolith JS consolidated into `js/core.js`. Module shells (`programs.js`, `logging.js`, `analytics.js`, `red.js`, `onboarding.js`, `tabs.js`) exist with placeholder IIFEs and are loaded alongside core.js — ready to be filled in by extracting sections from core.js over subsequent sessions without app-visible changes.
-
-### Rate-limit Red API calls
-**Status:** `Red.callClaude()` helper exists in `js/red.js` with a 1500ms floor, but none of the four current fetch call sites (`generateCoaching`, celebration modal, chat `sendC`, etc. in core.js) are routed through it yet. Low risk in practice because UX naturally paces calls.
-
-### State-store namespaced migration
-**Status:** `State.set('logs.'+lk, entry)` pattern is designed in the plan but not implemented. Current code mutates `S.*` directly. Defer until the module split has happened so the state-store boundary is cleaner to introduce.
-
-### Retry button on Red failures
-**Status:** Error message now shows the real reason, but the celebration modal doesn't offer a one-click retry — user would need to dismiss and rate feeling again. Wire a `[Retry]` button in the celebration card on next pass.
-
----
-
-## Backlog — post-migration
+## Backlog
 
 - Undo toast when a workout is accidentally cleared.
-- CSV/print-friendly export of workout history.
-- Week-over-week progress view for body measurements.
-- Consolidate duplicate fetch bodies in core.js (four near-identical Claude calls).
+- CSV export of workout history.

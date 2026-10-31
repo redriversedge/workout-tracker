@@ -41,7 +41,8 @@ function getMissedInfo(ap,pd){
   var msg='';
   if(missed===1)msg="You missed a session, so I shifted it to today. No big deal \u2014 we just pick up where we left off.";
   else if(missed===2)msg="You've got "+missed+" sessions to catch up on. I've shifted your schedule forward. Let's knock them out.";
-  else if(missed>=3)msg="It's been a minute \u2014 "+missed+" sessions behind. I've compressed the schedule to get you back on track. Let's go.";
+  else if(missed>12)msg="Welcome back. It's been a while, so we're picking up right where you left off. No catching up required, just show up today.";
+  else if(missed>=3)msg="It's been a minute, "+missed+" sessions behind. I've compressed the schedule to get you back on track. Let's go.";
   return{missed:missed,msg:msg};
 }
 

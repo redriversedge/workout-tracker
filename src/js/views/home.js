@@ -357,7 +357,7 @@ el.appendChild(rWeeklySummary());
 var next=null;for(var w=1;w<=pd.weeks&&!next;w++){var wk=pd.data[w];if(!wk||!wk.days)continue;for(var d=1;d<=ap.days&&!next;d++){var dy=wk.days[d];if(dy&&!dy.isRest&&!S.logs[lk(ap.id,w,d)])next={w:w,d:d,name:dy.name};}}
 if(next){var nx=h('div',{className:'card',style:{cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center'}});nx.addEventListener('click',function(){S.week=next.w;S.day=next.d;S.tab='track';loadCL();R();});
 nx.appendChild(h('div',null,h('p',{className:'label'},'Up Next'),h('h3',{style:{fontSize:'16px',fontWeight:700,margin:'3px 0'}},'W'+next.w+' D'+next.d),h('p',{style:{color:'var(--accent)',fontSize:'12px',fontWeight:600}},next.name)));
-nx.appendChild(h('div',{style:{background:'var(--accent-light)',borderRadius:'12px',padding:'10px'},innerHTML:svg('right',20,'var(--accent)')}));el.appendChild(nx);}
+nx.appendChild(h('div',{style:{background:'var(--accent-light)',borderRadius:'12px',padding:'10px'},innerHTML:svg('right',20,'var(--accent)'),'aria-label':'Open next workout'}));el.appendChild(nx);}
 var acts=h('div',{className:'grid-2',style:{marginBottom:'10px'}});acts.appendChild(h('button',{className:'btn btn-secondary btn-block btn-sm',innerHTML:svg('plus',12)+' Programs',onClick:function(){S.tab='programs';R();}}));acts.appendChild(h('button',{className:'btn btn-secondary btn-block btn-sm',innerHTML:svg('settings',12)+' Days',onClick:function(){S.modal='adjustDays';R();}}));el.appendChild(acts);
 // Weeks
 el.appendChild(h('h3',{style:{fontSize:'14px',fontWeight:700,margin:'10px 0 8px'}},'Weeks'));var wg=h('div',{className:'grid-3',style:{marginBottom:'16px'}});

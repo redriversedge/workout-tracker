@@ -81,7 +81,7 @@ var _logCopy=JSON.parse(JSON.stringify(S.curLog));
 S.modal={type:'celebration',dayName:dy.name,nextW:_nxtW,ap:ap,pd:pd,wk:wk,dy:dy,w:_svW,d:_svD,logKey:_svKey,curLog:_logCopy,feeling:null,redFeedback:null,redLoading:false};
 R();
 }},'Save'));
-hbtns.appendChild(h('button',{className:'btn btn-danger btn-sm',innerHTML:svg('trash',12,'var(--danger)'),onClick:function(){S.modal={type:'confirm',title:'Clear Workout?',msg:'This will erase all logged data for this workout.',confirmText:'Clear',cancelText:'Keep',onConfirm:function(){delete S.logs[lk(ap.id,S.week,S.day)];S.curLog={};S._sessStartAt=null;S.sessTimer=0;S.sessRun=false;clearInterval(S.sessInt);try{localStorage.removeItem('rre2_curlog');localStorage.removeItem('rre2_sesstimer');}catch(e){}sv();S.modal=null;R();}};R();}}));
+hbtns.appendChild(h('button',{className:'btn btn-danger btn-sm',innerHTML:svg('trash',12,'var(--danger)'),'aria-label':'Clear this workout',onClick:function(){S.modal={type:'confirm',title:'Clear Workout?',msg:'This will erase all logged data for this workout.',confirmText:'Clear',cancelText:'Keep',onConfirm:function(){delete S.logs[lk(ap.id,S.week,S.day)];S.curLog={};S._sessStartAt=null;S.sessTimer=0;S.sessRun=false;clearInterval(S.sessInt);try{localStorage.removeItem('rre2_curlog');localStorage.removeItem('rre2_sesstimer');}catch(e){}sv();S.modal=null;R();}};R();}}));
 hdr.appendChild(hbtns);el.appendChild(hdr);
 
 // === MISSED WORKOUT BANNER ===
@@ -267,16 +267,23 @@ if(adjF!==1){var adjLabel=adjF<1?'Reduced ('+Math.round(adjF*100)+'%)':'Boosted 
   hbtns.appendChild(h('button',{className:'btn btn-primary btn-sm',onClick:function(){S.curLog.date=localISOStr();if(S.sessTimer>0)S.curLog.dur=S.sessTimer;S.logs[logKey]=JSON.parse(JSON.stringify(S.curLog));
   // Also check PRs
   var exs=getMergedDayExercises(dayTpl,S.week);exs.forEach(function(ex,ei){var eL=S.curLog['e'+ei];if(eL)Object.keys(eL).forEach(function(sk){if(sk.startsWith('s')){var w=parseFloat(eL[sk]&&eL[sk].w)||0;if(checkPR(ex.n,w)){sv();toast('\uD83C\uDFC6 PR! '+ex.n+': '+w+'lbs','pr-toast');}}});});
-  useAdjSession();sv();if(!S.toast)toast('Saved!');}},'Save'));
-  hbtns.appendChild(h('button',{className:'btn btn-danger btn-sm',innerHTML:svg('trash',12,'var(--danger)'),onClick:function(){S.modal={type:'confirm',title:'Clear Workout?',msg:'This will erase all logged data for this workout.',confirmText:'Clear',cancelText:'Keep',onConfirm:function(){delete S.logs[logKey];sv();S.curLog={};S.modal=null;R();}};R();}}));
+  useAdjSession();
+  S._sessStartAt=null;S.sessRun=false;S.sessTimer=0;clearInterval(S.sessInt);
+  try{localStorage.removeItem('rre2_curlog');localStorage.removeItem('rre2_sesstimer');}catch(e){}
+  sv();
+  var _mExs=getMergedDayExercises(dayTpl,S.week);
+  var _nxD=null;for(var _ni=S.day;_ni<merged.schedule.length;_ni++){var _nt=merged.schedule[_ni];if(_nt&&!_nt.isRest&&!S.logs['merged_w'+S.week+'d'+(_ni+1)]){_nxD={w:S.week,d:_ni+1,name:_nt.label};break;}}
+  S.modal={type:'celebration',merged:true,dayName:dayTpl.label,nextW:_nxD,
+    ap:{id:'merged'},pd:{name:S.enrolled.map(function(e){return PROGRAMS[e.id]?PROGRAMS[e.id].name:'';}).filter(Boolean).join(' + ')},
+    wk:null,dy:{name:dayTpl.label,ex:_mExs},w:S.week,d:S.day,logKey:logKey,curLog:JSON.parse(JSON.stringify(S.curLog)),feeling:null,redFeedback:null,redLoading:false};
+  R();}},'Save'));
+  hbtns.appendChild(h('button',{className:'btn btn-danger btn-sm',innerHTML:svg('trash',12,'var(--danger)'),'aria-label':'Clear this workout',onClick:function(){S.modal={type:'confirm',title:'Clear Workout?',msg:'This will erase all logged data for this workout.',confirmText:'Clear',cancelText:'Keep',onConfirm:function(){delete S.logs[logKey];sv();S.curLog={};S.modal=null;R();}};R();}}));
   hTop.appendChild(hbtns);hdr.appendChild(hTop);
   // Type badges
   var badges=h('div',{style:{display:'flex',gap:'4px'}});dayTpl.types.forEach(function(t){badges.appendChild(h('span',{style:{background:t==='strength'?'rgba(200,16,46,0.15)':t==='running'?'rgba(59,130,246,0.15)':'rgba(168,85,247,0.15)',color:t==='strength'?'var(--accent)':t==='running'?'#3b82f6':'#a855f7',padding:'3px 10px',borderRadius:'6px',fontSize:'10px',fontWeight:700,textTransform:'uppercase'}},t));});
   hdr.appendChild(badges);hdr.appendChild(h('p',{style:{color:'var(--text2)',fontSize:'11px',marginTop:'6px'}},dayTpl.desc));el.appendChild(hdr);
 
-  // Feeling meter
-  var fc=h('div',{className:'card',style:{display:'flex',alignItems:'center',gap:'6px',padding:'10px 12px'}});fc.appendChild(h('span',{innerHTML:svg('heart',14,'var(--accent)')}));fc.appendChild(h('span',{style:{color:'var(--text2)',fontSize:'10px',fontWeight:700,whiteSpace:'nowrap'}},'Feel'));
-  var fr=h('div',{className:'feel-row',style:{marginLeft:'auto'}});for(var f=1;f<=10;f++){(function(ff){fr.appendChild(h('button',{className:'feel-btn'+(S.curLog.feeling===ff?' active':''),onClick:function(){S.curLog.feeling=ff;autosaveCL();R();}},''+ff));})(f);}fc.appendChild(fr);el.appendChild(fc);
+  // Feeling is rated after Save, in the celebration (keeps the rating unbiased and off the workout screen).
 
   // Superset toggle for merged day
   var mergedExForSS=getMergedDayExercises(dayTpl,S.week);

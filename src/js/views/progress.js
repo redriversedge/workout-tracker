@@ -243,5 +243,5 @@ else if(S.bodyLogs.length>0){
     var vals=[];['wt','ch','wa','hp','ar'].forEach(function(k){if(log[k]&&parseFloat(log[k])>0)vals.push(metricLabels[k]+': '+log[k]+metricUnits[k]);});
     left.appendChild(h('p',{style:{fontSize:'10px',color:'var(--text2)',margin:'1px 0 0'}},vals.join(' | ')||'No data'));
     row.appendChild(left);
-    row.appendChild(h('button',{style:{background:'none',border:'none',cursor:'pointer',padding:'4px'},innerHTML:svg('trash',12,'var(--danger)'),onClick:function(){S.bodyLogs.splice(real,1);sv();R();}}));
+    row.appendChild(h('button',{style:{background:'none',border:'none',cursor:'pointer',padding:'4px'},innerHTML:svg('trash',12,'var(--danger)'),'aria-label':'Delete this measurement',onClick:function(){S.modal={type:'confirm',title:'Delete measurement?',msg:'This removes the entry from your progress charts.',confirmText:'Delete',cancelText:'Keep',onConfirm:function(){S.bodyLogs.splice(real,1);S.modal=null;sv();R();}};R();}}));
     bC.appendChild(row);});}el.appendChild(bC);return el;}
